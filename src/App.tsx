@@ -9,6 +9,7 @@ import { RecentActivity } from './app/components/RecentActivity';
 import { BottomNav } from './app/components/BottomNav';
 import { Fab } from './app/components/Fab';
 import HisaabApp from '@/modules/hisaab/HisaabApp';
+import AmaanatApp from '@/modules/amaanat/AmaanatApp';
 import { UpdateBanner } from '@/modules/hisaab/shared/components/UpdateBanner';
 
 function HomeScreen() {
@@ -33,6 +34,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomeScreen />} />
           <Route path="/hisaab/*" element={<HisaabApp />} />
+          <Route path="/amaanat/*" element={<AmaanatApp />} />
         </Routes>
         <UpdateBanner />
       </BrowserRouter>

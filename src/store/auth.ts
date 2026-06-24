@@ -2,8 +2,10 @@ import { create } from 'zustand';
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
-import { syncOnLogin } from '@/modules/hisaab/sync/firestore';
-import { retryPendingSync } from '@/modules/hisaab/sync/retryQueue';
+import { syncOnLogin as syncHisaabOnLogin } from '@/modules/hisaab/sync/firestore';
+import { retryPendingSync as retryHisaabSync } from '@/modules/hisaab/sync/retryQueue';
+import { syncOnLogin as syncAmaanatOnLogin } from '@/modules/amaanat/sync/firestore';
+import { retryPendingSync as retryAmaanatSync } from '@/modules/amaanat/sync/retryQueue';
 
 interface AuthStore {
   user: User | null;
@@ -31,14 +33,17 @@ export function initAuth() {
   onAuthStateChanged(auth, (user) => {
     useAuthStore.setState({ user, authLoading: false });
     if (user) {
-      syncOnLogin(user.uid)
-        .then(() => retryPendingSync(user.uid))
+      Promise.all([syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid)])
+        .then(() => Promise.all([retryHisaabSync(user.uid), retryAmaanatSync(user.uid)]))
         .catch(console.error);
     }
   });
 
   window.addEventListener('online', () => {
     const u = useAuthStore.getState().user;
-    if (u) retryPendingSync(u.uid).catch(console.error);
+    if (u) {
+      retryHisaabSync(u.uid).catch(console.error);
+      retryAmaanatSync(u.uid).catch(console.error);
+    }
   });
 }

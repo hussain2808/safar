@@ -1,11 +1,11 @@
-import { Home, Image, Wallet, Box, MapPin } from 'lucide-react';
+import { Home, Image, Wallet, Shield, MapPin } from 'lucide-react';
 import { bottomNavItems } from '../mockData';
 
 const icons = {
   home: Home,
   nazara: Image,
   hisaab: Wallet,
-  things: Box,
+  amaanat: Shield,
   journey: MapPin,
 } as const;
 
