@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Settings, Upload } from 'lucide-react';
+import { ChevronLeft, Search, Settings, Upload } from 'lucide-react';
 import { BookCard } from '@/modules/hisaab/features/books/components/BookCard';
 import { CreateBookSheet } from '@/modules/hisaab/features/books/components/CreateBookSheet';
 import { BookCardSkeleton } from '@/modules/hisaab/shared/components/Skeleton';
@@ -47,12 +47,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-bg-primary flex flex-col">
       <header className="px-5 pt-14 pb-4 flex items-start justify-between">
-        <div>
-          <p className="text-caption text-hisaabText-secondary">{getGreeting()},</p>
-          <h1 className="font-serif text-[30px] font-bold text-hisaabText-primary mt-0.5 leading-tight flex items-center gap-2">
-            {firstName} <span className="text-[22px]">🌿</span>
-          </h1>
-          <p className="text-caption text-hisaabText-secondary mt-1">Here's your books 🤎</p>
+        <div className="flex items-start gap-2">
+          <button onClick={() => navigate('/')} className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-bg-card shadow-card flex items-center justify-center text-hisaabText-secondary active:bg-bg-hover transition-colors flex-shrink-0" aria-label="Back to Safar">
+            <ChevronLeft size={18} />
+          </button>
+          <div>
+            <p className="text-caption text-hisaabText-secondary">{getGreeting()},</p>
+            <h1 className="font-serif text-[30px] font-bold text-hisaabText-primary mt-0.5 leading-tight flex items-center gap-2">
+              {firstName} <span className="text-[22px]">🌿</span>
+            </h1>
+            <p className="text-caption text-hisaabText-secondary mt-1">Here's your books 🤎</p>
+          </div>
         </div>
         <div className="flex items-center gap-2 pt-1">
           <button onClick={() => navigate('/hisaab/search')} className="w-9 h-9 rounded-full bg-bg-card shadow-card flex items-center justify-center text-hisaabText-secondary active:bg-bg-hover transition-colors" aria-label="Search">
