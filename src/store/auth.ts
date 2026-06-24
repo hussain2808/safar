@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
 import type { User } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
+import { syncOnLogin } from '@/modules/hisaab/sync/firestore';
 
 interface AuthStore {
   user: User | null;
@@ -28,5 +29,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
 export function initAuth() {
   onAuthStateChanged(auth, (user) => {
     useAuthStore.setState({ user, authLoading: false });
+    if (user) syncOnLogin(user.uid).catch(console.error);
   });
 }
