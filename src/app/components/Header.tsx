@@ -1,4 +1,4 @@
-import { Search, Bell, Leaf } from 'lucide-react';
+import { Bell, Leaf } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 
 export function Header() {
@@ -15,9 +15,6 @@ export function Header() {
         <p className="text-xs text-text-secondary">The story of your journey</p>
       </div>
       <div className="flex items-center gap-3">
-        <button className="w-10 h-10 rounded-full bg-icon-bg flex items-center justify-center">
-          <Search size={18} className="text-text-secondary" />
-        </button>
         <button className="relative w-10 h-10 rounded-full bg-icon-bg flex items-center justify-center">
           <Bell size={18} className="text-text-secondary" />
           <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-orange-500" />

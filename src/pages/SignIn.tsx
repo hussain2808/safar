@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/store/auth';
 import { useState } from 'react';
+import { Leaf } from 'lucide-react';
 
 export default function SignIn() {
   const signIn = useAuthStore((s) => s.signIn);
@@ -24,7 +25,10 @@ export default function SignIn() {
       <div className="flex-1" />
 
       <div className="flex flex-col items-center px-8 gap-5">
-        <h1 className="font-serif text-4xl text-text-primary">Safar</h1>
+        <h1 className="font-serif text-4xl text-brown flex items-center gap-1">
+          Safar
+          <Leaf size={20} className="text-accent-green-fg rotate-12 -mt-4" />
+        </h1>
         <p className="text-sm text-text-secondary text-center">The story of your journey</p>
 
         <div className="w-full flex flex-col gap-3 mt-4">
