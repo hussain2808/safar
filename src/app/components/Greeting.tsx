@@ -6,11 +6,11 @@ export function Greeting() {
   const firstName = user?.displayName?.split(' ')[0] ?? 'there';
 
   return (
-    <div className="px-5 pt-2 pb-1">
-      <h2 className="font-serif text-xl text-text-primary">
+    <div className="px-5 pt-3 pb-1">
+      <h2 className="font-sans text-xl font-bold text-text-primary">
         {getGreeting()}, {firstName}
       </h2>
-      <p className="text-xs text-text-secondary">Everything important, in one place.</p>
+      <p className="text-sm text-text-secondary mt-0.5">Everything important, in one place.</p>
     </div>
   );
 }
