@@ -1,4 +1,4 @@
-import type { Category } from '../types';
+import type { Category } from '@/modules/hisaab/types';
 
 /** Seeded onto every book that existed before per-book categories shipped, keyed by the original ids so existing transactions keep resolving. */
 export const DEFAULT_CATEGORIES: Omit<Category, 'bookId' | 'createdAt'>[] = [

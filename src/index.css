@@ -17,3 +17,66 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Hisaab module tokens ── */
+:root {
+  --color-bg-primary:       #F6F4EE;
+  --color-bg-card:          #FFFFFF;
+  --color-bg-icon:          #F2F0E9;
+  --color-bg-hover:         #ECEAE3;
+  --color-bg-overlay:       #E9E7E1;
+
+  --color-text-primary:     #26251F;
+  --color-text-secondary:   #A4A199;
+  --color-text-placeholder: #BDBAB1;
+
+  --color-accent-positive:  #3A7D44;
+  --color-accent-negative:  #C0392B;
+  --color-accent-button:    #6B4226;
+  --color-accent-buttonText:#F6F4EE;
+
+  --color-border-light:     rgba(30,26,15,0.06);
+}
+
+.dark {
+  --color-bg-primary:       #1A1916;
+  --color-bg-card:          #242220;
+  --color-bg-icon:          #2C2A27;
+  --color-bg-hover:         #2E2C29;
+  --color-bg-overlay:       #323028;
+
+  --color-text-primary:     #F0EDE6;
+  --color-text-secondary:   #6B6863;
+  --color-text-placeholder: #4A4845;
+
+  --color-accent-positive:  #4CAF60;
+  --color-accent-negative:  #E05545;
+  --color-accent-button:    #F0EDE6;
+  --color-accent-buttonText:#1A1916;
+
+  --color-border-light:     rgba(240,237,230,0.07);
+}
+
+.hisaab-root {
+  @apply bg-bg-primary text-hisaabText-primary font-sans;
+  overscroll-behavior: none;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-hover) 25%,
+    var(--color-bg-overlay) 50%,
+    var(--color-bg-hover) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}

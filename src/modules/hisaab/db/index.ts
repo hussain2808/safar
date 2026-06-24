@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type { Book, Transaction, Photo, Category } from '../types';
+import type { Book, Transaction, Photo, Category } from '@/modules/hisaab/types';
 
 class HisaabDB extends Dexie {
   books!: Table<Book>;

@@ -1,8 +1,10 @@
 import { ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { modules } from '../mockData';
 import { iconMap } from '../iconMap';
 
 export function ModuleGrid() {
+  const navigate = useNavigate();
   return (
     <div className="grid grid-cols-2 gap-4 px-5 py-3">
       {modules.map((m) => {
@@ -11,6 +13,7 @@ export function ModuleGrid() {
           <button
             key={m.key}
             disabled={!m.enabled}
+            onClick={() => m.enabled && navigate(`/${m.key}`)}
             className={`relative text-left ${m.cardBg} rounded-3xl p-4 min-h-[160px] overflow-hidden flex items-start justify-between gap-2 ${
               m.enabled ? 'active:scale-[0.98]' : 'opacity-50'
             }`}

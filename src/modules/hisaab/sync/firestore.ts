@@ -3,21 +3,21 @@ import {
   collection, getDocs, writeBatch,
 } from 'firebase/firestore';
 import { fsdb } from '@/lib/firebase';
-import { db } from '../db';
-import type { Book, Transaction, Category, Photo } from '../types';
+import { db } from '@/modules/hisaab/db';
+import type { Book, Transaction, Category, Photo } from '@/modules/hisaab/types';
 
 // ── Path helpers ──────────────────────────────────────────────────────────────
 
 function bookRef(uid: string, bookId: string) {
-  return doc(fsdb, 'users', uid, 'hisaab', 'books', bookId);
+  return doc(fsdb, 'users', uid, 'books', bookId);
 }
 
 function txRef(uid: string, bookId: string, txId: string) {
-  return doc(fsdb, 'users', uid, 'hisaab', 'books', bookId, 'transactions', txId);
+  return doc(fsdb, 'users', uid, 'books', bookId, 'transactions', txId);
 }
 
 function categoryRef(uid: string, bookId: string, categoryId: string) {
-  return doc(fsdb, 'users', uid, 'hisaab', 'books', bookId, 'categories', categoryId);
+  return doc(fsdb, 'users', uid, 'books', bookId, 'categories', categoryId);
 }
 
 // ── Write-through helpers (fire-and-forget at call sites) ─────────────────────
@@ -28,8 +28,8 @@ export async function pushBook(uid: string, book: Book) {
 
 export async function deleteFirestoreBook(uid: string, bookId: string) {
   const [txSnap, catSnap] = await Promise.all([
-    getDocs(collection(fsdb, 'users', uid, 'hisaab', 'books', bookId, 'transactions')),
-    getDocs(collection(fsdb, 'users', uid, 'hisaab', 'books', bookId, 'categories')),
+    getDocs(collection(fsdb, 'users', uid, 'books', bookId, 'transactions')),
+    getDocs(collection(fsdb, 'users', uid, 'books', bookId, 'categories')),
   ]);
   const batch = writeBatch(fsdb);
   txSnap.forEach((d) => batch.delete(d.ref));
@@ -57,7 +57,7 @@ export async function deleteFirestoreCategory(uid: string, bookId: string, categ
 // ── Pull on login — Firestore → Dexie ────────────────────────────────────────
 
 export async function syncOnLogin(uid: string) {
-  const booksSnap = await getDocs(collection(fsdb, 'users', uid, 'hisaab', 'books'));
+  const booksSnap = await getDocs(collection(fsdb, 'users', uid, 'books'));
 
   const books: Book[] = [];
   const transactions: Transaction[] = [];
@@ -67,8 +67,8 @@ export async function syncOnLogin(uid: string) {
     booksSnap.docs.map(async (bookDoc) => {
       books.push(bookDoc.data() as Book);
       const [txSnap, catSnap] = await Promise.all([
-        getDocs(collection(fsdb, 'users', uid, 'hisaab', 'books', bookDoc.id, 'transactions')),
-        getDocs(collection(fsdb, 'users', uid, 'hisaab', 'books', bookDoc.id, 'categories')),
+        getDocs(collection(fsdb, 'users', uid, 'books', bookDoc.id, 'transactions')),
+        getDocs(collection(fsdb, 'users', uid, 'books', bookDoc.id, 'categories')),
       ]);
       txSnap.forEach((d) => transactions.push(d.data() as Transaction));
       catSnap.forEach((d) => categories.push(d.data() as Category));
@@ -83,7 +83,7 @@ export async function syncOnLogin(uid: string) {
 }
 
 async function syncPhotosOnLogin(uid: string) {
-  const photosSnap = await getDocs(collection(fsdb, 'users', uid, 'hisaab', 'photos'));
+  const photosSnap = await getDocs(collection(fsdb, 'users', uid, 'photos'));
   if (photosSnap.empty) return;
 
   const existingIds = new Set(await db.photos.toCollection().primaryKeys() as string[]);

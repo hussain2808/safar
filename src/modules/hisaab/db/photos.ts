@@ -1,7 +1,7 @@
 import { nanoid } from 'nanoid';
-import { db } from './index';
-import type { Photo, Result } from '../types';
-import { compressPhoto } from '../lib/compress';
+import { db } from '@/modules/hisaab/db';
+import type { Photo, Result } from '@/modules/hisaab/types';
+import { compressPhoto } from '@/modules/hisaab/lib/compress';
 import { auth, storage, fsdb } from '@/lib/firebase';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -9,15 +9,15 @@ import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 function uid() { return auth.currentUser?.uid ?? null; }
 
 function storageRef(userId: string, photoId: string) {
-  return ref(storage, `users/${userId}/hisaab/photos/${photoId}`);
+  return ref(storage, `users/${userId}/photos/${photoId}`);
 }
 
 function thumbRef(userId: string, photoId: string) {
-  return ref(storage, `users/${userId}/hisaab/photos/${photoId}_thumb`);
+  return ref(storage, `users/${userId}/photos/${photoId}_thumb`);
 }
 
 function photoDocRef(userId: string, photoId: string) {
-  return doc(fsdb, 'users', userId, 'hisaab', 'photos', photoId);
+  return doc(fsdb, 'users', userId, 'photos', photoId);
 }
 
 export async function savePhoto(file: File): Promise<Result<Photo>> {
