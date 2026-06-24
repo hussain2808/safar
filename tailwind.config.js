@@ -11,6 +11,13 @@ export default {
         icon: { bg: '#F3EBE0' },
         badge: { bg: '#EFEBE5' },
         gold: '#C9A042',
+        accent: {
+          orange: { bg: '#FBE7D8', fg: '#C2703D' },
+          green: { bg: '#E1EFE1', fg: '#4F8A56' },
+          purple: { bg: '#EAE6F5', fg: '#7B6FB0' },
+          pink: { bg: '#FBE3E8', fg: '#C26B86' },
+          blue: { bg: '#E3EAF7', fg: '#5C7BB0' },
+        },
       },
       fontFamily: {
         serif: ['Playfair Display', 'serif'],

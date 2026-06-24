@@ -1,0 +1,130 @@
+export const modules = [
+  {
+    key: 'nazara',
+    title: 'Nazara',
+    subtitle: 'Memories',
+    description: 'Capture and cherish moments.',
+    image: '/design-icons/nazara.png',
+    iconBg: 'bg-accent-orange-bg',
+    subtitleColor: 'text-accent-orange-fg',
+    enabled: false,
+  },
+  {
+    key: 'hisaab',
+    title: 'Hisaab',
+    subtitle: 'Finance & Assets',
+    description: 'Manage your money, assets and valuables.',
+    image: '/design-icons/hisaab.png',
+    iconBg: 'bg-accent-green-bg',
+    subtitleColor: 'text-accent-green-fg',
+    enabled: true,
+  },
+  {
+    key: 'things',
+    title: 'Things',
+    subtitle: 'Inventory & Warranties',
+    description: 'Track your items, invoices and warranties.',
+    image: '/design-icons/things.png',
+    iconBg: 'bg-accent-purple-bg',
+    subtitleColor: 'text-accent-purple-fg',
+    enabled: false,
+  },
+  {
+    key: 'journey',
+    title: 'Journey',
+    subtitle: 'Plans & Experiences',
+    description: 'Plan, track and remember your trips.',
+    image: null,
+    iconBg: 'bg-accent-orange-bg',
+    subtitleColor: 'text-accent-orange-fg',
+    enabled: false,
+  },
+] as const;
+
+export const attentionItems = [
+  {
+    id: 'passport',
+    icon: 'passport',
+    iconBg: 'bg-accent-pink-bg',
+    iconFg: 'text-accent-pink-fg',
+    label: 'Passport expires in',
+    value: '83 days',
+    valueColor: 'text-accent-orange-fg',
+  },
+  {
+    id: 'warranty',
+    icon: 'shield',
+    iconBg: 'bg-accent-blue-bg',
+    iconFg: 'text-accent-blue-fg',
+    label: 'MacBook warranty ends next month',
+    value: '',
+    valueColor: '',
+  },
+  {
+    id: 'spend',
+    icon: 'trend',
+    iconBg: 'bg-accent-green-bg',
+    iconFg: 'text-accent-green-fg',
+    label: 'AED 2,340 spent this month',
+    value: '',
+    valueColor: '',
+  },
+] as const;
+
+export const snapshot = [
+  { id: 'networth', icon: 'trend', iconBg: 'bg-accent-green-bg', iconFg: 'text-accent-green-fg', value: 'AED 156,000', label: 'Net Worth' },
+  { id: 'assets', icon: 'box', iconBg: 'bg-accent-purple-bg', iconFg: 'text-accent-purple-fg', value: '24', label: 'Assets' },
+  { id: 'documents', icon: 'file', iconBg: 'bg-accent-orange-bg', iconFg: 'text-accent-orange-fg', value: '11', label: 'Documents' },
+  { id: 'memories', icon: 'camera', iconBg: 'bg-accent-pink-bg', iconFg: 'text-accent-pink-fg', value: '348', label: 'Memories' },
+] as const;
+
+export const recentActivity = [
+  {
+    id: '1',
+    icon: 'memory',
+    iconBg: 'bg-accent-pink-bg',
+    iconFg: 'text-accent-pink-fg',
+    title: "Mariyam's first school day",
+    subtitle: 'Memory · 2h ago',
+    amount: '',
+    amountColor: '',
+  },
+  {
+    id: '2',
+    icon: 'coins',
+    iconBg: 'bg-accent-green-bg',
+    iconFg: 'text-accent-green-fg',
+    title: 'Gold Purchase',
+    subtitle: 'Expense · 5h ago',
+    amount: 'AED 3,250',
+    amountColor: 'text-accent-green-fg',
+  },
+  {
+    id: '3',
+    icon: 'file',
+    iconBg: 'bg-accent-blue-bg',
+    iconFg: 'text-accent-blue-fg',
+    title: 'Emirates ID Renewal',
+    subtitle: 'Document · 1d ago',
+    amount: '',
+    amountColor: '',
+  },
+  {
+    id: '4',
+    icon: 'camera',
+    iconBg: 'bg-accent-orange-bg',
+    iconFg: 'text-accent-orange-fg',
+    title: 'Sony Camera',
+    subtitle: 'Asset · 2d ago',
+    amount: '',
+    amountColor: '',
+  },
+] as const;
+
+export const bottomNavItems = [
+  { key: 'home', label: 'Home', enabled: true },
+  { key: 'nazara', label: 'Nazara', enabled: false },
+  { key: 'hisaab', label: 'Hisaab', enabled: true },
+  { key: 'things', label: 'Things', enabled: false },
+  { key: 'journey', label: 'Journey', enabled: false },
+] as const;
