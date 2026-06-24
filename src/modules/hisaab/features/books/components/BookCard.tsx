@@ -18,8 +18,11 @@ export const BookCard = memo(function BookCard({ book }: BookCardProps) {
       onClick={() => navigate(`/hisaab/book/${book.id}`)}
       className="w-full text-left bg-bg-card rounded-card shadow-card px-4 py-3.5 flex items-center gap-3 active:scale-[0.98] transition-transform duration-100"
     >
-      <div className="w-10 h-10 rounded-full bg-bg-icon flex items-center justify-center flex-shrink-0 text-hisaabText-secondary">
+      <div className="relative w-10 h-10 rounded-full bg-bg-icon flex items-center justify-center flex-shrink-0 text-hisaabText-secondary">
         <BookIcon iconId={book.emoji} />
+        {book.hasPendingSync && (
+          <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-500 ring-2 ring-bg-card" aria-label="Not yet synced" />
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-baseline justify-between gap-2">

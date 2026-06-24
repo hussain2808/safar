@@ -24,6 +24,9 @@ export const TransactionRow = memo(function TransactionRow({ transaction, catego
         <div className="flex items-center gap-1.5">
           <span className="text-body text-hisaabText-primary truncate">{transaction.remark || 'Untitled'}</span>
           {transaction.photoId && <Paperclip size={13} className="text-hisaabText-secondary flex-shrink-0" />}
+          {transaction.pendingSync && (
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" aria-label="Not yet synced" />
+          )}
         </div>
         <p className="text-caption text-hisaabText-secondary mt-0.5">
           {categoryLabel ? `${categoryLabel} · ` : ''}{format(transaction.date, 'd MMM')}

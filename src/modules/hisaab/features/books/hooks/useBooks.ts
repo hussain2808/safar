@@ -28,6 +28,7 @@ export function useBooks() {
         ...book,
         balance: calculateBalance(txs),
         transactionCount: txs.length,
+        hasPendingSync: !!book.pendingSync || txs.some((t) => t.pendingSync),
       };
     });
   });

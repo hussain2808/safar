@@ -52,6 +52,7 @@ export type TransactionType = Transaction['type'];
 export interface BookWithStats extends Book {
   balance: number;
   transactionCount: number;
+  hasPendingSync: boolean;
 }
 
 export type Result<T> =
