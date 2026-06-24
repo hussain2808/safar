@@ -4,7 +4,6 @@ import { ErrorBoundary } from '@/modules/hisaab/shared/components/ErrorBoundary'
 import { BookCardSkeleton } from '@/modules/hisaab/shared/components/Skeleton';
 import { AddTransactionSheet } from '@/modules/hisaab/features/transactions/components/AddTransactionSheet';
 import { TransactionDetailSheet } from '@/modules/hisaab/features/transactions/components/TransactionDetailSheet';
-import { UpdateBanner } from '@/modules/hisaab/shared/components/UpdateBanner';
 import { SyncStatusBanner } from '@/modules/hisaab/shared/components/SyncStatusBanner';
 
 const Home       = lazy(() => import('@/modules/hisaab/pages/Home'));
@@ -34,7 +33,6 @@ export default function HisaabApp() {
         </Suspense>
         <AddTransactionSheet />
         <TransactionDetailSheet />
-        <UpdateBanner />
         <SyncStatusBanner />
       </ErrorBoundary>
     </div>
