@@ -6,6 +6,7 @@ export interface Book {
   archived: boolean;
   createdAt: number;
   updatedAt: number;
+  pendingSync?: boolean;
 }
 
 export interface Transaction {
@@ -19,6 +20,7 @@ export interface Transaction {
   date: number;         // user-selected date timestamp
   createdAt: number;
   updatedAt: number;
+  pendingSync?: boolean;
 }
 
 export interface Photo {
@@ -33,6 +35,15 @@ export interface Category {
   bookId: string;
   label: string;
   icon: string;
+  createdAt: number;
+  pendingSync?: boolean;
+}
+
+export interface PendingDelete {
+  id: string;
+  kind: 'book' | 'transaction' | 'category';
+  targetId: string;
+  bookId?: string;
   createdAt: number;
 }
 

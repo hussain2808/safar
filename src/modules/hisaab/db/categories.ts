@@ -12,10 +12,10 @@ export async function createCategory(
   icon: string,
 ): Promise<Result<Category>> {
   try {
-    const category: Category = { id: nanoid(), bookId, label, icon, createdAt: Date.now() };
+    const category: Category = { id: nanoid(), bookId, label, icon, createdAt: Date.now(), pendingSync: true };
     await db.categories.add(category);
     const u = uid();
-    if (u) pushCategory(u, category).catch(console.error);
+    if (u) pushCategory(u, category).then(() => db.categories.update(category.id, { pendingSync: false })).catch(console.error);
     return { ok: true, data: category };
   } catch (e) {
     return { ok: false, error: String(e) };
@@ -27,11 +27,11 @@ export async function updateCategory(
   patch: Partial<Pick<Category, 'label' | 'icon'>>,
 ): Promise<Result<void>> {
   try {
-    await db.categories.update(id, patch);
+    await db.categories.update(id, { ...patch, pendingSync: true });
     const u = uid();
     if (u) {
       const category = await db.categories.get(id);
-      if (category) pushCategory(u, category).catch(console.error);
+      if (category) pushCategory(u, category).then(() => db.categories.update(id, { pendingSync: false })).catch(console.error);
     }
     return { ok: true, data: undefined };
   } catch (e) {
@@ -46,9 +46,14 @@ export async function deleteCategory(id: string): Promise<Result<void>> {
       return { ok: false, error: `Used by ${usageCount} ${usageCount === 1 ? 'entry' : 'entries'} — remove or recategorize them first.` };
     }
     const category = await db.categories.get(id);
-    await db.categories.delete(id);
     const u = uid();
-    if (u && category) deleteFirestoreCategory(u, category.bookId, id).catch(console.error);
+    if (u && category) await db.pendingDeletes.add({ id: nanoid(), kind: 'category', targetId: id, bookId: category.bookId, createdAt: Date.now() });
+    await db.categories.delete(id);
+    if (u && category) {
+      deleteFirestoreCategory(u, category.bookId, id)
+        .then(() => db.pendingDeletes.where({ kind: 'category', targetId: id }).delete())
+        .catch(console.error);
+    }
     return { ok: true, data: undefined };
   } catch (e) {
     return { ok: false, error: String(e) };

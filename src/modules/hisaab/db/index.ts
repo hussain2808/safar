@@ -1,11 +1,12 @@
 import Dexie, { type Table } from 'dexie';
-import type { Book, Transaction, Photo, Category } from '@/modules/hisaab/types';
+import type { Book, Transaction, Photo, Category, PendingDelete } from '@/modules/hisaab/types';
 
 class HisaabDB extends Dexie {
   books!: Table<Book>;
   transactions!: Table<Transaction>;
   photos!: Table<Photo>;
   categories!: Table<Category>;
+  pendingDeletes!: Table<PendingDelete>;
 
   constructor() {
     super('safar-hisaab-db');
@@ -14,6 +15,9 @@ class HisaabDB extends Dexie {
       transactions: 'id, bookId, type, date, category, [bookId+date]',
       photos:       'id, createdAt',
       categories:   'id, bookId',
+    });
+    this.version(2).stores({
+      pendingDeletes: 'id, kind',
     });
   }
 }

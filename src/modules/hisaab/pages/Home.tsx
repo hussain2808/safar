@@ -46,7 +46,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-bg-primary flex flex-col">
-      <header className="px-5 pt-14 pb-4 flex items-start justify-between">
+      <header className="px-5 pt-6 pb-4 flex items-start justify-between">
         <div className="flex items-start gap-2">
           <button onClick={() => navigate('/')} className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-bg-card shadow-card flex items-center justify-center text-hisaabText-secondary active:bg-bg-hover transition-colors flex-shrink-0" aria-label="Back to Safar">
             <ChevronLeft size={18} />

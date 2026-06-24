@@ -5,6 +5,7 @@ import { BookCardSkeleton } from '@/modules/hisaab/shared/components/Skeleton';
 import { AddTransactionSheet } from '@/modules/hisaab/features/transactions/components/AddTransactionSheet';
 import { TransactionDetailSheet } from '@/modules/hisaab/features/transactions/components/TransactionDetailSheet';
 import { UpdateBanner } from '@/modules/hisaab/shared/components/UpdateBanner';
+import { SyncStatusBanner } from '@/modules/hisaab/shared/components/SyncStatusBanner';
 
 const Home       = lazy(() => import('@/modules/hisaab/pages/Home'));
 const BookDetail = lazy(() => import('@/modules/hisaab/pages/BookDetail'));
@@ -34,6 +35,7 @@ export default function HisaabApp() {
         <AddTransactionSheet />
         <TransactionDetailSheet />
         <UpdateBanner />
+        <SyncStatusBanner />
       </ErrorBoundary>
     </div>
   );

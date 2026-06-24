@@ -3,6 +3,7 @@ import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged } from 
 import type { User } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { syncOnLogin } from '@/modules/hisaab/sync/firestore';
+import { retryPendingSync } from '@/modules/hisaab/sync/retryQueue';
 
 interface AuthStore {
   user: User | null;
@@ -29,6 +30,15 @@ export const useAuthStore = create<AuthStore>((set) => ({
 export function initAuth() {
   onAuthStateChanged(auth, (user) => {
     useAuthStore.setState({ user, authLoading: false });
-    if (user) syncOnLogin(user.uid).catch(console.error);
+    if (user) {
+      syncOnLogin(user.uid)
+        .then(() => retryPendingSync(user.uid))
+        .catch(console.error);
+    }
+  });
+
+  window.addEventListener('online', () => {
+    const u = useAuthStore.getState().user;
+    if (u) retryPendingSync(u.uid).catch(console.error);
   });
 }
