@@ -1,28 +1,41 @@
 import { ChevronRight } from 'lucide-react';
 import { modules } from '../mockData';
+import { iconMap } from '../iconMap';
 
 export function ModuleGrid() {
   return (
     <div className="grid grid-cols-2 gap-3 px-5 py-3">
-      {modules.map((m) => (
-        <button
-          key={m.key}
-          disabled={!m.enabled}
-          className={`text-left bg-card-bg border border-card-border rounded-2xl p-4 flex flex-col gap-2 ${
-            m.enabled ? 'active:scale-[0.98]' : 'opacity-50'
-          }`}
-        >
-          <div className={`w-12 h-12 rounded-xl ${m.iconBg} flex items-center justify-center overflow-hidden`}>
-            {m.image && <img src={m.image} alt={m.title} className="w-8 h-8 object-contain" />}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-serif text-base text-text-primary">{m.title}</span>
-            <ChevronRight size={16} className="text-text-muted" />
-          </div>
-          <span className={`text-xs font-medium ${m.subtitleColor}`}>{m.subtitle}</span>
-          <p className="text-xs text-text-secondary leading-snug">{m.description}</p>
-        </button>
-      ))}
+      {modules.map((m) => {
+        const Icon = iconMap[m.icon];
+        return (
+          <button
+            key={m.key}
+            disabled={!m.enabled}
+            className={`relative text-left ${m.cardBg} rounded-2xl p-4 h-36 overflow-hidden flex flex-col ${
+              m.enabled ? 'active:scale-[0.98]' : 'opacity-50'
+            }`}
+          >
+            {m.image && (
+              <img
+                src={m.image}
+                alt=""
+                className="absolute -right-3 -bottom-3 w-24 h-24 object-contain rotate-6 pointer-events-none"
+              />
+            )}
+            <div className="relative z-10 flex flex-col gap-2 max-w-[70%]">
+              <div className={`w-9 h-9 rounded-lg ${m.iconBg} flex items-center justify-center`}>
+                <Icon size={18} className={m.iconFg} />
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="font-serif text-base text-text-primary">{m.title}</span>
+                <ChevronRight size={14} className="text-text-muted" />
+              </div>
+              <span className={`text-xs font-medium ${m.subtitleColor}`}>{m.subtitle}</span>
+              <p className="text-xs text-text-secondary leading-snug">{m.description}</p>
+            </div>
+          </button>
+        );
+      })}
     </div>
   );
 }

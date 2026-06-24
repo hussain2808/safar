@@ -7,6 +7,8 @@ import {
   Coins,
   Image,
   Plane,
+  Wallet,
+  MapPin,
 } from 'lucide-react';
 
 export const iconMap = {
@@ -18,6 +20,8 @@ export const iconMap = {
   camera: Camera,
   coins: Coins,
   memory: Image,
+  wallet: Wallet,
+  mapPin: MapPin,
 } as const;
 
 export type IconKey = keyof typeof iconMap;
