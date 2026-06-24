@@ -1,5 +1,6 @@
 import { AuthGate } from '@/components/AuthGate';
 import { Header } from './app/components/Header';
+import { Greeting } from './app/components/Greeting';
 import { ModuleGrid } from './app/components/ModuleGrid';
 import { TodaysAttention } from './app/components/TodaysAttention';
 import { LifeSnapshot } from './app/components/LifeSnapshot';
@@ -12,6 +13,7 @@ function App() {
     <AuthGate>
       <div className="min-h-screen bg-cream pb-24">
         <Header />
+        <Greeting />
         <ModuleGrid />
         <TodaysAttention />
         <LifeSnapshot />
