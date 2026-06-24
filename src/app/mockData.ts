@@ -30,7 +30,7 @@ export const modules = [
     title: 'Amaanat',
     subtitle: 'Everything entrusted to your care',
     description: 'Track your items, invoices and warranties.',
-    image: null,
+    image: '/design-icons/amaanat.svg',
     icon: 'shield',
     cardBg: 'bg-accent-purple-bg',
     iconBg: 'bg-card-bg',
