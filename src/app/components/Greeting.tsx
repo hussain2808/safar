@@ -7,7 +7,7 @@ export function Greeting() {
 
   return (
     <div className="px-5 pt-3 pb-1">
-      <h2 className="font-sans text-xl font-bold text-text-primary">
+      <h2 className="font-serif text-2xl font-medium text-text-primary">
         {getGreeting()}, {firstName}
       </h2>
       <p className="text-sm text-text-secondary mt-0.5">Everything important, in one place.</p>
