@@ -11,7 +11,7 @@ export function ModuleGrid() {
           <button
             key={m.key}
             disabled={!m.enabled}
-            className={`relative text-left ${m.cardBg} rounded-2xl p-4 h-36 overflow-hidden flex flex-col ${
+            className={`relative text-left ${m.cardBg} rounded-2xl p-4 h-40 overflow-hidden flex flex-col ${
               m.enabled ? 'active:scale-[0.98]' : 'opacity-50'
             }`}
           >
@@ -31,7 +31,7 @@ export function ModuleGrid() {
                 <ChevronRight size={14} className="text-text-muted" />
               </div>
               <span className={`text-xs font-medium ${m.subtitleColor}`}>{m.subtitle}</span>
-              <p className="text-xs text-text-secondary leading-snug">{m.description}</p>
+              <p className="text-xs text-text-secondary leading-snug line-clamp-2">{m.description}</p>
             </div>
           </button>
         );

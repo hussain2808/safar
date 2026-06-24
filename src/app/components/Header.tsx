@@ -1,10 +1,13 @@
-import { Search, Bell } from 'lucide-react';
+import { Search, Bell, Leaf } from 'lucide-react';
 
 export function Header() {
   return (
     <div className="flex items-center justify-between px-5 pt-6 pb-2">
       <div>
-        <h1 className="font-serif text-2xl text-text-primary">Safar</h1>
+        <h1 className="font-serif text-2xl text-text-primary flex items-center gap-1">
+          Safar
+          <Leaf size={16} className="text-accent-green-fg rotate-12" />
+        </h1>
         <p className="text-xs text-text-secondary">The story of your journey</p>
       </div>
       <div className="flex items-center gap-3">
