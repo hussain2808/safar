@@ -5,6 +5,7 @@ import { ItemCardSkeleton } from '@/modules/amaanat/shared/components/Skeleton';
 import { SyncStatusBanner } from '@/modules/amaanat/shared/components/SyncStatusBanner';
 
 const Home       = lazy(() => import('@/modules/amaanat/pages/Home'));
+const AllItems   = lazy(() => import('@/modules/amaanat/pages/AllItems'));
 const ItemDetail = lazy(() => import('@/modules/amaanat/pages/ItemDetail'));
 const Search     = lazy(() => import('@/modules/amaanat/pages/Search'));
 
@@ -22,6 +23,7 @@ export default function AmaanatApp() {
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/"          element={<Home />} />
+          <Route path="items"      element={<AllItems />} />
           <Route path="item/:id"   element={<ItemDetail />} />
           <Route path="search"     element={<Search />} />
         </Routes>

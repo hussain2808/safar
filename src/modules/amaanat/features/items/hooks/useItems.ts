@@ -24,5 +24,20 @@ export function useItems() {
     [items],
   );
 
-  return { items, attentionItems, isLoading: result === undefined };
+  const stats = useMemo(() => ({
+    totalItems: items.length,
+    underWarranty: items.filter((i) => i.warrantyStatus === 'active' || i.warrantyStatus === 'expiring_soon').length,
+    receiptsCount: items.reduce((sum, i) => sum + i.documentIds.length, 0),
+    expiringSoonCount: items.filter((i) => i.warrantyStatus === 'expiring_soon').length,
+  }), [items]);
+
+  const upcomingReminders = useMemo(
+    () => items
+      .filter((i) => !!i.warrantyExpiry && i.warrantyStatus !== 'none')
+      .sort((a, b) => a.warrantyExpiry! - b.warrantyExpiry!)
+      .slice(0, 4),
+    [items],
+  );
+
+  return { items, attentionItems, stats, upcomingReminders, isLoading: result === undefined };
 }
