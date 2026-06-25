@@ -6,6 +6,13 @@ import { fsdb } from '@/lib/firebase';
 import { db } from '@/modules/hisaab/db';
 import type { Book, Transaction, Category, Photo } from '@/modules/hisaab/types';
 
+// Firestore rejects any field with an `undefined` value — strip them before writing,
+// since optional fields (e.g. Transaction.category, Transaction.photoId) are often
+// passed through as literal `undefined` rather than omitted.
+function stripUndefined<T extends object>(obj: T): T {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as T;
+}
+
 // ── Path helpers ──────────────────────────────────────────────────────────────
 
 function bookRef(uid: string, bookId: string) {
@@ -23,7 +30,7 @@ function categoryRef(uid: string, bookId: string, categoryId: string) {
 // ── Write-through helpers (fire-and-forget at call sites) ─────────────────────
 
 export async function pushBook(uid: string, book: Book) {
-  await setDoc(bookRef(uid, book.id), book);
+  await setDoc(bookRef(uid, book.id), stripUndefined(book));
 }
 
 export async function deleteFirestoreBook(uid: string, bookId: string) {
@@ -39,7 +46,7 @@ export async function deleteFirestoreBook(uid: string, bookId: string) {
 }
 
 export async function pushTransaction(uid: string, tx: Transaction) {
-  await setDoc(txRef(uid, tx.bookId, tx.id), tx);
+  await setDoc(txRef(uid, tx.bookId, tx.id), stripUndefined(tx));
 }
 
 export async function deleteFirestoreTransaction(uid: string, bookId: string, txId: string) {
@@ -47,7 +54,7 @@ export async function deleteFirestoreTransaction(uid: string, bookId: string, tx
 }
 
 export async function pushCategory(uid: string, category: Category) {
-  await setDoc(categoryRef(uid, category.bookId, category.id), category);
+  await setDoc(categoryRef(uid, category.bookId, category.id), stripUndefined(category));
 }
 
 export async function deleteFirestoreCategory(uid: string, bookId: string, categoryId: string) {

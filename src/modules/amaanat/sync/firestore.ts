@@ -10,8 +10,15 @@ function itemRef(uid: string, itemId: string) {
   return doc(fsdb, 'users', uid, 'amaanatItems', itemId);
 }
 
+// Firestore rejects any field with an `undefined` value — Item has many optional
+// fields (merchant, purchaseDate, etc.) that may be passed through as literal
+// `undefined` rather than omitted, so strip them before writing.
+function stripUndefined<T extends object>(obj: T): T {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as T;
+}
+
 export async function pushItem(uid: string, item: Item) {
-  await setDoc(itemRef(uid, item.id), item);
+  await setDoc(itemRef(uid, item.id), stripUndefined(item));
 }
 
 export async function deleteFirestoreItem(uid: string, itemId: string) {
