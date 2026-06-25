@@ -8,9 +8,13 @@ import type { Book, Transaction, Category, Photo } from '@/modules/hisaab/types'
 
 // Firestore rejects any field with an `undefined` value — strip them before writing,
 // since optional fields (e.g. Transaction.category, Transaction.photoId) are often
-// passed through as literal `undefined` rather than omitted.
-function stripUndefined<T extends object>(obj: T): T {
-  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as T;
+// passed through as literal `undefined` rather than omitted. Also strip `pendingSync`:
+// it's local-only bookkeeping — writing it remotely would bake in whatever value was
+// true at push time, and the next pull-on-login would overwrite the local (correctly
+// cleared) flag with that stale remote value, causing it to "un-sync" forever.
+function toFirestoreDoc<T extends object>(obj: T): Omit<T, 'pendingSync'> {
+  const { pendingSync, ...rest } = obj as T & { pendingSync?: boolean };
+  return Object.fromEntries(Object.entries(rest).filter(([, v]) => v !== undefined)) as Omit<T, 'pendingSync'>;
 }
 
 // ── Path helpers ──────────────────────────────────────────────────────────────
@@ -30,7 +34,7 @@ function categoryRef(uid: string, bookId: string, categoryId: string) {
 // ── Write-through helpers (fire-and-forget at call sites) ─────────────────────
 
 export async function pushBook(uid: string, book: Book) {
-  await setDoc(bookRef(uid, book.id), stripUndefined(book));
+  await setDoc(bookRef(uid, book.id), toFirestoreDoc(book));
 }
 
 export async function deleteFirestoreBook(uid: string, bookId: string) {
@@ -46,7 +50,7 @@ export async function deleteFirestoreBook(uid: string, bookId: string) {
 }
 
 export async function pushTransaction(uid: string, tx: Transaction) {
-  await setDoc(txRef(uid, tx.bookId, tx.id), stripUndefined(tx));
+  await setDoc(txRef(uid, tx.bookId, tx.id), toFirestoreDoc(tx));
 }
 
 export async function deleteFirestoreTransaction(uid: string, bookId: string, txId: string) {
@@ -54,7 +58,7 @@ export async function deleteFirestoreTransaction(uid: string, bookId: string, tx
 }
 
 export async function pushCategory(uid: string, category: Category) {
-  await setDoc(categoryRef(uid, category.bookId, category.id), stripUndefined(category));
+  await setDoc(categoryRef(uid, category.bookId, category.id), toFirestoreDoc(category));
 }
 
 export async function deleteFirestoreCategory(uid: string, bookId: string, categoryId: string) {

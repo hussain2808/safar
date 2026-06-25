@@ -12,13 +12,18 @@ function itemRef(uid: string, itemId: string) {
 
 // Firestore rejects any field with an `undefined` value — Item has many optional
 // fields (merchant, purchaseDate, etc.) that may be passed through as literal
-// `undefined` rather than omitted, so strip them before writing.
-function stripUndefined<T extends object>(obj: T): T {
-  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined)) as T;
+// `undefined` rather than omitted, so strip them before writing. Also strip
+// `pendingSync`: it's local-only bookkeeping — writing it remotely would bake in
+// whatever value was true at push time, and the next pull-on-login would overwrite
+// the local (correctly cleared) flag with that stale remote value, causing it to
+// "un-sync" forever.
+function toFirestoreDoc<T extends object>(obj: T): Omit<T, 'pendingSync'> {
+  const { pendingSync, ...rest } = obj as T & { pendingSync?: boolean };
+  return Object.fromEntries(Object.entries(rest).filter(([, v]) => v !== undefined)) as Omit<T, 'pendingSync'>;
 }
 
 export async function pushItem(uid: string, item: Item) {
-  await setDoc(itemRef(uid, item.id), stripUndefined(item));
+  await setDoc(itemRef(uid, item.id), toFirestoreDoc(item));
 }
 
 export async function deleteFirestoreItem(uid: string, itemId: string) {
