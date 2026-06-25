@@ -14,23 +14,22 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-cream flex flex-col">
-      <header className="px-5 pt-6 pb-4 flex items-start justify-between">
-        <div className="flex items-start gap-2">
-          <button onClick={() => navigate('/')} className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors flex-shrink-0" aria-label="Back to Safar">
+      <header className="px-5 pt-6 pb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate('/')} className="w-9 h-9 -ml-1.5 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors flex-shrink-0" aria-label="Back to Safar">
             <ChevronLeft size={18} />
           </button>
-          <div className="flex items-start gap-2.5">
-            <div className="w-9 h-9 mt-0.5 rounded-xl bg-brown text-cream flex items-center justify-center flex-shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-brown text-cream flex items-center justify-center flex-shrink-0">
               <ShieldCheck size={17} strokeWidth={1.5} />
             </div>
             <div>
               <h1 className="font-serif text-[26px] font-bold text-text-primary leading-tight">Amaanat</h1>
-              <p className="text-caption-md text-brown -mt-0.5">Your ownership vault</p>
-              <p className="text-caption text-text-secondary mt-0.5">Everything entrusted to your care.</p>
+              <p className="text-caption text-text-secondary">Everything entrusted to your care.</p>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2 pt-1">
+        <div className="flex items-center gap-2">
           <button onClick={() => navigate('/amaanat/items?filter=attention')} className="relative w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors" aria-label="Items needing attention">
             <Bell size={16} />
             {!!attentionItems.length && (
