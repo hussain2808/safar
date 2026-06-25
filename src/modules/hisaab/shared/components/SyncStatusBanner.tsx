@@ -8,13 +8,14 @@ export function SyncStatusBanner() {
   const uid = useAuthStore((s) => s.user?.uid);
 
   const pendingCount = useLiveQuery(async () => {
-    const [books, txs, cats, deletes] = await Promise.all([
+    const [books, txs, cats, photos, deletes] = await Promise.all([
       db.books.filter((b) => !!b.pendingSync).count(),
       db.transactions.filter((t) => !!t.pendingSync).count(),
       db.categories.filter((c) => !!c.pendingSync).count(),
+      db.photos.filter((p) => !!p.pendingSync).count(),
       db.pendingDeletes.count(),
     ]);
-    return books + txs + cats + deletes;
+    return books + txs + cats + photos + deletes;
   }, [], 0);
 
   const showBanner = useDelayedTrue(!!pendingCount, 3000);

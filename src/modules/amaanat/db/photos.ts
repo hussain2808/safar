@@ -20,28 +20,28 @@ function photoDocRef(userId: string, photoId: string) {
   return doc(fsdb, 'users', userId, 'amaanatPhotos', photoId);
 }
 
+export async function pushPhoto(userId: string, photo: Photo): Promise<void> {
+  const [fullSnap, thumbSnap] = await Promise.all([
+    uploadBytes(storageRef(userId, photo.id), photo.blob, { contentType: 'image/jpeg' }),
+    uploadBytes(thumbRef(userId, photo.id), photo.thumbnail, { contentType: 'image/jpeg' }),
+  ]);
+  const [url, thumbUrl] = await Promise.all([
+    getDownloadURL(fullSnap.ref),
+    getDownloadURL(thumbSnap.ref),
+  ]);
+  await setDoc(photoDocRef(userId, photo.id), {
+    id: photo.id, url, thumbUrl, createdAt: photo.createdAt,
+  });
+}
+
 export async function savePhoto(file: File): Promise<Result<Photo>> {
   try {
     const { blob, thumbnail } = await compressPhoto(file);
-    const photo: Photo = { id: nanoid(), blob, thumbnail, createdAt: Date.now() };
+    const photo: Photo = { id: nanoid(), blob, thumbnail, createdAt: Date.now(), pendingSync: true };
     await db.photos.add(photo);
 
     const u = uid();
-    if (u) {
-      (async () => {
-        const [fullSnap, thumbSnap] = await Promise.all([
-          uploadBytes(storageRef(u, photo.id), blob, { contentType: 'image/jpeg' }),
-          uploadBytes(thumbRef(u, photo.id), thumbnail, { contentType: 'image/jpeg' }),
-        ]);
-        const [url, thumbUrl] = await Promise.all([
-          getDownloadURL(fullSnap.ref),
-          getDownloadURL(thumbSnap.ref),
-        ]);
-        await setDoc(photoDocRef(u, photo.id), {
-          id: photo.id, url, thumbUrl, createdAt: photo.createdAt,
-        });
-      })().catch(console.error);
-    }
+    if (u) pushPhoto(u, photo).then(() => db.photos.update(photo.id, { pendingSync: false })).catch(console.error);
 
     return { ok: true, data: photo };
   } catch (e) {

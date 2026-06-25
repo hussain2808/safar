@@ -28,6 +28,7 @@ export interface Photo {
   blob: Blob;
   thumbnail: Blob;
   createdAt: number;
+  pendingSync?: boolean;
 }
 
 export interface Category {

@@ -28,7 +28,7 @@ export function PhotoThumb({ photoId, onRemove, className = 'h-40' }: PhotoThumb
     <>
       <div className={`relative rounded-icon overflow-hidden bg-bg-icon ${className}`}>
         <button onClick={() => setExpanded(true)} className="w-full h-full" aria-label="View photo">
-          <img src={url} alt="Receipt" className="w-full h-full object-cover" />
+          <img src={url} alt="Receipt" className="w-full h-full object-contain" />
         </button>
         {onRemove && (
           <button

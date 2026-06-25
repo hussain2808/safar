@@ -34,7 +34,9 @@ export default {
         },
         hisaabAccent: {
           positive: 'var(--color-accent-positive)',
+          positiveSoft: 'var(--color-accent-positive-soft)',
           negative: 'var(--color-accent-negative)',
+          negativeSoft: 'var(--color-accent-negative-soft)',
           button: 'var(--color-accent-button)',
           buttonText: 'var(--color-accent-buttonText)',
         },

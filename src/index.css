@@ -30,10 +30,12 @@ body {
   --color-text-secondary:   #A4A199;
   --color-text-placeholder: #BDBAB1;
 
-  --color-accent-positive:  #3A7D44;
-  --color-accent-negative:  #C0392B;
-  --color-accent-button:    #6B4226;
-  --color-accent-buttonText:#F6F4EE;
+  --color-accent-positive:     #3A7D44;
+  --color-accent-positive-soft:#E1EFE1;
+  --color-accent-negative:     #C0392B;
+  --color-accent-negative-soft:#FBE3E8;
+  --color-accent-button:       #6B4226;
+  --color-accent-buttonText:   #F6F4EE;
 
   --color-border-light:     rgba(30,26,15,0.06);
 }
@@ -49,10 +51,12 @@ body {
   --color-text-secondary:   #6B6863;
   --color-text-placeholder: #4A4845;
 
-  --color-accent-positive:  #4CAF60;
-  --color-accent-negative:  #E05545;
-  --color-accent-button:    #F0EDE6;
-  --color-accent-buttonText:#1A1916;
+  --color-accent-positive:     #4CAF60;
+  --color-accent-positive-soft:#1F2F22;
+  --color-accent-negative:     #E05545;
+  --color-accent-negative-soft:#332321;
+  --color-accent-button:       #F0EDE6;
+  --color-accent-buttonText:   #1A1916;
 
   --color-border-light:     rgba(240,237,230,0.07);
 }

@@ -15,6 +15,14 @@ function docRef(userId: string, docId: string) {
   return doc(fsdb, 'users', userId, 'amaanatDocuments', docId);
 }
 
+export async function pushDocument(userId: string, document: Document): Promise<void> {
+  const snap = await uploadBytes(storageRef(userId, document.id), document.blob, { contentType: document.mimeType });
+  const url = await getDownloadURL(snap.ref);
+  await setDoc(docRef(userId, document.id), {
+    id: document.id, url, mimeType: document.mimeType, fileName: document.fileName, createdAt: document.createdAt,
+  });
+}
+
 export async function saveDocument(file: File): Promise<Result<Document>> {
   try {
     const document: Document = {
@@ -23,18 +31,12 @@ export async function saveDocument(file: File): Promise<Result<Document>> {
       mimeType: file.type,
       fileName: file.name,
       createdAt: Date.now(),
+      pendingSync: true,
     };
     await db.documents.add(document);
 
     const u = uid();
-    if (u) {
-      uploadBytes(storageRef(u, document.id), file, { contentType: file.type })
-        .then((snap) => getDownloadURL(snap.ref))
-        .then((url) => setDoc(docRef(u, document.id), {
-          id: document.id, url, mimeType: document.mimeType, fileName: document.fileName, createdAt: document.createdAt,
-        }))
-        .catch(console.error);
-    }
+    if (u) pushDocument(u, document).then(() => db.documents.update(document.id, { pendingSync: false })).catch(console.error);
 
     return { ok: true, data: document };
   } catch (e) {
