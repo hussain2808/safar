@@ -22,3 +22,15 @@ export function BookIcon({ iconId, size = 18 }: { iconId?: string; size?: number
   const Icon = (iconId && BOOK_ICON_MAP[iconId]) || Wallet;
   return <Icon size={size} strokeWidth={1.5} />;
 }
+
+const BOOK_COLOR_PALETTE = [
+  { bg: 'bg-accent-pink-bg', fg: 'text-accent-pink-fg' },
+  { bg: 'bg-accent-green-bg', fg: 'text-accent-green-fg' },
+  { bg: 'bg-accent-purple-bg', fg: 'text-accent-purple-fg' },
+  { bg: 'bg-accent-blue-bg', fg: 'text-accent-blue-fg' },
+  { bg: 'bg-accent-orange-bg', fg: 'text-accent-orange-fg' },
+];
+
+export function getBookColor(index: number) {
+  return BOOK_COLOR_PALETTE[index % BOOK_COLOR_PALETTE.length];
+}

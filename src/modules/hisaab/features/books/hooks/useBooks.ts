@@ -29,6 +29,7 @@ export function useBooks() {
         balance: calculateBalance(txs),
         transactionCount: txs.length,
         hasPendingSync: !!book.pendingSync || txs.some((t) => t.pendingSync),
+        lastEntryAt: txs.length ? Math.max(...txs.map((t) => t.date)) : book.createdAt,
       };
     });
   });
