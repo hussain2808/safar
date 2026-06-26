@@ -53,7 +53,7 @@ export default function Home() {
           </button>
           <div>
             <p className="text-caption text-hisaabText-secondary">{getGreeting()},</p>
-            <h1 className="font-serif text-[30px] font-bold text-hisaabText-primary mt-0.5 leading-tight flex items-center gap-2">
+            <h1 className="font-serif text-page-title text-hisaabText-primary mt-0.5 leading-tight flex items-center gap-2">
               {firstName} <span className="text-[22px]">🌿</span>
             </h1>
             <p className="text-caption text-hisaabText-secondary mt-1">Here's your books 🤎</p>

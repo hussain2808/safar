@@ -28,7 +28,7 @@ export const BookCard = memo(function BookCard({ book, index }: BookCardProps) {
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-body text-hisaabText-primary truncate">{book.name}</p>
+        <p className="text-book-title text-hisaabText-primary truncate">{book.name}</p>
         <p className="text-caption text-hisaabText-secondary mt-0.5 truncate">
           {book.transactionCount} {book.transactionCount === 1 ? 'entry' : 'entries'}
         </p>
@@ -36,7 +36,7 @@ export const BookCard = memo(function BookCard({ book, index }: BookCardProps) {
           Last entry on {format(book.lastEntryAt, 'd MMM yyyy')}
         </p>
       </div>
-      <p className={cn('font-sans tabular-nums text-body whitespace-nowrap flex-shrink-0 self-start', book.balance === 0 ? 'text-hisaabText-primary' : isNegative ? 'text-hisaabAccent-negative' : 'text-hisaabAccent-positive')}>
+      <p className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap flex-shrink-0 self-start', book.balance === 0 ? 'text-hisaabText-primary' : isNegative ? 'text-hisaabAccent-negative' : 'text-hisaabAccent-positive')}>
         {isNegative ? '-' : ''}{formatAmount(Math.abs(book.balance), book.currency)}
       </p>
     </button>

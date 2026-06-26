@@ -91,10 +91,10 @@ export function TransactionDetailSheet() {
                 {isIn ? <ArrowDownLeft size={22} /> : <ArrowUpRight size={22} />}
               </span>
               <div className="flex items-baseline gap-1.5">
-                <span className={cn('font-sans text-heading-2', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
+                <span className={cn('font-sans text-amount-lg', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
                   {currencySymbol}
                 </span>
-                <span className={cn('font-sans tabular-nums text-[48px] leading-none', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
+                <span className={cn('font-sans font-bold tabular-nums text-[48px] leading-none', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
                   {(viewingTransaction.amount / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                 </span>
               </div>

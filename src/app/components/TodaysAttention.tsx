@@ -4,7 +4,7 @@ import { iconMap, type IconKey } from '../iconMap';
 export function TodaysAttention() {
   return (
     <div className="px-5 py-3">
-      <h2 className="font-serif text-lg text-text-primary mb-3">Today's Attention</h2>
+      <h2 className="text-section-heading text-text-primary mb-3">Today's Attention</h2>
       <div className="bg-card-bg border border-card-border rounded-2xl divide-y divide-card-border">
         {attentionItems.map((item) => {
           const Icon = iconMap[item.icon as IconKey];

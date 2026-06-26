@@ -52,7 +52,7 @@ export function BottomSheet({ open, onClose, children, title }: BottomSheetProps
 
             {title && (
               <div className="px-5 py-3 border-b border-card-border flex items-center justify-between">
-                <h2 className="text-heading-2 text-text-primary">{title}</h2>
+                <h2 className="text-section-heading text-text-primary">{title}</h2>
                 <button
                   onClick={onClose}
                   className="w-8 h-8 rounded-full bg-icon-bg flex items-center justify-center text-text-secondary active:bg-card-border transition-colors"

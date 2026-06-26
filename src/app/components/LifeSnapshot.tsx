@@ -4,7 +4,7 @@ import { iconMap, type IconKey } from '../iconMap';
 export function LifeSnapshot() {
   return (
     <div className="px-5 py-3">
-      <h2 className="font-serif text-lg text-text-primary mb-3">Life Snapshot</h2>
+      <h2 className="text-section-heading text-text-primary mb-3">Life Snapshot</h2>
       <div className="grid grid-cols-2 gap-3">
         {snapshot.map((s) => {
           const Icon = iconMap[s.icon as IconKey];
@@ -14,7 +14,7 @@ export function LifeSnapshot() {
                 <Icon size={18} className={s.iconFg} />
               </div>
               <div>
-                <div className="font-serif text-base text-text-primary">{s.value}</div>
+                <div className="font-sans font-bold text-body text-text-primary">{s.value}</div>
                 <div className="text-xs text-text-secondary">{s.label}</div>
               </div>
             </div>

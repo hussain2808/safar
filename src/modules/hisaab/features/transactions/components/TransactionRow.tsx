@@ -37,7 +37,7 @@ export const TransactionRow = memo(function TransactionRow({ transaction, catego
         </p>
       </div>
       <div className="flex items-center gap-1 flex-shrink-0">
-        <span className={cn('font-sans tabular-nums text-body whitespace-nowrap', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
+        <span className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
           {isIn ? '+' : '-'} {formatAmount(transaction.amount, currency)}
         </span>
         <MoreVertical size={16} className="text-hisaabText-secondary" />

@@ -4,7 +4,7 @@ import { iconMap, type IconKey } from '../iconMap';
 export function RecentActivity() {
   return (
     <div className="px-5 py-3">
-      <h2 className="font-serif text-lg text-text-primary mb-3">Recent Activity</h2>
+      <h2 className="text-section-heading text-text-primary mb-3">Recent Activity</h2>
       <div className="bg-card-bg border border-card-border rounded-2xl divide-y divide-card-border">
         {recentActivity.map((item) => {
           const Icon = iconMap[item.icon as IconKey];

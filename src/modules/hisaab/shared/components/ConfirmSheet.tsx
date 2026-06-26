@@ -47,7 +47,7 @@ export function ConfirmSheet({
               <div className="w-10 h-1 rounded-full bg-hisaabBorder-light" />
             </div>
 
-            <p className="text-heading-2 text-hisaabText-primary mb-2">{title}</p>
+            <p className="text-section-heading text-hisaabText-primary mb-2">{title}</p>
             {description && (
               <p className="text-body text-hisaabText-secondary mb-6 leading-snug">{description}</p>
             )}

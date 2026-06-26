@@ -129,7 +129,7 @@ export function AddTransactionSheet() {
               >
                 <ChevronLeft size={22} />
               </button>
-              <h1 className="flex-1 text-heading-2 text-hisaabText-primary">
+              <h1 className="flex-1 text-section-heading text-hisaabText-primary">
                 {editingTransaction ? 'Edit Entry' : 'Add Entry'}
               </h1>
               {editingTransaction && (
@@ -170,7 +170,7 @@ export function AddTransactionSheet() {
 
               {/* Amount */}
               <div className="flex items-baseline justify-center gap-2 py-8">
-                <span className={cn('font-sans text-heading-2', type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
+                <span className={cn('font-sans text-amount-lg', type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
                   {currencySymbol}
                 </span>
                 <input
@@ -181,7 +181,7 @@ export function AddTransactionSheet() {
                   onChange={(e) => setAmountInput(e.target.value.replace(/[^0-9.]/g, ''))}
                   placeholder="0"
                   className={cn(
-                    'font-sans tabular-nums text-[52px] leading-none text-center bg-transparent outline-none w-48 placeholder:text-hisaabText-placeholder',
+                    'font-sans font-bold tabular-nums text-[52px] leading-none text-center bg-transparent outline-none w-48 placeholder:text-hisaabText-placeholder',
                     type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative',
                   )}
                 />
