@@ -13,11 +13,12 @@ interface BookOptionsSheetProps {
   book: Book;
   open: boolean;
   onClose: () => void;
+  startInRename?: boolean;
 }
 
-export function BookOptionsSheet({ book, open, onClose }: BookOptionsSheetProps) {
+export function BookOptionsSheet({ book, open, onClose, startInRename = false }: BookOptionsSheetProps) {
   const navigate = useNavigate();
-  const [renaming, setRenaming] = useState(false);
+  const [renaming, setRenaming] = useState(startInRename);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [name, setName] = useState(book.name);
@@ -25,8 +26,9 @@ export function BookOptionsSheet({ book, open, onClose }: BookOptionsSheetProps)
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!open) { setRenaming(false); setName(book.name); }
-  }, [open, book.name]);
+    if (open) setRenaming(startInRename);
+    else { setRenaming(false); setName(book.name); }
+  }, [open, startInRename, book.name]);
 
   useEffect(() => {
     if (renaming) setTimeout(() => inputRef.current?.focus(), 50);

@@ -34,3 +34,9 @@ const BOOK_COLOR_PALETTE = [
 export function getBookColor(index: number) {
   return BOOK_COLOR_PALETTE[index % BOOK_COLOR_PALETTE.length];
 }
+
+export function getBookColorForId(id: string) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = (hash * 31 + id.charCodeAt(i)) | 0;
+  return BOOK_COLOR_PALETTE[Math.abs(hash) % BOOK_COLOR_PALETTE.length];
+}
