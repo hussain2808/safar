@@ -75,6 +75,13 @@ export function PhotoGallery({ photoIds, onChange }: PhotoGalleryProps) {
           onClick={() => setFullscreen(null)}
         >
           <img src={urls[fullscreen]} className="max-w-full max-h-full object-contain" />
+          <button
+            onClick={(e) => { e.stopPropagation(); setFullscreen(null); }}
+            className="absolute top-4 left-4 w-9 h-9 rounded-full bg-white/15 flex items-center justify-center text-white"
+            aria-label="Close"
+          >
+            <X size={18} />
+          </button>
         </div>
       )}
     </>
