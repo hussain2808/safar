@@ -4,6 +4,7 @@ import { ErrorBoundary } from '@/modules/sanad/shared/components/ErrorBoundary';
 import { Skeleton } from '@/modules/sanad/shared/components/Skeleton';
 
 const Home           = lazy(() => import('@/modules/sanad/pages/Home'));
+const Documents      = lazy(() => import('@/modules/sanad/pages/Documents'));
 const DocumentDetail = lazy(() => import('@/modules/sanad/pages/DocumentDetail'));
 
 function PageFallback() {
@@ -20,6 +21,7 @@ export default function SanadApp() {
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="documents" element={<Documents />} />
           <Route path="document/:id" element={<DocumentDetail />} />
         </Routes>
       </Suspense>
