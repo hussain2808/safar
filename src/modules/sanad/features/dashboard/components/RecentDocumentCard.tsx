@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format, formatDistanceToNowStrict } from 'date-fns';
-import { categoryIcon } from '@/modules/sanad/lib/categories';
+import { categoryIcon, categoryColors } from '@/modules/sanad/lib/categories';
 import { cn } from '@/modules/sanad/lib/utils';
 import type { DocumentWithStatus } from '@/modules/sanad/features/documents/hooks/useDocuments';
 
@@ -12,6 +12,7 @@ interface RecentDocumentCardProps {
 export const RecentDocumentCard = memo(function RecentDocumentCard({ document }: RecentDocumentCardProps) {
   const navigate = useNavigate();
   const Icon = categoryIcon(document.category);
+  const colors = categoryColors(document.category);
   const chipBg = document.status === 'expired' ? 'bg-accent-pink-bg' : document.status === 'expiring_soon' ? 'bg-accent-orange-bg' : 'bg-accent-green-bg';
   const chipFg = document.status === 'expired' ? 'text-accent-pink-fg' : document.status === 'expiring_soon' ? 'text-accent-orange-fg' : 'text-accent-green-fg';
 
@@ -20,7 +21,7 @@ export const RecentDocumentCard = memo(function RecentDocumentCard({ document }:
       onClick={() => navigate(`/sanad/document/${document.id}`)}
       className="flex-shrink-0 w-[170px] bg-card-bg rounded-card shadow-card p-3.5 text-left active:scale-[0.98] transition-transform duration-100"
     >
-      <div className="w-9 h-9 rounded-icon bg-icon-bg flex items-center justify-center text-text-secondary mb-2.5">
+      <div className={cn('w-9 h-9 rounded-icon flex items-center justify-center mb-2.5', colors.bg, colors.fg)}>
         <Icon size={16} strokeWidth={1.5} />
       </div>
       <p className="text-caption-md text-text-primary truncate">{document.name}</p>
