@@ -26,8 +26,8 @@ export function UpcomingReminders({ reminders }: UpcomingRemindersProps) {
         {reminders.map((doc) => {
           const Icon = categoryIcon(doc.category);
           const colors = categoryColors(doc.category);
-          const chipBg = doc.status === 'expired' ? 'bg-accent-pink-bg' : doc.status === 'expiring_soon' ? 'bg-accent-orange-bg' : 'bg-accent-green-bg';
-          const chipFg = doc.status === 'expired' ? 'text-accent-pink-fg' : doc.status === 'expiring_soon' ? 'text-accent-orange-fg' : 'text-accent-green-fg';
+          const chipBg = doc.status === 'expired' ? 'bg-accent-pink-bg' : colors.bg;
+          const chipFg = doc.status === 'expired' ? 'text-accent-pink-fg' : colors.fg;
           return (
             <button
               key={doc.id}

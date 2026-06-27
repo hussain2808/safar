@@ -13,8 +13,8 @@ export const RecentDocumentCard = memo(function RecentDocumentCard({ document }:
   const navigate = useNavigate();
   const Icon = categoryIcon(document.category);
   const colors = categoryColors(document.category);
-  const chipBg = document.status === 'expired' ? 'bg-accent-pink-bg' : document.status === 'expiring_soon' ? 'bg-accent-orange-bg' : 'bg-accent-green-bg';
-  const chipFg = document.status === 'expired' ? 'text-accent-pink-fg' : document.status === 'expiring_soon' ? 'text-accent-orange-fg' : 'text-accent-green-fg';
+  const chipBg = document.status === 'expired' ? 'bg-accent-pink-bg' : colors.bg;
+  const chipFg = document.status === 'expired' ? 'text-accent-pink-fg' : colors.fg;
 
   return (
     <button
