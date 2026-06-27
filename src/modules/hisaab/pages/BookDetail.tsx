@@ -17,7 +17,7 @@ import { formatAmount } from '@/modules/hisaab/lib/format';
 import { cn } from '@/modules/hisaab/lib/utils';
 import { useUIStore } from '@/modules/hisaab/store/ui';
 
-type DateFilter = 'all' | 'today' | 'yesterday' | 'month' | 'lastmonth' | 'day' | 'range';
+type DateFilter = 'all' | 'today' | 'yesterday' | 'month' | 'lastmonth' | 'year' | 'lastyear' | 'day' | 'range';
 type EntryTypeFilter = 'all' | 'in' | 'out';
 
 const DATE_FILTER_OPTIONS: { id: DateFilter; label: string }[] = [
@@ -26,6 +26,8 @@ const DATE_FILTER_OPTIONS: { id: DateFilter; label: string }[] = [
   { id: 'yesterday', label: 'Yesterday' },
   { id: 'month',     label: 'This month' },
   { id: 'lastmonth', label: 'Last month' },
+  { id: 'year',      label: 'This year' },
+  { id: 'lastyear',  label: 'Last year' },
   { id: 'day',       label: 'Single day' },
   { id: 'range',     label: 'Date range' },
 ];
@@ -100,6 +102,8 @@ export default function BookDetail() {
     else if (filter === 'yesterday') { const y = todayStart - 86400000; result = result.filter((tx) => tx.date >= y && tx.date < todayStart); }
     else if (filter === 'month')     result = result.filter((tx) => tx.date >= new Date(now.getFullYear(), now.getMonth(), 1).getTime());
     else if (filter === 'lastmonth') { const s = new Date(now.getFullYear(), now.getMonth() - 1, 1).getTime(); const e = new Date(now.getFullYear(), now.getMonth(), 1).getTime(); result = result.filter((tx) => tx.date >= s && tx.date < e); }
+    else if (filter === 'year')      result = result.filter((tx) => tx.date >= new Date(now.getFullYear(), 0, 1).getTime());
+    else if (filter === 'lastyear')  { const s = new Date(now.getFullYear() - 1, 0, 1).getTime(); const e = new Date(now.getFullYear(), 0, 1).getTime(); result = result.filter((tx) => tx.date >= s && tx.date < e); }
     else if (filter === 'day')       { const s = startOfDay(new Date(singleDay)); result = result.filter((tx) => tx.date >= s && tx.date < s + 86400000); }
     else if (filter === 'range')     { const s = new Date(rangeFrom).getTime(); const e = new Date(rangeTo).getTime() + 86400000; result = result.filter((tx) => tx.date >= s && tx.date < e); }
     if (categoryFilter) result = result.filter((tx) => tx.category === categoryFilter);
