@@ -1,12 +1,19 @@
+import { useState } from 'react';
+import { Plus } from 'lucide-react';
 import { cn } from '@/modules/sanad/lib/utils';
 import { CATEGORIES } from '@/modules/sanad/lib/categories';
 import { PhotoGallery } from '@/modules/sanad/features/documents/components/PhotoGallery';
 import { AttachmentList } from '@/modules/sanad/features/documents/components/AttachmentList';
+import { usePeople } from '@/family/hooks/usePeople';
+import { PersonSheet } from '@/family/components/PersonSheet';
+import { SELF_PERSON_ID } from '@/family/db';
+import { relationshipLabel } from '@/family/lib/relationships';
 import type { DocumentRecord, DocumentCategory } from '@/modules/sanad/types';
 
 export interface DocumentDraft {
   name: string;
   category: DocumentCategory;
+  personId: string;
   documentNumber: string;
   issuingAuthority: string;
   issueDate: string;
@@ -20,6 +27,7 @@ export function draftFromDocument(document: DocumentRecord | null): DocumentDraf
   return {
     name: document?.name ?? '',
     category: document?.category ?? 'identity',
+    personId: document?.personId ?? SELF_PERSON_ID,
     documentNumber: document?.documentNumber ?? '',
     issuingAuthority: document?.issuingAuthority ?? '',
     issueDate: document?.issueDate ? new Date(document.issueDate).toISOString().slice(0, 10) : '',
@@ -39,12 +47,40 @@ const inputClass = 'w-full bg-cream rounded-button px-4 py-3 text-body text-text
 const labelClass = 'text-caption text-text-secondary mb-2 uppercase tracking-wide block';
 
 export function DocumentForm({ draft, onChange }: DocumentFormProps) {
+  const { people } = usePeople();
+  const [addingPerson, setAddingPerson] = useState(false);
+
   function set<K extends keyof DocumentDraft>(key: K, value: DocumentDraft[K]) {
     onChange({ ...draft, [key]: value });
   }
 
   return (
     <div className="space-y-5">
+      <div>
+        <label className={labelClass}>Belongs To</label>
+        <div className="flex flex-wrap gap-2">
+          {people.map((person) => (
+            <button
+              key={person.id}
+              onClick={() => set('personId', person.id)}
+              className={cn(
+                'px-3 py-2 rounded-icon text-caption transition-colors',
+                draft.personId === person.id ? 'bg-indigo text-cream' : 'bg-icon-bg text-text-secondary',
+              )}
+            >
+              {person.relationship === 'self' ? relationshipLabel('self') : person.name}
+            </button>
+          ))}
+          <button
+            onClick={() => setAddingPerson(true)}
+            className="flex items-center gap-1 px-3 py-2 rounded-icon text-caption bg-icon-bg text-text-secondary"
+          >
+            <Plus size={14} />
+            Add
+          </button>
+        </div>
+      </div>
+
       <div>
         <label className={labelClass}>Document Name</label>
         <input
@@ -116,6 +152,14 @@ export function DocumentForm({ draft, onChange }: DocumentFormProps) {
         <label className={labelClass}>Attachments</label>
         <AttachmentList fileIds={draft.fileIds} onChange={(fileIds) => set('fileIds', fileIds)} />
       </div>
+
+      {addingPerson && (
+        <PersonSheet
+          person={null}
+          onClose={() => setAddingPerson(false)}
+          onSaved={(person) => set('personId', person.id)}
+        />
+      )}
     </div>
   );
 }

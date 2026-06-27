@@ -39,6 +39,7 @@ export default function DocumentDetail() {
     const payload = {
       name: draft.name.trim(),
       category: draft.category,
+      personId: draft.personId,
       documentNumber: draft.documentNumber.trim() || undefined,
       issuingAuthority: draft.issuingAuthority.trim() || undefined,
       issueDate: draft.issueDate ? new Date(draft.issueDate).getTime() : undefined,

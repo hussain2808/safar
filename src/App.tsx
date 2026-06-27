@@ -11,6 +11,7 @@ import { Fab } from './app/components/Fab';
 import HisaabApp from '@/modules/hisaab/HisaabApp';
 import AmaanatApp from '@/modules/amaanat/AmaanatApp';
 import SanadApp from '@/modules/sanad/SanadApp';
+import Settings from './pages/Settings';
 import { UpdateBanner } from '@/modules/hisaab/shared/components/UpdateBanner';
 import { DebugErrorBanner } from '@/components/DebugErrorBanner';
 import { installDebugErrorCapture } from '@/lib/debugErrorLog';
@@ -43,6 +44,7 @@ function App() {
             <Route path="/hisaab/*" element={<HisaabApp />} />
             <Route path="/amaanat/*" element={<AmaanatApp />} />
             <Route path="/sanad/*" element={<SanadApp />} />
+            <Route path="/settings" element={<Settings />} />
           </Routes>
           <UpdateBanner />
         </BrowserRouter>

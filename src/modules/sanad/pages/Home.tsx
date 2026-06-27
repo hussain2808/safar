@@ -5,6 +5,7 @@ import { EmptyState } from '@/modules/sanad/shared/components/EmptyState';
 import { useDocuments } from '@/modules/sanad/features/documents/hooks/useDocuments';
 import { StatsGrid } from '@/modules/sanad/features/dashboard/components/StatsGrid';
 import { CategoryOverview } from '@/modules/sanad/features/dashboard/components/CategoryOverview';
+import { PersonOverview } from '@/modules/sanad/features/dashboard/components/PersonOverview';
 import { UpcomingReminders } from '@/modules/sanad/features/dashboard/components/UpcomingReminders';
 import { RecentlyUpdated } from '@/modules/sanad/features/dashboard/components/RecentlyUpdated';
 
@@ -69,6 +70,7 @@ export default function Home() {
         <main className="flex-1 pb-32 space-y-6">
           <StatsGrid stats={stats} />
           <CategoryOverview documents={documents} />
+          <PersonOverview documents={documents} />
           <UpcomingReminders reminders={upcomingReminders} />
           <RecentlyUpdated documents={documents} />
         </main>

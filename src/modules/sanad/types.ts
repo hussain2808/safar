@@ -4,6 +4,7 @@ export interface DocumentRecord {
   id: string;
   name: string;
   category: DocumentCategory;
+  personId: string;
   documentNumber?: string;
   issuingAuthority?: string;
   issueDate?: number;

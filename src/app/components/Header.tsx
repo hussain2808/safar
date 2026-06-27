@@ -1,7 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { Bell, Leaf } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 
 export function Header() {
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const initial = user?.displayName?.charAt(0) ?? 'H';
 
@@ -19,13 +21,15 @@ export function Header() {
           <Bell size={18} className="text-text-secondary" />
           <span className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-orange-500" />
         </button>
-        {user?.photoURL ? (
-          <img src={user.photoURL} alt="" className="w-10 h-10 rounded-full object-cover" />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-brown flex items-center justify-center text-white text-sm font-medium">
-            {initial}
-          </div>
-        )}
+        <button onClick={() => navigate('/settings')} aria-label="Settings">
+          {user?.photoURL ? (
+            <img src={user.photoURL} alt="" className="w-10 h-10 rounded-full object-cover" />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-brown flex items-center justify-center text-white text-sm font-medium">
+              {initial}
+            </div>
+          )}
+        </button>
       </div>
     </div>
   );

@@ -13,6 +13,9 @@ class SanadDB extends Dexie {
       files: 'id, createdAt',
       pendingDeletes: 'id, kind',
     });
+    this.version(2).stores({
+      documents: 'id, category, personId, expiryDate, createdAt',
+    });
   }
 }
 
