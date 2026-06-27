@@ -24,7 +24,7 @@ export default function Home() {
               <ShieldCheck size={17} strokeWidth={1.5} />
             </div>
             <div>
-              <h1 className="font-serif text-page-title text-text-primary leading-tight">Amaanat</h1>
+              <h1 className="font-serif text-module-name text-text-primary leading-tight">Amaanat</h1>
               <p className="text-caption text-text-secondary">Everything entrusted to your care.</p>
             </div>
           </div>

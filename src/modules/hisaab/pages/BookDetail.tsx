@@ -177,7 +177,7 @@ export default function BookDetail() {
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-book-title text-hisaabText-primary truncate">{book.name}</span>
+            <span className="font-serif text-book-name text-hisaabText-primary truncate">{book.name}</span>
             <button onClick={openRename} aria-label="Rename book" className="text-hisaabText-secondary flex-shrink-0 active:opacity-60">
               <Pencil size={14} />
             </button>
@@ -296,7 +296,7 @@ export default function BookDetail() {
                     className="pb-4"
                   >
                     <div className="flex items-center justify-between px-2 pb-2">
-                      <p className="font-serif text-lg text-hisaabText-primary">{group.month}</p>
+                      <p className="font-serif text-book-name text-hisaabText-primary">{group.month}</p>
                       <p className="text-caption text-hisaabText-secondary">{group.txs.length} {group.txs.length === 1 ? 'entry' : 'entries'}</p>
                     </div>
                     <div className="bg-bg-card rounded-card shadow-card overflow-hidden divide-y divide-hisaabBorder-light">

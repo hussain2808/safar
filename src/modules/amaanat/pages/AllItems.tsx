@@ -49,7 +49,7 @@ export default function AllItems() {
             <ChevronLeft size={18} />
           </button>
           <div>
-            <h1 className="font-serif text-page-title text-text-primary leading-tight">
+            <h1 className="font-sans text-page-title text-text-primary leading-tight">
               {attentionOnly ? 'Needs Attention' : 'All Items'}
             </h1>
             <p className="text-caption text-text-secondary mt-1">

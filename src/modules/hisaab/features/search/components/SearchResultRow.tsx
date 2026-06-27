@@ -21,7 +21,7 @@ export const SearchResultRow = memo(function SearchResultRow({ result, bookId, o
       className="w-full flex items-center gap-3 py-3.5 px-4 text-left active:bg-bg-hover transition-colors"
     >
       <div className="flex-1 min-w-0">
-        <p className="text-body font-semibold text-hisaabText-primary truncate">
+        <p className="text-body text-hisaabText-primary truncate">
           <HighlightedText text={transaction.remark || 'Untitled'} matchKey="remark" matches={matches} />
         </p>
         <p className="text-caption text-hisaabText-secondary mt-0.5">
