@@ -26,7 +26,7 @@ export default function Settings() {
         >
           <ChevronLeft size={20} />
         </button>
-        <h1 className="text-page-title text-hisaabText-primary font-sans">Settings</h1>
+        <h1 className="text-page-title text-hisaabText-primary font-serif">Settings</h1>
       </header>
 
       <main className="px-4 space-y-6 pt-2">

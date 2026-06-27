@@ -22,7 +22,7 @@ export const ItemRow = memo(function ItemRow({ item }: ItemRowProps) {
         <Icon size={16} strokeWidth={1.5} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-serif text-book-name text-text-primary truncate">{item.name}</p>
+        <p className="text-body font-semibold text-text-primary truncate">{item.name}</p>
         <p className="text-caption text-text-secondary mt-0.5">
           {item.purchaseDate ? format(item.purchaseDate, 'd MMM yyyy') : 'No date'}
         </p>

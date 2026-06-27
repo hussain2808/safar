@@ -25,7 +25,7 @@ export default function SignIn() {
       <div className="flex-1" />
 
       <div className="flex flex-col items-center px-8 gap-5">
-        <h1 className="font-serif text-user-name text-brown flex items-center gap-1">
+        <h1 className="font-serif text-display-title text-brown flex items-center gap-1">
           Safar
           <Leaf size={20} className="text-accent-green-fg rotate-12 -mt-4" />
         </h1>

@@ -8,7 +8,7 @@ export function Header() {
   return (
     <div className="flex items-center justify-between px-5 pt-6 pb-2">
       <div>
-        <h1 className="font-serif text-module-name text-brown flex items-center gap-1">
+        <h1 className="font-serif text-page-title text-brown flex items-center gap-1">
           Safar
           <Leaf size={16} className="text-accent-green-fg rotate-12 -mt-3" />
         </h1>

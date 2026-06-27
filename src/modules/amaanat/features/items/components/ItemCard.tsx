@@ -25,7 +25,7 @@ export const ItemCard = memo(function ItemCard({ item }: ItemCardProps) {
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-serif text-book-name text-text-primary truncate">{item.name}</p>
+        <p className="text-body font-semibold text-text-primary truncate">{item.name}</p>
         <p className="text-caption text-text-secondary mt-0.5">
           {categoryLabel(item.category)}
           {item.purchaseDate ? ` · ${format(item.purchaseDate, 'd MMM yyyy')}` : ''}
