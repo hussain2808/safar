@@ -1,4 +1,4 @@
-import { Home, Image, Wallet, Shield, MapPin } from 'lucide-react';
+import { Home, Image, Wallet, Shield, FileCheck2, MapPin } from 'lucide-react';
 import { bottomNavItems } from '../mockData';
 
 const icons = {
@@ -6,6 +6,7 @@ const icons = {
   nazara: Image,
   hisaab: Wallet,
   amaanat: Shield,
+  sanad: FileCheck2,
   journey: MapPin,
 } as const;
 

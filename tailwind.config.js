@@ -7,6 +7,7 @@ export default {
       colors: {
         cream: { DEFAULT: '#FDF8F3', dark: '#F5EDE4' },
         brown: { DEFAULT: '#A67C52', dark: '#8B6542', light: '#C9A882' },
+        indigo: { DEFAULT: '#4A3F8F', dark: '#372F6B', light: '#E7E3F8' },
         text: { primary: '#3D2E1F', secondary: '#8C7B6B', muted: '#B0A090' },
         card: { bg: '#FEFCF9', border: '#F0E6D9' },
         icon: { bg: '#F3EBE0' },

@@ -1,5 +1,6 @@
 import {
   FileText,
+  FileCheck2,
   Shield,
   TrendingUp,
   Box,
@@ -17,6 +18,7 @@ export const iconMap = {
   trend: TrendingUp,
   box: Box,
   file: FileText,
+  fileCheck: FileCheck2,
   camera: Camera,
   coins: Coins,
   memory: Image,

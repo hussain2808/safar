@@ -39,6 +39,19 @@ export const modules = [
     enabled: true,
   },
   {
+    key: 'sanad',
+    title: 'Sanad',
+    subtitle: 'What proves it',
+    description: 'Store, manage and get reminded before they expire.',
+    image: null,
+    icon: 'fileCheck',
+    cardBg: 'bg-accent-blue-bg',
+    iconBg: 'bg-card-bg',
+    iconFg: 'text-accent-blue-fg',
+    subtitleColor: 'text-accent-blue-fg',
+    enabled: true,
+  },
+  {
     key: 'journey',
     title: 'Journey',
     subtitle: 'Plans & Experiences',
@@ -138,5 +151,6 @@ export const bottomNavItems = [
   { key: 'nazara', label: 'Nazara', enabled: false },
   { key: 'hisaab', label: 'Hisaab', enabled: true },
   { key: 'amaanat', label: 'Amaanat', enabled: true },
+  { key: 'sanad', label: 'Sanad', enabled: true },
   { key: 'journey', label: 'Journey', enabled: false },
 ] as const;
