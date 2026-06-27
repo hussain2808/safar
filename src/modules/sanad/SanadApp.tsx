@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from '@/modules/sanad/shared/components/ErrorBoundary';
 import { Skeleton } from '@/modules/sanad/shared/components/Skeleton';
+import { SyncStatusBanner } from '@/modules/sanad/shared/components/SyncStatusBanner';
 
 const Home           = lazy(() => import('@/modules/sanad/pages/Home'));
 const Documents      = lazy(() => import('@/modules/sanad/pages/Documents'));
@@ -27,6 +28,7 @@ export default function SanadApp() {
           <Route path="document/:id" element={<DocumentDetail />} />
         </Routes>
       </Suspense>
+      <SyncStatusBanner />
     </ErrorBoundary>
   );
 }

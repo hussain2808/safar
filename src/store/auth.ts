@@ -6,6 +6,8 @@ import { syncOnLogin as syncHisaabOnLogin } from '@/modules/hisaab/sync/firestor
 import { retryPendingSync as retryHisaabSync } from '@/modules/hisaab/sync/retryQueue';
 import { syncOnLogin as syncAmaanatOnLogin } from '@/modules/amaanat/sync/firestore';
 import { retryPendingSync as retryAmaanatSync } from '@/modules/amaanat/sync/retryQueue';
+import { syncOnLogin as syncSanadOnLogin } from '@/modules/sanad/sync/firestore';
+import { retryPendingSync as retrySanadSync } from '@/modules/sanad/sync/retryQueue';
 import { ensureSelfSeeded } from '@/family/db';
 
 interface AuthStore {
@@ -35,8 +37,8 @@ export function initAuth() {
     useAuthStore.setState({ user, authLoading: false });
     if (user) {
       ensureSelfSeeded(user.displayName ?? 'Me').catch(console.error);
-      Promise.all([syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid)])
-        .then(() => Promise.all([retryHisaabSync(user.uid), retryAmaanatSync(user.uid)]))
+      Promise.all([syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid)])
+        .then(() => Promise.all([retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid)]))
         .catch(console.error);
     }
   });
@@ -46,6 +48,7 @@ export function initAuth() {
     if (u) {
       retryHisaabSync(u.uid).catch(console.error);
       retryAmaanatSync(u.uid).catch(console.error);
+      retrySanadSync(u.uid).catch(console.error);
     }
   });
 }
