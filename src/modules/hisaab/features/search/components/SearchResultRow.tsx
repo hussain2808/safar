@@ -21,14 +21,14 @@ export const SearchResultRow = memo(function SearchResultRow({ result, bookId, o
       className="w-full flex items-center gap-3 py-3.5 px-4 text-left active:bg-bg-hover transition-colors"
     >
       <div className="flex-1 min-w-0">
-        <p className="text-body text-hisaabText-primary truncate">
+        <p className="text-body font-semibold text-hisaabText-primary truncate">
           <HighlightedText text={transaction.remark || 'Untitled'} matchKey="remark" matches={matches} />
         </p>
         <p className="text-caption text-hisaabText-secondary mt-0.5">
           {categoryLabel ? `${categoryLabel} · ` : ''}{format(transaction.date, 'd MMM yyyy')}
         </p>
       </div>
-      <span className={cn('font-sans tabular-nums text-body whitespace-nowrap', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
+      <span className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
         {isIn ? '+' : '-'} {formatAmount(transaction.amount)}
       </span>
     </button>

@@ -28,7 +28,7 @@ export const BookCard = memo(function BookCard({ book, index }: BookCardProps) {
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-book-title text-hisaabText-primary truncate">{book.name}</p>
+        <p className="text-body font-semibold text-hisaabText-primary truncate">{book.name}</p>
         <p className="text-caption text-hisaabText-secondary mt-0.5 truncate">
           {book.transactionCount} {book.transactionCount === 1 ? 'entry' : 'entries'}
         </p>

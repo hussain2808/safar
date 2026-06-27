@@ -19,7 +19,7 @@ export const SearchResultRow = memo(function SearchResultRow({ result }: SearchR
       className="w-full flex items-center gap-3 py-3.5 px-4 text-left active:bg-icon-bg transition-colors"
     >
       <div className="flex-1 min-w-0">
-        <p className="text-body text-text-primary truncate">
+        <p className="text-body font-semibold text-text-primary truncate">
           <HighlightedText text={item.name} matchKey="name" matches={matches} />
         </p>
         <p className="text-caption text-text-secondary mt-0.5">
