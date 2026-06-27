@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Archive, Download, Pencil, Tag, Trash2 } from 'lucide-react';
 import { BottomSheet } from '@/modules/hisaab/shared/components/BottomSheet';
-import { ConfirmSheet } from '@/modules/hisaab/shared/components/ConfirmSheet';
+import { DeleteBookConfirmSheet } from './DeleteBookConfirmSheet';
 import { CategoryManagerSheet } from '@/modules/hisaab/features/categories/components/CategoryManagerSheet';
 import { updateBook, deleteBook } from '@/modules/hisaab/db/books';
 import { db } from '@/modules/hisaab/db';
@@ -132,14 +132,12 @@ export function BookOptionsSheet({ book, open, onClose, startInRename = false }:
 
     <CategoryManagerSheet bookId={book.id} open={categoriesOpen} onClose={() => setCategoriesOpen(false)} />
 
-    <ConfirmSheet
+    <DeleteBookConfirmSheet
       open={confirmDelete}
       onClose={() => setConfirmDelete(false)}
       onConfirm={handleDelete}
-      title={`Delete "${book.name}"?`}
-      description="All entries in this book will be permanently deleted. This cannot be undone."
-      confirmLabel="Delete Book"
-      variant="danger"
+      bookName={book.name}
+      busy={busy}
     />
     </>
   );
