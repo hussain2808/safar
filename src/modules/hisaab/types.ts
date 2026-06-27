@@ -16,6 +16,7 @@ export interface Transaction {
   amount: number;       // stored in paise (integer)
   remark: string;
   category?: string;
+  paymentMethod?: string;
   photoId?: string;
   date: number;         // user-selected date timestamp
   createdAt: number;

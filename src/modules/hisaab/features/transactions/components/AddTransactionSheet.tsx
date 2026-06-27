@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { format } from 'date-fns';
-import { Camera, ChevronLeft, Plus } from 'lucide-react';
+import { ArrowDown, ArrowUp, Camera, CalendarDays, CheckCircle2, ChevronLeft, ChevronRight, Tag, Wallet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConfirmSheet } from '@/modules/hisaab/shared/components/ConfirmSheet';
 import { PhotoThumb } from '@/modules/hisaab/shared/components/PhotoThumb';
 import { CategoryManagerSheet } from '@/modules/hisaab/features/categories/components/CategoryManagerSheet';
+import { CategoryPickerSheet } from './CategoryPickerSheet';
+import { PaymentMethodSheet } from './PaymentMethodSheet';
 import { useCategories } from '@/modules/hisaab/features/categories/hooks/useCategories';
-import { CategoryIcon } from '@/modules/hisaab/lib/categoryIcons';
+import { BookIcon } from '@/modules/hisaab/lib/bookIcons';
+import { PAYMENT_METHOD_LABELS } from '@/modules/hisaab/lib/paymentMethods';
 import { db } from '@/modules/hisaab/db';
 import { createTransaction, updateTransaction, deleteTransaction } from '@/modules/hisaab/db/transactions';
 import { savePhoto, deletePhoto } from '@/modules/hisaab/db/photos';
@@ -31,11 +34,14 @@ export function AddTransactionSheet() {
   const [amountInput, setAmountInput] = useState('');
   const [remark, setRemark] = useState('');
   const [category, setCategory] = useState<string | undefined>(undefined);
+  const [paymentMethod, setPaymentMethod] = useState<string | undefined>(undefined);
   const [dateStr, setDateStr] = useState(format(Date.now(), 'yyyy-MM-dd'));
   const [photoId, setPhotoId] = useState<string | undefined>(undefined);
   const [saving, setSaving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
+  const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
+  const [paymentMethodPickerOpen, setPaymentMethodPickerOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const amountRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +52,7 @@ export function AddTransactionSheet() {
       setAmountInput(String(editingTransaction.amount / 100));
       setRemark(editingTransaction.remark);
       setCategory(editingTransaction.category);
+      setPaymentMethod(editingTransaction.paymentMethod);
       setDateStr(format(editingTransaction.date, 'yyyy-MM-dd'));
       setPhotoId(editingTransaction.photoId);
     } else {
@@ -53,6 +60,7 @@ export function AddTransactionSheet() {
       setAmountInput('');
       setRemark('');
       setCategory(undefined);
+      setPaymentMethod(undefined);
       setDateStr(format(Date.now(), 'yyyy-MM-dd'));
       setPhotoId(undefined);
     }
@@ -90,7 +98,7 @@ export function AddTransactionSheet() {
     if (amount <= 0 || !addTransactionBookId || saving) return;
     setSaving(true);
     const date = new Date(dateStr).getTime();
-    const payload = { bookId: addTransactionBookId, type, amount, remark: remark.trim(), category, photoId, date };
+    const payload = { bookId: addTransactionBookId, type, amount, remark: remark.trim(), category, paymentMethod, photoId, date };
     const result = editingTransaction
       ? await updateTransaction(editingTransaction.id, payload)
       : await createTransaction(payload);
@@ -109,6 +117,7 @@ export function AddTransactionSheet() {
 
   const amount = parseAmountToPaise(amountInput);
   const categories = bookCategories;
+  const selectedCategory = categories.find((c) => c.id === category);
 
   return (
     <>
@@ -122,20 +131,28 @@ export function AddTransactionSheet() {
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           >
             {/* Header */}
-            <header className="flex items-center gap-2 px-2 pt-12 pb-3 flex-shrink-0">
+            <header className="flex items-center gap-3 px-4 pt-12 pb-3 flex-shrink-0">
               <button
                 onClick={closeAddTransaction}
-                className="w-10 h-10 rounded-full flex items-center justify-center text-hisaabText-primary active:bg-bg-hover transition-colors"
+                className="w-10 h-10 rounded-full bg-bg-card shadow-card flex items-center justify-center text-hisaabText-primary active:bg-bg-hover transition-colors flex-shrink-0"
               >
-                <ChevronLeft size={22} />
+                <ChevronLeft size={20} />
               </button>
-              <h1 className="flex-1 text-section-heading text-hisaabText-primary">
-                {editingTransaction ? 'Edit Entry' : 'Add Entry'}
-              </h1>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-section-heading text-hisaabText-primary leading-tight">
+                  {editingTransaction ? 'Edit Entry' : 'Add Entry'}
+                </h1>
+                {book && (
+                  <div className="flex items-center gap-1.5 mt-0.5 text-hisaabText-secondary">
+                    <BookIcon iconId={book.emoji} size={13} />
+                    <span className="text-caption truncate">{book.name}</span>
+                  </div>
+                )}
+              </div>
               {editingTransaction && (
                 <button
                   onClick={() => setConfirmDelete(true)}
-                  className="text-caption text-hisaabAccent-negative px-3 py-1.5 rounded-button active:bg-bg-hover transition-colors"
+                  className="text-caption text-hisaabAccent-negative px-3 py-1.5 rounded-button active:bg-bg-hover transition-colors flex-shrink-0"
                 >
                   Delete
                 </button>
@@ -143,112 +160,135 @@ export function AddTransactionSheet() {
             </header>
 
             {/* Scrollable body */}
-            <div className="flex-1 overflow-y-auto pb-36">
+            <div className="flex-1 overflow-y-auto pb-28">
               {/* Type toggle */}
-              <div className="px-5 pt-2">
-                <div className="flex bg-bg-hover rounded-button p-1">
-                  <button
-                    onClick={() => handleTypeChange('in')}
-                    className={cn(
-                      'flex-1 h-11 rounded-icon text-body transition-colors',
-                      type === 'in' ? 'bg-hisaabAccent-positive text-white' : 'text-hisaabText-secondary',
-                    )}
-                  >
-                    Cash In
-                  </button>
-                  <button
-                    onClick={() => handleTypeChange('out')}
-                    className={cn(
-                      'flex-1 h-11 rounded-icon text-body transition-colors',
-                      type === 'out' ? 'bg-hisaabAccent-negative text-white' : 'text-hisaabText-secondary',
-                    )}
-                  >
-                    Cash Out
-                  </button>
-                </div>
+              <div className="px-5 pt-1 flex gap-3">
+                <button
+                  onClick={() => handleTypeChange('in')}
+                  className={cn(
+                    'flex-1 h-11 rounded-button flex items-center justify-center gap-2 text-body transition-colors',
+                    type === 'in'
+                      ? 'bg-hisaabAccent-positiveSoft text-hisaabAccent-positive border-2 border-hisaabAccent-positive'
+                      : 'bg-bg-hover text-hisaabAccent-positive',
+                  )}
+                >
+                  <ArrowUp size={16} />
+                  Cash In
+                </button>
+                <button
+                  onClick={() => handleTypeChange('out')}
+                  className={cn(
+                    'flex-1 h-11 rounded-button flex items-center justify-center gap-2 text-body transition-colors',
+                    type === 'out'
+                      ? 'bg-hisaabAccent-negativeSoft text-hisaabAccent-negative border-2 border-hisaabAccent-negative'
+                      : 'bg-bg-hover text-hisaabAccent-negative',
+                  )}
+                >
+                  <ArrowDown size={16} />
+                  Cash Out
+                </button>
               </div>
 
               {/* Amount */}
-              <div className="flex items-baseline justify-center gap-2 py-8">
-                <span className={cn('font-sans text-amount-lg', type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
-                  {currencySymbol}
-                </span>
-                <input
-                  ref={amountRef}
-                  type="text"
-                  inputMode="decimal"
-                  value={amountInput}
-                  onChange={(e) => setAmountInput(e.target.value.replace(/[^0-9.]/g, ''))}
-                  placeholder="0"
-                  className={cn(
-                    'font-sans font-bold tabular-nums text-[52px] leading-none text-center bg-transparent outline-none w-48 placeholder:text-hisaabText-placeholder',
-                    type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative',
-                  )}
-                />
+              <div className="px-5 pt-4">
+                <div className="bg-bg-card rounded-card shadow-card px-5 py-5 flex items-center justify-center gap-2">
+                  <span className={cn('font-sans text-amount-md', type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
+                    {currencySymbol}
+                  </span>
+                  <input
+                    ref={amountRef}
+                    type="text"
+                    inputMode="decimal"
+                    value={amountInput}
+                    onChange={(e) => setAmountInput(e.target.value.replace(/[^0-9.]/g, ''))}
+                    placeholder="0"
+                    className={cn(
+                      'font-sans font-bold tabular-nums text-[40px] leading-none text-center bg-transparent outline-none w-44 placeholder:text-hisaabText-placeholder',
+                      type === 'in' ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative',
+                    )}
+                  />
+                </div>
               </div>
 
-              <div className="px-5 space-y-4">
+              <div className="px-5 pt-3 space-y-2.5">
                 {/* Remark */}
-                <input
-                  type="text"
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                  placeholder="What was it for?"
-                  className="w-full bg-bg-card rounded-button px-4 py-3.5 text-body text-hisaabText-primary placeholder:text-hisaabText-placeholder outline-none border border-hisaabBorder-light focus:border-hisaabText-secondary transition-colors shadow-card"
-                />
-
-                {/* Category */}
-                <div>
-                  <p className="text-caption text-hisaabText-secondary mb-3 uppercase tracking-wide">Category</p>
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map((c) => (
-                      <button
-                        key={c.id}
-                        onClick={() => setCategory(category === c.id ? undefined : c.id)}
-                        className={cn(
-                          'flex items-center gap-1.5 px-3 py-2 rounded-icon text-caption transition-colors',
-                          category === c.id
-                            ? 'bg-hisaabAccent-button text-hisaabAccent-buttonText'
-                            : 'bg-bg-card text-hisaabText-secondary shadow-card active:bg-bg-hover',
-                        )}
-                      >
-                        <CategoryIcon iconId={c.icon} size={13} />
-                        {c.label}
-                      </button>
-                    ))}
-                    <button
-                      onClick={() => setQuickAddOpen(true)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-icon text-caption bg-bg-icon text-hisaabText-secondary active:bg-bg-hover transition-colors"
-                    >
-                      <Plus size={13} />
-                      New
-                    </button>
-                  </div>
+                <div className="bg-bg-card rounded-card shadow-card px-4 py-3">
+                  <p className="text-body text-hisaabText-primary mb-0.5">What was it for?</p>
+                  <input
+                    type="text"
+                    value={remark}
+                    onChange={(e) => setRemark(e.target.value)}
+                    placeholder="e.g. Grocery, Restaurant, Petrol"
+                    className="w-full bg-transparent text-caption-md text-hisaabText-primary placeholder:text-hisaabText-placeholder outline-none"
+                  />
                 </div>
 
+                {/* Category */}
+                <button
+                  onClick={() => setCategoryPickerOpen(true)}
+                  className="w-full flex items-center justify-between gap-3 bg-bg-card rounded-card shadow-card px-4 py-3 text-left"
+                >
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <Tag size={14} className="text-hisaabText-secondary" />
+                      <span className="text-body text-hisaabText-primary">Category</span>
+                    </div>
+                    <span className={cn('text-caption-md truncate block', selectedCategory ? 'text-hisaabText-primary' : 'text-hisaabText-secondary')}>
+                      {selectedCategory ? selectedCategory.label : 'Select a category'}
+                    </span>
+                  </div>
+                  <ChevronRight size={16} className="text-hisaabText-secondary flex-shrink-0" />
+                </button>
+
                 {/* Date */}
-                <div className="flex items-center gap-3 bg-bg-card rounded-button px-4 py-3.5 border border-hisaabBorder-light shadow-card">
+                <div className="relative w-full flex items-center gap-3 bg-bg-card rounded-card shadow-card px-4 py-3">
+                  <CalendarDays size={16} className="text-hisaabText-secondary flex-shrink-0" />
                   <span className="flex-1 text-body text-hisaabText-primary">Date</span>
+                  <span className="text-caption-md text-hisaabText-secondary">{format(new Date(dateStr), 'd MMM yyyy')}</span>
+                  <ChevronRight size={16} className="text-hisaabText-secondary flex-shrink-0" />
                   <input
                     type="date"
                     value={dateStr}
                     onChange={(e) => setDateStr(e.target.value)}
-                    className="bg-transparent text-caption-md text-hisaabText-secondary outline-none"
+                    aria-label="Date"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                   />
                 </div>
 
+                {/* Payment method */}
+                <button
+                  onClick={() => setPaymentMethodPickerOpen(true)}
+                  className="w-full flex items-center justify-between gap-3 bg-bg-card rounded-card shadow-card px-4 py-3 text-left"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Wallet size={16} className="text-hisaabText-secondary flex-shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-body text-hisaabText-primary">
+                        Payment method <span className="text-hisaabText-secondary">(optional)</span>
+                      </p>
+                      <p className={cn('text-caption-md truncate', paymentMethod ? 'text-hisaabText-primary' : 'text-hisaabText-secondary')}>
+                        {paymentMethod ? PAYMENT_METHOD_LABELS[paymentMethod] : 'Select payment method'}
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-hisaabText-secondary flex-shrink-0" />
+                </button>
+
                 {/* Photo */}
                 <div>
-                  <p className="text-caption text-hisaabText-secondary mb-3 uppercase tracking-wide">Receipt</p>
+                  <p className="text-body text-hisaabText-primary mb-2">
+                    Receipt <span className="text-hisaabText-secondary">(optional)</span>
+                  </p>
                   {photoId ? (
                     <PhotoThumb photoId={photoId} onRemove={handleRemovePhoto} />
                   ) : (
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="w-full h-28 rounded-icon bg-bg-card shadow-card flex flex-col items-center justify-center gap-1.5 text-hisaabText-secondary active:bg-bg-hover transition-colors"
+                      className="w-full h-24 rounded-card border-2 border-dashed border-hisaabBorder-light flex flex-col items-center justify-center gap-1 active:bg-bg-hover transition-colors"
                     >
-                      <Camera size={20} />
-                      <span className="text-caption">Attach a photo</span>
+                      <Camera size={20} className="text-hisaabText-secondary" />
+                      <span className="text-caption-md text-hisaabText-primary">Attach a photo</span>
+                      <span className="text-caption text-hisaabText-secondary">JPG, PNG up to 5MB</span>
                     </button>
                   )}
                   <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoPick} className="hidden" />
@@ -261,8 +301,9 @@ export function AddTransactionSheet() {
               <button
                 onClick={handleSave}
                 disabled={amount <= 0 || saving}
-                className="w-full pointer-events-auto bg-hisaabAccent-button text-hisaabAccent-buttonText rounded-button py-4 text-body shadow-button disabled:opacity-40 active:scale-[0.98] transition-transform duration-100"
+                className="w-full pointer-events-auto bg-hisaabAccent-button text-hisaabAccent-buttonText rounded-button py-4 text-body shadow-button disabled:opacity-40 active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2"
               >
+                <CheckCircle2 size={18} />
                 {saving ? 'Saving...' : 'Save Entry'}
               </button>
             </div>
@@ -278,6 +319,22 @@ export function AddTransactionSheet() {
         description="This entry will be permanently removed."
         confirmLabel="Delete"
         variant="danger"
+      />
+
+      <CategoryPickerSheet
+        open={categoryPickerOpen}
+        onClose={() => setCategoryPickerOpen(false)}
+        categories={categories}
+        value={category}
+        onSelect={setCategory}
+        onAddNew={() => { setCategoryPickerOpen(false); setQuickAddOpen(true); }}
+      />
+
+      <PaymentMethodSheet
+        open={paymentMethodPickerOpen}
+        onClose={() => setPaymentMethodPickerOpen(false)}
+        value={paymentMethod}
+        onSelect={setPaymentMethod}
       />
 
       {addTransactionBookId && (
