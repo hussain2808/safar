@@ -19,17 +19,19 @@ const CELLS = [
 
 export function StatsGrid({ stats }: StatsGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 px-4">
-      {CELLS.map(({ key, label, caption, icon: Icon, bg, fg }) => (
-        <div key={key} className="bg-card-bg rounded-card shadow-card p-4">
-          <div className={cn('w-9 h-9 rounded-full flex items-center justify-center mb-3', bg, fg)}>
-            <Icon size={16} strokeWidth={1.5} />
+    <div className="px-4">
+      <div className="bg-card-bg rounded-card shadow-card flex divide-x divide-card-border">
+        {CELLS.map(({ key, label, caption, icon: Icon, bg, fg }) => (
+          <div key={key} className="flex-1 min-w-0 p-3 flex flex-col items-center text-center">
+            <div className={cn('w-8 h-8 rounded-full flex items-center justify-center mb-2', bg, fg)}>
+              <Icon size={14} strokeWidth={1.5} />
+            </div>
+            <p className="text-[18px] font-semibold text-text-primary leading-none">{stats[key]}</p>
+            <p className="text-[10.5px] text-text-primary mt-1.5 leading-tight">{label}</p>
+            <p className="text-[9px] text-text-secondary mt-0.5 leading-tight">{caption}</p>
           </div>
-          <p className="text-[22px] font-semibold text-text-primary leading-none">{stats[key]}</p>
-          <p className="text-caption-md text-text-primary mt-1.5">{label}</p>
-          <p className="text-[11px] text-text-secondary mt-0.5">{caption}</p>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
