@@ -1,16 +1,24 @@
 import { useEffect, useState } from 'react';
-import { FileText, Plus, X, Download } from 'lucide-react';
+import { FileText, Plus, X, Download, ExternalLink } from 'lucide-react';
 import { db } from '@/modules/sanad/db';
 import { saveFile, deleteFile } from '@/modules/sanad/db/files';
 import { downloadBlob } from '@/modules/sanad/lib/download';
+import { formatFileSize } from '@/modules/sanad/lib/utils';
 import type { DocumentFile } from '@/modules/sanad/types';
 
 interface AttachmentListProps {
   fileIds: string[];
   onChange: (fileIds: string[]) => void;
+  readOnly?: boolean;
 }
 
-export function AttachmentList({ fileIds, onChange }: AttachmentListProps) {
+function fileTypeLabel(file: DocumentFile): string {
+  if (file.mimeType === 'application/pdf') return 'PDF';
+  const ext = file.fileName.split('.').pop();
+  return ext ? ext.toUpperCase() : (file.mimeType.split('/')[1]?.toUpperCase() ?? 'FILE');
+}
+
+export function AttachmentList({ fileIds, onChange, readOnly = false }: AttachmentListProps) {
   const [files, setFiles] = useState<DocumentFile[]>([]);
 
   useEffect(() => {
@@ -44,16 +52,27 @@ export function AttachmentList({ fileIds, onChange }: AttachmentListProps) {
     <div className="space-y-2">
       {files.map((file) => (
         <div key={file.id} className="flex items-center gap-3 bg-icon-bg rounded-icon px-3 py-2.5">
-          <FileText size={16} className="text-text-secondary flex-shrink-0" />
-          <button onClick={() => openFile(file)} className="flex-1 text-left text-caption-md text-text-primary truncate">
-            {file.fileName}
+          <FileText size={18} className={readOnly ? 'text-accent-pink-fg flex-shrink-0' : 'text-text-secondary flex-shrink-0'} />
+          <button onClick={() => openFile(file)} className="flex-1 text-left min-w-0">
+            <p className="text-caption-md text-text-primary truncate">{file.fileName}</p>
+            {readOnly && (
+              <p className="text-caption text-text-secondary mt-0.5">
+                {fileTypeLabel(file)} • {formatFileSize(file.blob.size)}
+              </p>
+            )}
           </button>
           <button onClick={() => downloadBlob(file.blob, file.fileName)} className="text-text-secondary flex-shrink-0" aria-label="Download attachment">
             <Download size={14} />
           </button>
-          <button onClick={() => handleRemove(file.id)} className="text-text-secondary flex-shrink-0" aria-label="Remove attachment">
-            <X size={14} />
-          </button>
+          {readOnly ? (
+            <button onClick={() => openFile(file)} className="text-text-secondary flex-shrink-0" aria-label="Open attachment">
+              <ExternalLink size={14} />
+            </button>
+          ) : (
+            <button onClick={() => handleRemove(file.id)} className="text-text-secondary flex-shrink-0" aria-label="Remove attachment">
+              <X size={14} />
+            </button>
+          )}
         </div>
       ))}
       <label className="flex items-center justify-center gap-2 bg-icon-bg rounded-icon px-3 py-2.5 text-caption-md text-text-secondary cursor-pointer">

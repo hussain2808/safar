@@ -7,9 +7,10 @@ import { downloadBlob } from '@/modules/sanad/lib/download';
 interface PhotoGalleryProps {
   photoIds: string[];
   onChange: (photoIds: string[]) => void;
+  allowRemove?: boolean;
 }
 
-export function PhotoGallery({ photoIds, onChange }: PhotoGalleryProps) {
+export function PhotoGallery({ photoIds, onChange, allowRemove = true }: PhotoGalleryProps) {
   const [urls, setUrls] = useState<Record<string, string>>({});
   const [fullscreen, setFullscreen] = useState<string | null>(null);
 
@@ -61,12 +62,14 @@ export function PhotoGallery({ photoIds, onChange }: PhotoGalleryProps) {
                 onClick={() => setFullscreen(id)}
               />
             )}
-            <button
-              onClick={() => handleRemove(id)}
-              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center text-white"
-            >
-              <X size={12} />
-            </button>
+            {allowRemove && (
+              <button
+                onClick={() => handleRemove(id)}
+                className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/50 flex items-center justify-center text-white"
+              >
+                <X size={12} />
+              </button>
+            )}
           </div>
         ))}
         <label className="aspect-square rounded-icon bg-icon-bg flex items-center justify-center text-text-secondary cursor-pointer">
