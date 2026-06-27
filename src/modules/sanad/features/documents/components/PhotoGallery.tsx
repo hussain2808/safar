@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Download } from 'lucide-react';
 import { db } from '@/modules/sanad/db';
 import { saveFile, deleteFile } from '@/modules/sanad/db/files';
+import { downloadBlob } from '@/modules/sanad/lib/download';
 
 interface PhotoGalleryProps {
   photoIds: string[];
@@ -43,6 +44,11 @@ export function PhotoGallery({ photoIds, onChange }: PhotoGalleryProps) {
     deleteFile(id).catch(console.error);
   }
 
+  async function handleDownload(id: string) {
+    const photo = await db.files.get(id);
+    if (photo) downloadBlob(photo.blob, photo.fileName);
+  }
+
   return (
     <>
       <div className="grid grid-cols-4 gap-2">
@@ -75,6 +81,13 @@ export function PhotoGallery({ photoIds, onChange }: PhotoGalleryProps) {
           onClick={() => setFullscreen(null)}
         >
           <img src={urls[fullscreen]} className="max-w-full max-h-full object-contain" />
+          <button
+            onClick={(e) => { e.stopPropagation(); handleDownload(fullscreen); }}
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/15 flex items-center justify-center text-white"
+            aria-label="Download photo"
+          >
+            <Download size={16} />
+          </button>
         </div>
       )}
     </>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { FileText, Plus, X } from 'lucide-react';
+import { FileText, Plus, X, Download } from 'lucide-react';
 import { db } from '@/modules/sanad/db';
 import { saveFile, deleteFile } from '@/modules/sanad/db/files';
+import { downloadBlob } from '@/modules/sanad/lib/download';
 import type { DocumentFile } from '@/modules/sanad/types';
 
 interface AttachmentListProps {
@@ -47,7 +48,10 @@ export function AttachmentList({ fileIds, onChange }: AttachmentListProps) {
           <button onClick={() => openFile(file)} className="flex-1 text-left text-caption-md text-text-primary truncate">
             {file.fileName}
           </button>
-          <button onClick={() => handleRemove(file.id)} className="text-text-secondary flex-shrink-0">
+          <button onClick={() => downloadBlob(file.blob, file.fileName)} className="text-text-secondary flex-shrink-0" aria-label="Download attachment">
+            <Download size={14} />
+          </button>
+          <button onClick={() => handleRemove(file.id)} className="text-text-secondary flex-shrink-0" aria-label="Remove attachment">
             <X size={14} />
           </button>
         </div>
