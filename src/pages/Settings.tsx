@@ -27,7 +27,7 @@ export default function Settings() {
         <section>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h2 className="text-body text-text-primary">Family</h2>
+              <h2 className="text-body font-semibold text-text-primary">Family</h2>
               <p className="text-caption text-text-secondary mt-0.5">Who your documents and items belong to.</p>
             </div>
             <button onClick={() => setAdding(true)} className="w-9 h-9 rounded-full bg-indigo text-cream flex items-center justify-center flex-shrink-0" aria-label="Add family member">

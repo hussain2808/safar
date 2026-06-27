@@ -13,7 +13,7 @@ export function CategoryOverview({ documents }: CategoryOverviewProps) {
   return (
     <section>
       <div className="flex items-center justify-between px-4 mb-3">
-        <h2 className="text-body text-text-primary">By Category</h2>
+        <h2 className="text-body font-semibold text-text-primary">By Category</h2>
         <button onClick={() => navigate('/sanad/documents')} className="text-caption-md text-indigo font-semibold">
           View All
         </button>
