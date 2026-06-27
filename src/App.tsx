@@ -12,6 +12,8 @@ import HisaabApp from '@/modules/hisaab/HisaabApp';
 import AmaanatApp from '@/modules/amaanat/AmaanatApp';
 import SanadApp from '@/modules/sanad/SanadApp';
 import Settings from './pages/Settings';
+import SettingsFamily from './pages/SettingsFamily';
+import SettingsAbout from './pages/SettingsAbout';
 import { UpdateBanner } from '@/modules/hisaab/shared/components/UpdateBanner';
 import { DebugErrorBanner } from '@/components/DebugErrorBanner';
 import { installDebugErrorCapture } from '@/lib/debugErrorLog';
@@ -45,6 +47,8 @@ function App() {
             <Route path="/amaanat/*" element={<AmaanatApp />} />
             <Route path="/sanad/*" element={<SanadApp />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/family" element={<SettingsFamily />} />
+            <Route path="/settings/about" element={<SettingsAbout />} />
           </Routes>
           <UpdateBanner />
         </BrowserRouter>

@@ -1,80 +1,94 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
-import { ChevronLeft, Plus, Cake } from 'lucide-react';
-import { usePeople } from '@/family/hooks/usePeople';
-import { PersonSheet } from '@/family/components/PersonSheet';
-import { relationshipLabel } from '@/family/lib/relationships';
-import { initials, avatarColors } from '@/family/lib/avatar';
-import type { Person } from '@/family/types';
+import { ChevronLeft, ChevronRight, User, Users, Cloud, Moon, Bell, Upload, Download, Info, LogOut, type LucideIcon } from 'lucide-react';
+import { useAuthStore } from '@/store/auth';
+
+interface SettingsRow {
+  icon: LucideIcon;
+  label: string;
+  caption: string;
+  onClick?: () => void;
+}
 
 export default function Settings() {
   const navigate = useNavigate();
-  const { people, isLoading } = usePeople();
-  const [editing, setEditing] = useState<Person | null>(null);
-  const [adding, setAdding] = useState(false);
+  const signOut = useAuthStore((s) => s.signOut);
+
+  const accountRows: SettingsRow[] = [
+    { icon: User, label: 'Profile', caption: 'Manage your personal information' },
+    { icon: Users, label: 'Family', caption: 'Manage family members', onClick: () => navigate('/settings/family') },
+    { icon: Cloud, label: 'Backup & Sync', caption: 'Keep your data safe and synced' },
+  ];
+
+  const preferenceRows: SettingsRow[] = [
+    { icon: Moon, label: 'Appearance', caption: 'Theme, font and app icon' },
+    { icon: Bell, label: 'Notifications', caption: 'Reminders and alerts' },
+  ];
+
+  const dataRows: SettingsRow[] = [
+    { icon: Upload, label: 'Export Data', caption: 'Download a copy of your data' },
+    { icon: Download, label: 'Import Data', caption: 'Import data from another app' },
+  ];
+
+  const aboutRows: SettingsRow[] = [
+    { icon: Info, label: 'About Safar', caption: 'Version 1.0.0', onClick: () => navigate('/settings/about') },
+  ];
 
   return (
-    <div className="min-h-screen bg-cream">
-      <header className="px-2 pt-12 pb-4 flex items-center gap-2">
-        <button onClick={() => navigate('/')} className="w-10 h-10 rounded-full flex items-center justify-center text-text-primary active:bg-card-border transition-colors" aria-label="Back">
+    <div className="min-h-screen bg-cream pb-12">
+      <header className="px-5 pt-12 pb-2">
+        <button onClick={() => navigate('/')} className="w-10 h-10 rounded-full flex items-center justify-center text-text-primary -ml-2 mb-1 active:bg-card-border transition-colors" aria-label="Back">
           <ChevronLeft size={22} />
         </button>
         <h1 className="font-serif text-page-title text-text-primary">Settings</h1>
+        <p className="text-caption-md text-text-secondary mt-1">Manage your account, preferences and app settings.</p>
       </header>
 
-      <main className="px-4 pb-12">
-        <section>
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h2 className="text-body font-semibold text-text-primary">Family</h2>
-              <p className="text-caption text-text-secondary mt-0.5">Who your documents and items belong to.</p>
-            </div>
-            <button onClick={() => setAdding(true)} className="w-9 h-9 rounded-full bg-indigo text-cream flex items-center justify-center flex-shrink-0" aria-label="Add family member">
-              <Plus size={16} />
-            </button>
+      <main className="px-4 pt-4 space-y-6">
+        <SettingsSection title="Account" rows={accountRows} />
+        <SettingsSection title="Preferences" rows={preferenceRows} />
+        <SettingsSection title="Data" rows={dataRows} />
+        <SettingsSection title="About" rows={aboutRows} />
+
+        <button
+          onClick={signOut}
+          className="w-full bg-accent-pink-bg rounded-card p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition-transform duration-100"
+        >
+          <div className="w-10 h-10 rounded-full bg-card-bg flex items-center justify-center flex-shrink-0 text-accent-pink-fg">
+            <LogOut size={17} strokeWidth={1.5} />
           </div>
-
-          {!isLoading && (
-            <div className="space-y-2">
-              {people.map((person) => {
-                const colors = avatarColors(person.id);
-                return (
-                  <button
-                    key={person.id}
-                    onClick={() => setEditing(person)}
-                    className="w-full bg-card-bg rounded-card shadow-card p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition-transform duration-100"
-                  >
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-caption-md font-semibold flex-shrink-0 ${colors.bg} ${colors.fg}`}>
-                      {initials(person.name) || '?'}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-caption-md text-text-primary truncate">{person.name}</p>
-                      <p className="text-caption text-text-secondary">{relationshipLabel(person.relationship)}</p>
-                    </div>
-                    {person.dob && (
-                      <div className="flex items-center gap-1 text-caption text-text-secondary flex-shrink-0">
-                        <Cake size={12} />
-                        {format(person.dob, 'd MMM')}
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-        </section>
+          <div className="flex-1 min-w-0">
+            <p className="text-caption-md font-semibold text-accent-pink-fg">Logout</p>
+            <p className="text-caption text-accent-pink-fg mt-0.5">Sign out from your account</p>
+          </div>
+          <ChevronRight size={14} className="text-accent-pink-fg flex-shrink-0" />
+        </button>
       </main>
-
-      {(adding || editing) && (
-        <PersonSheet
-          person={adding ? null : editing}
-          onClose={() => {
-            setAdding(false);
-            setEditing(null);
-          }}
-        />
-      )}
     </div>
+  );
+}
+
+function SettingsSection({ title, rows }: { title: string; rows: SettingsRow[] }) {
+  return (
+    <section>
+      <h2 className="text-caption-md font-semibold text-text-secondary mb-2 px-1">{title}</h2>
+      <div className="bg-card-bg rounded-card shadow-card divide-y divide-card-border overflow-hidden">
+        {rows.map(({ icon: Icon, label, caption, onClick }) => (
+          <button
+            key={label}
+            onClick={onClick}
+            className="w-full flex items-center gap-3 p-3.5 text-left active:bg-cream/60 transition-colors"
+          >
+            <div className="w-10 h-10 rounded-full bg-icon-bg flex items-center justify-center flex-shrink-0 text-brown">
+              <Icon size={17} strokeWidth={1.5} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-caption-md font-semibold text-text-primary">{label}</p>
+              <p className="text-caption text-text-secondary mt-0.5">{caption}</p>
+            </div>
+            <ChevronRight size={14} className="text-text-muted flex-shrink-0" />
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
