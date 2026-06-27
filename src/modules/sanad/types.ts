@@ -19,7 +19,7 @@ export interface DocumentRecord {
 export interface DocumentFile {
   id: string;
   blob: Blob;
-  thumbnail: Blob;
+  thumbnail?: Blob;
   mimeType: string;
   fileName: string;
   createdAt: number;

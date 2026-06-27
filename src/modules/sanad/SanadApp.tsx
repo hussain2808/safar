@@ -3,7 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from '@/modules/sanad/shared/components/ErrorBoundary';
 import { Skeleton } from '@/modules/sanad/shared/components/Skeleton';
 
-const Home = lazy(() => import('@/modules/sanad/pages/Home'));
+const Home           = lazy(() => import('@/modules/sanad/pages/Home'));
+const DocumentDetail = lazy(() => import('@/modules/sanad/pages/DocumentDetail'));
 
 function PageFallback() {
   return (
@@ -19,6 +20,7 @@ export default function SanadApp() {
       <Suspense fallback={<PageFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="document/:id" element={<DocumentDetail />} />
         </Routes>
       </Suspense>
     </ErrorBoundary>
