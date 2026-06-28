@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { CalendarDays, ChevronLeft, MoreVertical, Pencil, Plus, Search, SlidersHorizontal } from 'lucide-react';
+import { CalendarDays, ChevronLeft, Eye, EyeOff, MoreVertical, Pencil, Plus, Search, SlidersHorizontal } from 'lucide-react';
 import { BookIcon, getBookColorForId } from '@/modules/hisaab/lib/bookIcons';
 import { useBook } from '@/modules/hisaab/features/books/hooks/useBook';
 import { useTransactions } from '@/modules/hisaab/features/transactions/hooks/useTransactions';
@@ -40,6 +40,7 @@ export default function BookDetail() {
   const { categories } = useCategories(id);
   const { openAddTransaction, openTransactionDetail, maskAmounts } = useUIStore();
   const [statsRevealed, setStatsRevealed] = useState(false);
+  const [revealAll, setRevealAll] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [renameDirect, setRenameDirect] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -191,6 +192,15 @@ export default function BookDetail() {
             {transactions.length} {transactions.length === 1 ? 'entry' : 'entries'}
           </p>
         </div>
+        {maskAmounts && (
+          <button
+            onClick={() => setRevealAll((r) => !r)}
+            className="w-10 h-10 rounded-full flex items-center justify-center text-hisaabText-primary active:bg-bg-hover transition-colors flex-shrink-0"
+            aria-label={revealAll ? 'Hide all amounts' : 'Show all amounts'}
+          >
+            {revealAll ? <EyeOff size={19} /> : <Eye size={19} />}
+          </button>
+        )}
         <button
           onClick={() => navigate('/hisaab/search')}
           className="w-10 h-10 rounded-full flex items-center justify-center text-hisaabText-primary active:bg-bg-hover transition-colors flex-shrink-0"
@@ -212,7 +222,7 @@ export default function BookDetail() {
           <div className="bg-bg-card rounded-card shadow-card px-5 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-caption text-hisaabText-secondary uppercase tracking-wide">Current Balance</p>
-              <AmountDisplay paise={balance} currency={book.currency} size="lg" className="mt-1" maskable />
+              <AmountDisplay paise={balance} currency={book.currency} size="lg" className="mt-1" maskable forceReveal={revealAll} />
             </div>
             <div
               className="flex flex-col gap-2 flex-shrink-0"
@@ -222,14 +232,14 @@ export default function BookDetail() {
                 <span className="w-1.5 h-1.5 rounded-full bg-hisaabAccent-positive flex-shrink-0" />
                 <span className="text-caption text-hisaabText-secondary">Income</span>
                 <span className="font-sans tabular-nums text-caption-md text-hisaabAccent-positive whitespace-nowrap">
-                  {maskAmounts && !statsRevealed ? '••••••' : formatAmount(statIn, book.currency)}
+                  {maskAmounts && !statsRevealed && !revealAll ? '••••••' : formatAmount(statIn, book.currency)}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 justify-end">
                 <span className="w-1.5 h-1.5 rounded-full bg-hisaabAccent-negative flex-shrink-0" />
                 <span className="text-caption text-hisaabText-secondary">Expense</span>
                 <span className="font-sans tabular-nums text-caption-md text-hisaabAccent-negative whitespace-nowrap">
-                  {maskAmounts && !statsRevealed ? '••••••' : formatAmount(statOut, book.currency)}
+                  {maskAmounts && !statsRevealed && !revealAll ? '••••••' : formatAmount(statOut, book.currency)}
                 </span>
               </div>
             </div>
@@ -319,6 +329,7 @@ export default function BookDetail() {
                           categoryLabel={tx.category ? categoryLabelById.get(tx.category) : undefined}
                           currency={book.currency}
                           onOpen={openTransactionDetail}
+                          forceReveal={revealAll}
                         />
                       ))}
                     </div>

@@ -11,13 +11,14 @@ interface TransactionRowProps {
   categoryLabel?: string;
   currency?: string;
   onOpen: (tx: Transaction) => void;
+  forceReveal?: boolean;
 }
 
-export const TransactionRow = memo(function TransactionRow({ transaction, categoryLabel, currency, onOpen }: TransactionRowProps) {
+export const TransactionRow = memo(function TransactionRow({ transaction, categoryLabel, currency, onOpen, forceReveal = false }: TransactionRowProps) {
   const isIn = transaction.type === 'in';
   const maskAmounts = useUIStore((s) => s.maskAmounts);
   const [revealed, setRevealed] = useState(false);
-  const masked = maskAmounts && !revealed;
+  const masked = maskAmounts && !revealed && !forceReveal;
 
   return (
     <button

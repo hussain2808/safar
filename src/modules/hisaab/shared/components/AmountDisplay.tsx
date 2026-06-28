@@ -10,15 +10,16 @@ interface AmountDisplayProps {
   showSign?: boolean;
   className?: string;
   maskable?: boolean;
+  forceReveal?: boolean;
 }
 
-export function AmountDisplay({ paise, currency, size = 'md', showSign = false, className, maskable = false }: AmountDisplayProps) {
+export function AmountDisplay({ paise, currency, size = 'md', showSign = false, className, maskable = false, forceReveal = false }: AmountDisplayProps) {
   const maskAmounts = useUIStore((s) => s.maskAmounts);
   const [revealed, setRevealed] = useState(false);
   const isNegative = paise < 0;
   const sizeClass = size === 'lg' ? 'text-amount-lg' : size === 'md' ? 'text-amount-md' : 'text-amount-sm';
   const colorClass = paise === 0 ? 'text-hisaabText-primary' : isNegative ? 'text-hisaabAccent-negative' : 'text-hisaabAccent-positive';
-  const masked = maskable && maskAmounts && !revealed;
+  const masked = maskable && maskAmounts && !revealed && !forceReveal;
 
   return (
     <span
