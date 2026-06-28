@@ -154,7 +154,7 @@ export default function Timeline() {
               style={{
                 width: '100%', padding: '11px 40px 11px 38px',
                 borderRadius: 999, border: '1.5px solid #F0E6D9',
-                backgroundColor: '#FEFCF9', fontSize: 16, color: '#3D2E1F',
+                backgroundColor: '#FEFCF9', fontSize: 14, color: '#3D2E1F',
                 outline: 'none', boxSizing: 'border-box',
               }}
             />

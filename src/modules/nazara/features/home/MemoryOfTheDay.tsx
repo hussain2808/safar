@@ -34,7 +34,7 @@ export default function MemoryOfTheDay({ memory }: Props) {
 
         <div style={{ flex: 1, padding: '14px 14px 14px 0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
           <div>
-            <h3 className="nazara-serif" style={{ fontSize: 16, fontWeight: 500, color: '#3D2E1F', lineHeight: 1.3, marginBottom: 5 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 500, color: '#3D2E1F', lineHeight: 1.3, marginBottom: 5 }}>
               {memory.title}
             </h3>
             {memory.notes && (
