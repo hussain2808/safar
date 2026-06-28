@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth';
-import { useMemories, getPeople } from '@/modules/nazara/features/memories/hooks/useMemories';
+import { useMemories, getPeople, getTopTags } from '@/modules/nazara/features/memories/hooks/useMemories';
 import { createMemory } from '@/modules/nazara/db/memories';
 import { savePhoto } from '@/modules/nazara/db/photos';
+import TitleField from '@/modules/nazara/shared/components/TitleField';
+import NotesField from '@/modules/nazara/shared/components/NotesField';
 import type { CategoryType } from '@/modules/nazara/types';
 
 const CATEGORIES: { value: CategoryType; icon: string; label: string }[] = [
@@ -28,7 +30,7 @@ const inputStyle: React.CSSProperties = {
   border: '1px solid #F0E6D9',
   borderRadius: 12,
   color: '#3D2E1F',
-  fontSize: 14,
+  fontSize: 16,
   outline: 'none',
   fontFamily: 'inherit',
 };
@@ -38,6 +40,7 @@ export default function AddMemory() {
   const user = useAuthStore((s) => s.user);
   const { memories } = useMemories();
   const existingPeople = useMemo(() => getPeople(memories), [memories]);
+  const topTags = useMemo(() => getTopTags(memories), [memories]);
 
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -47,6 +50,8 @@ export default function AddMemory() {
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [people, setPeople] = useState<string[]>([]);
   const [personInput, setPersonInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTag, setNewTag] = useState('');
   const [category, setCategory] = useState<CategoryType>('other');
   const [notifyYearly, setNotifyYearly] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -82,6 +87,16 @@ export default function AddMemory() {
     setPeople((p) => p.filter((n) => n !== name));
   };
 
+  const addTag = (tag?: string) => {
+    const name = (tag ?? newTag).trim();
+    if (name && !tags.includes(name)) setTags((t) => [...t, name]);
+    setNewTag('');
+  };
+
+  const removeTag = (name: string) => {
+    setTags((t) => t.filter((n) => n !== name));
+  };
+
   const handleSubmit = async () => {
     if (!title.trim() || saving) return;
     setSaving(true);
@@ -102,6 +117,7 @@ export default function AddMemory() {
         notes: notes.trim() || undefined,
         photoIds,
         people,
+        tags,
         category,
         notifyYearly: type === 'recurring' ? true : notifyYearly,
         isFavorite: false,
@@ -155,7 +171,7 @@ export default function AddMemory() {
 
         <div>
           <label style={{ fontSize: 12, color: '#8C7B6B', marginBottom: 6, display: 'block' }}>Title</label>
-          <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="What happened?" required />
+          <TitleField value={title} onChange={setTitle} />
         </div>
 
         <div>
@@ -165,13 +181,7 @@ export default function AddMemory() {
 
         <div>
           <label style={{ fontSize: 12, color: '#8C7B6B', marginBottom: 6, display: 'block' }}>Notes</label>
-          <textarea
-            style={{ ...inputStyle, resize: 'none' }}
-            rows={3}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Add a note about this memory..."
-          />
+          <NotesField value={notes} onChange={setNotes} title={title} />
         </div>
 
         <div>
@@ -268,8 +278,50 @@ export default function AddMemory() {
           </div>
         </div>
 
+        <div>
+          <label style={{ fontSize: 12, color: '#8C7B6B', marginBottom: 8, display: 'block' }}>Tags</label>
+          {tags.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+              {tags.map((t) => (
+                <span key={t} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', backgroundColor: '#F3EBE0', borderRadius: 999, fontSize: 12, color: '#3D2E1F' }}>
+                  {t}
+                  <button onClick={() => removeTag(t)} style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#8C7B6B', fontSize: 13 }}>×</button>
+                </span>
+              ))}
+            </div>
+          )}
+          <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+            <input
+              style={inputStyle}
+              value={newTag}
+              onChange={(e) => setNewTag(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addTag(); } }}
+              placeholder="Add a tag"
+            />
+            <button
+              onClick={() => addTag()}
+              style={{ padding: '0 18px', borderRadius: 12, border: '1px solid #F0E6D9', backgroundColor: '#FEFCF9', color: '#A67C52', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+            >
+              Add
+            </button>
+          </div>
+          {topTags.filter((t) => !tags.includes(t)).length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+              {topTags.filter((t) => !tags.includes(t)).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => addTag(t)}
+                  style={{ padding: '6px 12px', borderRadius: 999, border: '1px dashed #D8CBBA', backgroundColor: 'transparent', color: '#A67C52', fontSize: 12, cursor: 'pointer' }}
+                >
+                  + {t}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: 13, color: '#3D2E1F' }}>Notify me yearly</span>
+          <span style={{ fontSize: 13, color: '#3D2E1F' }}>Remind me every year</span>
           <button
             onClick={() => setNotifyYearly((v) => !v)}
             disabled={type === 'recurring'}

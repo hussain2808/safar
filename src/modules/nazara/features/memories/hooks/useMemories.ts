@@ -60,3 +60,22 @@ export function getPeople(memories: MemoryRecord[]): string[] {
   }
   return Array.from(set).sort((a, b) => a.localeCompare(b));
 }
+
+export function getTags(memories: MemoryRecord[]): string[] {
+  const set = new Set<string>();
+  for (const m of memories) {
+    for (const t of m.tags ?? []) set.add(t);
+  }
+  return Array.from(set).sort((a, b) => a.localeCompare(b));
+}
+
+export function getTopTags(memories: MemoryRecord[], limit = 5): string[] {
+  const counts = new Map<string, number>();
+  for (const m of memories) {
+    for (const t of m.tags ?? []) counts.set(t, (counts.get(t) ?? 0) + 1);
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([tag]) => tag);
+}

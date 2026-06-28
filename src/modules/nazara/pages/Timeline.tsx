@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useMemories } from '@/modules/nazara/features/memories/hooks/useMemories';
 import { groupByYear } from '@/modules/nazara/lib/utils';
 import BottomNav from '@/modules/nazara/shared/components/BottomNav';
@@ -9,6 +10,9 @@ const PULL_THRESHOLD = 72;
 
 export default function Timeline() {
   const { memories, isLoading: dataLoading } = useMemories();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const personFilter = searchParams.get('person');
+  const tagFilter = searchParams.get('tag');
   const [search, setSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [pullY, setPullY] = useState(0);
@@ -41,13 +45,18 @@ export default function Timeline() {
     touchStartY.current = null;
   };
 
-  const filtered = search.trim()
-    ? memories.filter(
-        (m) =>
-          m.title.toLowerCase().includes(search.toLowerCase()) ||
-          m.notes?.toLowerCase().includes(search.toLowerCase()),
-      )
-    : memories;
+  const clearFilter = () => setSearchParams({});
+
+  let filtered = memories;
+  if (personFilter) filtered = filtered.filter((m) => m.people.includes(personFilter));
+  if (tagFilter) filtered = filtered.filter((m) => (m.tags ?? []).includes(tagFilter));
+  if (search.trim()) {
+    filtered = filtered.filter(
+      (m) =>
+        m.title.toLowerCase().includes(search.toLowerCase()) ||
+        m.notes?.toLowerCase().includes(search.toLowerCase()),
+    );
+  }
 
   const grouped = groupByYear(filtered.map((m) => ({ ...m, date: new Date(m.date) })));
   const years = Object.keys(grouped).map(Number).sort((a, b) => b - a);
@@ -109,6 +118,23 @@ export default function Timeline() {
         </div>
         <p style={{ color: '#8C7B6B', fontSize: 14, marginBottom: searchOpen ? 12 : 16 }}>Your life, beautifully remembered.</p>
 
+        {(personFilter || tagFilter) && (
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+            padding: '8px 14px', backgroundColor: '#F3EBE0', borderRadius: 999, marginBottom: 16,
+          }}>
+            <span style={{ fontSize: 12.5, color: '#3D2E1F' }}>
+              Filtered by {personFilter ? personFilter : `#${tagFilter}`}
+            </span>
+            <button
+              onClick={clearFilter}
+              style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#A67C52', fontSize: 12.5, fontWeight: 600 }}
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
         {searchOpen && (
           <div style={{ position: 'relative', marginBottom: 8 }}>
             <svg
@@ -128,7 +154,7 @@ export default function Timeline() {
               style={{
                 width: '100%', padding: '11px 40px 11px 38px',
                 borderRadius: 999, border: '1.5px solid #F0E6D9',
-                backgroundColor: '#FEFCF9', fontSize: 14, color: '#3D2E1F',
+                backgroundColor: '#FEFCF9', fontSize: 16, color: '#3D2E1F',
                 outline: 'none', boxSizing: 'border-box',
               }}
             />

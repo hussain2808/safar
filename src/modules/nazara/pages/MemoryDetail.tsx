@@ -233,6 +233,20 @@ export default function MemoryDetail() {
           </div>
         )}
 
+        {(memory.tags ?? []).length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 0' }}>
+            {(memory.tags ?? []).map((t) => (
+              <Link
+                key={t}
+                to={`/nazara/timeline?tag=${encodeURIComponent(t)}`}
+                style={{ padding: '6px 14px', backgroundColor: '#F3EBE0', color: '#A67C52', fontSize: 12, borderRadius: 999, textDecoration: 'none' }}
+              >
+                #{t}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {related.length > 0 && (
           <div style={{ marginTop: 12 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: '#3D2E1F', marginBottom: 12 }}>Related Memories</h3>

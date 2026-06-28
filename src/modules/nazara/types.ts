@@ -22,6 +22,7 @@ export interface MemoryRecord {
   notes?: string;
   photoIds: string[];
   people: string[];
+  tags: string[];
   category: CategoryType;
   notifyYearly: boolean;
   isFavorite: boolean;
@@ -55,6 +56,7 @@ export interface MemoryFormData {
   photos: File[];
   existingPhotoIds: string[];
   people: string[];
+  tags: string[];
   category: CategoryType;
   notifyYearly: boolean;
 }
