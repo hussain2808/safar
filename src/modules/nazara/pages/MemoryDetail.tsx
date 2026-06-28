@@ -138,7 +138,7 @@ export default function MemoryDetail() {
 
       <div style={{ textAlign: 'center', padding: '0 24px 16px' }}>
         <CategoryIcon category={memory.category} size="lg" showHeart={memory.isFavorite} />
-        <h1 className="font-serif" style={{ fontSize: 24, fontWeight: 700, color: '#3D2E1F', marginTop: 16 }}>
+        <h1 className="nazara-serif" style={{ fontSize: 24, fontWeight: 700, color: '#3D2E1F', marginTop: 16 }}>
           {memory.title}
         </h1>
         <HeartDivider />
@@ -183,7 +183,7 @@ export default function MemoryDetail() {
             backgroundColor: '#FEFCF9', border: '1px solid #F0E6D9', borderRadius: 16,
             padding: '18px 20px', display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 16,
           }}>
-            <p className="font-serif" style={{ flex: 1, fontStyle: 'italic', color: '#3D2E1F', fontSize: 15, lineHeight: 1.6 }}>
+            <p className="nazara-serif" style={{ flex: 1, fontStyle: 'italic', color: '#3D2E1F', fontSize: 15, lineHeight: 1.6 }}>
               &ldquo;{memory.notes}&rdquo;
             </p>
             <button

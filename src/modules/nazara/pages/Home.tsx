@@ -89,7 +89,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
             <p style={{ color: '#8C7B6B', fontSize: 13 }}>{greeting},</p>
-            <h1 className="font-serif" style={{ fontSize: 30, fontWeight: 700, color: '#3D2E1F', marginTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <h1 className="nazara-serif" style={{ fontSize: 30, fontWeight: 700, color: '#3D2E1F', marginTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
               {firstName} <span style={{ fontSize: 22 }}>🌿</span>
             </h1>
             <p style={{ color: '#8C7B6B', fontSize: 13, marginTop: 4 }}>Here&apos;s your day in memories 🤎</p>
@@ -197,7 +197,7 @@ export default function Home() {
               <span style={{ fontSize: 24 }}>🌿</span>
             </div>
             <div style={{ width: 20, height: 20, border: '2px solid #F0E6D9', borderTopColor: '#A67C52', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <p className="font-serif" style={{ color: '#8C7B6B', fontSize: 13, fontStyle: 'italic' }}>Gathering your moments...</p>
+            <p className="nazara-serif" style={{ color: '#8C7B6B', fontSize: 13, fontStyle: 'italic' }}>Gathering your moments...</p>
           </div>
         ) : todayMemories.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>

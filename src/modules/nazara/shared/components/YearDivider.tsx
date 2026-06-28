@@ -11,7 +11,7 @@ export default function YearDivider({ year, count }: Props) {
         backgroundColor: '#F3EBE0', borderRadius: 999,
         padding: '5px 16px', flexShrink: 0,
       }}>
-        <span className="font-serif" style={{ color: '#A67C52', fontWeight: 600, fontSize: 15 }}>{year}</span>
+        <span className="nazara-serif" style={{ color: '#A67C52', fontWeight: 600, fontSize: 15 }}>{year}</span>
         {count !== undefined && (
           <>
             <span style={{ color: 'rgba(201,168,130,0.5)', fontSize: 12 }}>·</span>

@@ -131,7 +131,7 @@ export default function AddMemory() {
             <polyline points="15,18 9,12 15,6" />
           </svg>
         </button>
-        <h1 className="font-serif" style={{ fontSize: 17, fontWeight: 700, color: '#3D2E1F' }}>New Memory</h1>
+        <h1 className="nazara-serif" style={{ fontSize: 17, fontWeight: 700, color: '#3D2E1F' }}>New Memory</h1>
         <div style={{ width: 40 }} />
       </div>
 

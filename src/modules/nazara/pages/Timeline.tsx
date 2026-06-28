@@ -84,7 +84,7 @@ export default function Timeline() {
 
       <div style={{ padding: '48px 20px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-          <h1 className="font-serif" style={{ fontSize: 28, fontWeight: 700, color: '#3D2E1F' }}>Timeline</h1>
+          <h1 className="nazara-serif" style={{ fontSize: 28, fontWeight: 700, color: '#3D2E1F' }}>Timeline</h1>
           <button
             onClick={() => { setSearchOpen((o) => !o); if (searchOpen) setSearch(''); }}
             style={{
@@ -153,7 +153,7 @@ export default function Timeline() {
               <span style={{ fontSize: 24 }}>🌿</span>
             </div>
             <div style={{ width: 20, height: 20, border: '2px solid #F0E6D9', borderTopColor: '#A67C52', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-            <p className="font-serif" style={{ color: '#8C7B6B', fontSize: 13, fontStyle: 'italic' }}>Flipping through the pages...</p>
+            <p className="nazara-serif" style={{ color: '#8C7B6B', fontSize: 13, fontStyle: 'italic' }}>Flipping through the pages...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>

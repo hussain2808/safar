@@ -46,7 +46,7 @@ export default function LoadingScreen({ message }: Props) {
         borderRadius: '50%', animation: 'spin 0.8s linear infinite',
       }} />
 
-      <p className="font-serif" style={{
+      <p className="nazara-serif" style={{
         color: '#8C7B6B', fontSize: 15, fontStyle: 'italic',
         textAlign: 'center', maxWidth: 240, lineHeight: 1.5,
       }}>
