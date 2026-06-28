@@ -10,6 +10,8 @@ import { syncOnLogin as syncSanadOnLogin } from '@/modules/sanad/sync/firestore'
 import { retryPendingSync as retrySanadSync } from '@/modules/sanad/sync/retryQueue';
 import { syncOnLogin as syncNazaraOnLogin } from '@/modules/nazara/sync/firestore';
 import { retryPendingSync as retryNazaraSync } from '@/modules/nazara/sync/retryQueue';
+import { syncOnLogin as syncDuaOnLogin } from '@/modules/dua/sync/firestore';
+import { retryPendingSync as retryDuaSync } from '@/modules/dua/sync/retryQueue';
 import { syncOnLogin as syncFamilyOnLogin } from '@/family/sync/firestore';
 import { retryPendingSync as retryFamilySync } from '@/family/sync/retryQueue';
 import { ensureSelfSeeded } from '@/family/db/people';
@@ -42,10 +44,10 @@ export function initAuth() {
     if (user) {
       ensureSelfSeeded(user.displayName ?? 'Me')
         .then(() => Promise.all([
-          syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid), syncNazaraOnLogin(user.uid), syncFamilyOnLogin(user.uid),
+          syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid), syncNazaraOnLogin(user.uid), syncDuaOnLogin(user.uid), syncFamilyOnLogin(user.uid),
         ]))
         .then(() => Promise.all([
-          retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid), retryNazaraSync(user.uid), retryFamilySync(user.uid),
+          retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid), retryNazaraSync(user.uid), retryDuaSync(user.uid), retryFamilySync(user.uid),
         ]))
         .catch(console.error);
     }
@@ -58,6 +60,7 @@ export function initAuth() {
       retryAmaanatSync(u.uid).catch(console.error);
       retrySanadSync(u.uid).catch(console.error);
       retryNazaraSync(u.uid).catch(console.error);
+      retryDuaSync(u.uid).catch(console.error);
       retryFamilySync(u.uid).catch(console.error);
     }
   });

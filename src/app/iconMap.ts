@@ -10,6 +10,7 @@ import {
   Plane,
   Wallet,
   MapPin,
+  BookOpen,
 } from 'lucide-react';
 
 export const iconMap = {
@@ -24,6 +25,7 @@ export const iconMap = {
   memory: Image,
   wallet: Wallet,
   mapPin: MapPin,
+  bookOpen: BookOpen,
 } as const;
 
 export type IconKey = keyof typeof iconMap;

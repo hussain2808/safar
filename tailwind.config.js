@@ -48,6 +48,7 @@ export default {
       fontFamily: {
         serif: ['Playfair Display', 'serif'],
         sans: ['Inter', 'sans-serif'],
+        arabic: ['Amiri', 'serif'],
       },
       fontSize: {
         'display-title': ['44px', { fontWeight: '400', letterSpacing: '-0.5px', lineHeight: '1.15' }],
