@@ -11,6 +11,7 @@ import { Fab } from './app/components/Fab';
 import HisaabApp from '@/modules/hisaab/HisaabApp';
 import AmaanatApp from '@/modules/amaanat/AmaanatApp';
 import SanadApp from '@/modules/sanad/SanadApp';
+import NazaraApp from '@/modules/nazara/NazaraApp';
 import Settings from './pages/Settings';
 import SettingsFamily from './pages/SettingsFamily';
 import SettingsAbout from './pages/SettingsAbout';
@@ -35,7 +36,7 @@ function HomeScreen() {
   );
 }
 
-const TAB_ROOT_PATHS = ['/', '/hisaab', '/amaanat', '/sanad'];
+const TAB_ROOT_PATHS = ['/', '/hisaab', '/amaanat', '/sanad', '/nazara'];
 
 function TabBottomNav() {
   const { pathname } = useLocation();
@@ -54,6 +55,7 @@ function App() {
             <Route path="/hisaab/*" element={<HisaabApp />} />
             <Route path="/amaanat/*" element={<AmaanatApp />} />
             <Route path="/sanad/*" element={<SanadApp />} />
+            <Route path="/nazara/*" element={<NazaraApp />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/family" element={<SettingsFamily />} />
             <Route path="/settings/about" element={<SettingsAbout />} />

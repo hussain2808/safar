@@ -10,7 +10,7 @@ export const modules = [
     iconBg: 'bg-card-bg',
     iconFg: 'text-accent-orange-fg',
     subtitleColor: 'text-accent-orange-fg',
-    enabled: false,
+    enabled: true,
   },
   {
     key: 'hisaab',
@@ -151,4 +151,5 @@ export const bottomNavItems = [
   { key: 'hisaab', label: 'Hisaab', path: '/hisaab' },
   { key: 'amaanat', label: 'Amaanat', path: '/amaanat' },
   { key: 'sanad', label: 'Sanad', path: '/sanad' },
+  { key: 'nazara', label: 'Nazara', path: '/nazara' },
 ] as const;

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Wallet, Shield, FileCheck2 } from 'lucide-react';
+import { Home, Wallet, Shield, FileCheck2, Heart } from 'lucide-react';
 import { bottomNavItems } from '../mockData';
 
 const icons = {
@@ -7,6 +7,7 @@ const icons = {
   hisaab: Wallet,
   amaanat: Shield,
   sanad: FileCheck2,
+  nazara: Heart,
 } as const;
 
 export function BottomNav() {

@@ -11,7 +11,7 @@ function personRef(uid: string, personId: string) {
 }
 
 function toFirestoreDoc<T extends object>(obj: T): Omit<T, 'pendingSync'> {
-  const rest: Record<string, unknown> = { ...obj };
+  const rest: Record<string, unknown> = { ...(obj as Record<string, unknown>) };
   delete rest.pendingSync;
   return Object.fromEntries(Object.entries(rest).filter(([, v]) => v !== undefined)) as Omit<T, 'pendingSync'>;
 }
@@ -25,7 +25,13 @@ export async function deleteFirestorePerson(uid: string, personId: string) {
 }
 
 export async function syncOnLogin(uid: string) {
-  const peopleSnap = await getDocs(collection(fsdb, 'users', uid, 'people'));
-  const people: Person[] = peopleSnap.docs.map((d) => d.data() as Person);
+  const [peopleSnap, pendingDeletes] = await Promise.all([
+    getDocs(collection(fsdb, 'users', uid, 'people')),
+    db.pendingDeletes.toArray(),
+  ]);
+  const deletedPersonIds = new Set(pendingDeletes.filter((pd) => pd.kind === 'person').map((pd) => pd.targetId));
+  const people: Person[] = peopleSnap.docs
+    .filter((d) => !deletedPersonIds.has(d.id))
+    .map((d) => ({ ...(d.data() as Person), pendingSync: false }));
   if (people.length) await db.people.bulkPut(people);
 }

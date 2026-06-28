@@ -68,7 +68,13 @@ export async function deleteFirestoreCategory(uid: string, bookId: string, categ
 // ── Pull on login — Firestore → Dexie ────────────────────────────────────────
 
 export async function syncOnLogin(uid: string) {
-  const booksSnap = await getDocs(collection(fsdb, 'users', uid, 'books'));
+  const [booksSnap, pendingDeletes] = await Promise.all([
+    getDocs(collection(fsdb, 'users', uid, 'books')),
+    db.pendingDeletes.toArray(),
+  ]);
+  const deletedBookIds = new Set(pendingDeletes.filter((pd) => pd.kind === 'book').map((pd) => pd.targetId));
+  const deletedTxIds = new Set(pendingDeletes.filter((pd) => pd.kind === 'transaction').map((pd) => pd.targetId));
+  const deletedCategoryIds = new Set(pendingDeletes.filter((pd) => pd.kind === 'category').map((pd) => pd.targetId));
 
   const books: Book[] = [];
   const transactions: Transaction[] = [];
@@ -76,13 +82,14 @@ export async function syncOnLogin(uid: string) {
 
   await Promise.all(
     booksSnap.docs.map(async (bookDoc) => {
-      books.push(bookDoc.data() as Book);
+      if (deletedBookIds.has(bookDoc.id)) return;
+      books.push({ ...(bookDoc.data() as Book), pendingSync: false });
       const [txSnap, catSnap] = await Promise.all([
         getDocs(collection(fsdb, 'users', uid, 'books', bookDoc.id, 'transactions')),
         getDocs(collection(fsdb, 'users', uid, 'books', bookDoc.id, 'categories')),
       ]);
-      txSnap.forEach((d) => transactions.push(d.data() as Transaction));
-      catSnap.forEach((d) => categories.push(d.data() as Category));
+      txSnap.forEach((d) => { if (!deletedTxIds.has(d.id)) transactions.push({ ...(d.data() as Transaction), pendingSync: false }); });
+      catSnap.forEach((d) => { if (!deletedCategoryIds.has(d.id)) categories.push({ ...(d.data() as Category), pendingSync: false }); });
     }),
   );
 

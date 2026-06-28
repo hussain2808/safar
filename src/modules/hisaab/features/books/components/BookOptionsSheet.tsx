@@ -7,7 +7,11 @@ import { CategoryManagerSheet } from '@/modules/hisaab/features/categories/compo
 import { updateBook, deleteBook } from '@/modules/hisaab/db/books';
 import { db } from '@/modules/hisaab/db';
 import { exportBookToCsv } from '@/modules/hisaab/lib/exportCsv';
+import { cn } from '@/modules/hisaab/lib/utils';
+import { BOOK_ICON_MAP } from '@/modules/hisaab/lib/bookIcons';
 import type { Book } from '@/modules/hisaab/types';
+
+const ICONS = Object.entries(BOOK_ICON_MAP).map(([id, Icon]) => ({ id, Icon }));
 
 interface BookOptionsSheetProps {
   book: Book;
@@ -22,13 +26,14 @@ export function BookOptionsSheet({ book, open, onClose, startInRename = false }:
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [name, setName] = useState(book.name);
+  const [iconId, setIconId] = useState(book.emoji);
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (open) setRenaming(startInRename);
-    else { setRenaming(false); setName(book.name); }
-  }, [open, startInRename, book.name]);
+    else { setRenaming(false); setName(book.name); setIconId(book.emoji); }
+  }, [open, startInRename, book.name, book.emoji]);
 
   useEffect(() => {
     if (renaming) setTimeout(() => inputRef.current?.focus(), 50);
@@ -37,7 +42,7 @@ export function BookOptionsSheet({ book, open, onClose, startInRename = false }:
   async function handleRenameSave() {
     if (!name.trim() || busy) return;
     setBusy(true);
-    await updateBook(book.id, { name: name.trim() });
+    await updateBook(book.id, { name: name.trim(), emoji: iconId });
     setBusy(false);
     onClose();
   }
@@ -71,6 +76,23 @@ export function BookOptionsSheet({ book, open, onClose, startInRename = false }:
     <BottomSheet open={open} onClose={onClose} title={renaming ? 'Rename Book' : 'Book Options'}>
       {renaming ? (
         <div className="px-5 pt-4 pb-8 space-y-5">
+          <div>
+            <p className="text-caption text-hisaabText-secondary mb-3 uppercase tracking-wide">Icon</p>
+            <div className="flex flex-wrap gap-2">
+              {ICONS.map(({ id, Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setIconId(id)}
+                  className={cn(
+                    'w-11 h-11 rounded-icon flex items-center justify-center transition-colors',
+                    iconId === id ? 'bg-hisaabAccent-button text-hisaabAccent-buttonText' : 'bg-bg-icon text-hisaabText-secondary active:bg-bg-hover',
+                  )}
+                >
+                  <Icon size={18} strokeWidth={1.5} />
+                </button>
+              ))}
+            </div>
+          </div>
           <input
             ref={inputRef}
             type="text"
