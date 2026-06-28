@@ -88,6 +88,7 @@ async function main() {
       type: data.type,
       photoIds,
       people: data.people ?? [],
+      tags: data.tags ?? [],
       category: data.category,
       notifyYearly: !!data.notifyYearly,
       isFavorite: !!data.isFavorite,

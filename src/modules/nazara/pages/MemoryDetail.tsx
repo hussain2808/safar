@@ -226,9 +226,13 @@ export default function MemoryDetail() {
         {memory.people.length > 0 && (
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, padding: '16px 0' }}>
             {memory.people.map((p) => (
-              <span key={p} style={{ padding: '6px 14px', backgroundColor: '#F3EBE0', color: '#8C7B6B', fontSize: 12, borderRadius: 999 }}>
+              <Link
+                key={p}
+                to={`/nazara/timeline?person=${encodeURIComponent(p)}`}
+                style={{ padding: '6px 14px', backgroundColor: '#F3EBE0', color: '#8C7B6B', fontSize: 12, borderRadius: 999, textDecoration: 'none' }}
+              >
                 {p}
-              </span>
+              </Link>
             ))}
           </div>
         )}
