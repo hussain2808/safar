@@ -7,7 +7,6 @@ import { TodaysAttention } from './app/components/TodaysAttention';
 import { LifeSnapshot } from './app/components/LifeSnapshot';
 import { RecentActivity } from './app/components/RecentActivity';
 import { BottomNav } from './app/components/BottomNav';
-import { Fab } from './app/components/Fab';
 import HisaabApp from '@/modules/hisaab/HisaabApp';
 import AmaanatApp from '@/modules/amaanat/AmaanatApp';
 import SanadApp from '@/modules/sanad/SanadApp';
@@ -31,7 +30,6 @@ function HomeScreen() {
       <TodaysAttention />
       <LifeSnapshot />
       <RecentActivity />
-      <Fab />
     </div>
   );
 }

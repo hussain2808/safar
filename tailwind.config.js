@@ -53,6 +53,7 @@ export default {
         'display-title': ['44px', { fontWeight: '400', letterSpacing: '-0.5px', lineHeight: '1.15' }],
         'page-title': ['34px', { fontWeight: '400', letterSpacing: '-0.4px', lineHeight: '1.2' }],
         'section-heading': ['23px', { fontWeight: '600', lineHeight: '1.3' }],
+        'home-section-heading': ['18px', { fontWeight: '600', lineHeight: '1.3' }],
         'book-title': ['21px', { fontWeight: '600', lineHeight: '1.3' }],
         'amount-lg': ['28px', { fontWeight: '700' }],
         'amount-md': ['20px', { fontWeight: '700' }],
