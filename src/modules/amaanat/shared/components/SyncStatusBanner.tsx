@@ -9,9 +9,9 @@ export function SyncStatusBanner() {
 
   const pendingCount = useLiveQuery(async () => {
     const [items, photos, documents, deletes] = await Promise.all([
-      db.items.filter((i) => !!i.pendingSync).count(),
-      db.photos.filter((p) => !!p.pendingSync).count(),
-      db.documents.filter((d) => !!d.pendingSync).count(),
+      db.items.filter((i) => i.pendingSync !== false).count(),
+      db.photos.filter((p) => p.pendingSync !== false).count(),
+      db.documents.filter((d) => d.pendingSync !== false).count(),
       db.pendingDeletes.count(),
     ]);
     return items + photos + documents + deletes;

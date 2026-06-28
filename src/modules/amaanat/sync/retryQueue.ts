@@ -5,9 +5,9 @@ import { deleteDocument, pushDocument } from '@/modules/amaanat/db/documents';
 
 export async function retryPendingSync(uid: string): Promise<void> {
   const [items, photos, documents, pendingDeletes] = await Promise.all([
-    db.items.filter((i) => !!i.pendingSync).toArray(),
-    db.photos.filter((p) => !!p.pendingSync).toArray(),
-    db.documents.filter((d) => !!d.pendingSync).toArray(),
+    db.items.filter((i) => i.pendingSync !== false).toArray(),
+    db.photos.filter((p) => p.pendingSync !== false).toArray(),
+    db.documents.filter((d) => d.pendingSync !== false).toArray(),
     db.pendingDeletes.toArray(),
   ]);
 

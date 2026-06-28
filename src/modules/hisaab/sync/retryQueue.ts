@@ -7,10 +7,10 @@ import { pushPhoto } from '@/modules/hisaab/db/photos';
 
 export async function retryPendingSync(uid: string): Promise<void> {
   const [books, transactions, categories, photos, pendingDeletes] = await Promise.all([
-    db.books.filter((b) => !!b.pendingSync).toArray(),
-    db.transactions.filter((t) => !!t.pendingSync).toArray(),
-    db.categories.filter((c) => !!c.pendingSync).toArray(),
-    db.photos.filter((p) => !!p.pendingSync).toArray(),
+    db.books.filter((b) => b.pendingSync !== false).toArray(),
+    db.transactions.filter((t) => t.pendingSync !== false).toArray(),
+    db.categories.filter((c) => c.pendingSync !== false).toArray(),
+    db.photos.filter((p) => p.pendingSync !== false).toArray(),
     db.pendingDeletes.toArray(),
   ]);
 

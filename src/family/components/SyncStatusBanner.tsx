@@ -8,7 +8,7 @@ export function SyncStatusBanner() {
   const uid = useAuthStore((s) => s.user?.uid);
   const pendingCount = useLiveQuery(async () => {
     const [people, deletes] = await Promise.all([
-      db.people.filter((p) => !!p.pendingSync).count(),
+      db.people.filter((p) => p.pendingSync !== false).count(),
       db.pendingDeletes.count(),
     ]);
     return people + deletes;

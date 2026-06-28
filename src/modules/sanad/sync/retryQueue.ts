@@ -4,8 +4,8 @@ import { pushFile, deleteFirestoreFile } from '@/modules/sanad/db/files';
 
 export async function retryPendingSync(uid: string): Promise<void> {
   const [documents, files, pendingDeletes] = await Promise.all([
-    db.documents.filter((d) => !!d.pendingSync).toArray(),
-    db.files.filter((f) => !!f.pendingSync).toArray(),
+    db.documents.filter((d) => d.pendingSync !== false).toArray(),
+    db.files.filter((f) => f.pendingSync !== false).toArray(),
     db.pendingDeletes.toArray(),
   ]);
 

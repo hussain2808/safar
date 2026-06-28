@@ -3,7 +3,7 @@ import { pushPerson, deleteFirestorePerson } from './firestore';
 
 export async function retryPendingSync(uid: string): Promise<void> {
   const [people, pendingDeletes] = await Promise.all([
-    db.people.filter((p) => !!p.pendingSync).toArray(),
+    db.people.filter((p) => p.pendingSync !== false).toArray(),
     db.pendingDeletes.toArray(),
   ]);
 
