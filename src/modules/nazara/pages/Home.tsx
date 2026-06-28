@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
@@ -18,8 +18,6 @@ export default function Home() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const { memories, isLoading: dataLoading } = useMemories();
-  const [showMenu, setShowMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
   const [viewDate, setViewDate] = useState(new Date());
 
   const today = new Date();
@@ -39,15 +37,6 @@ export default function Home() {
     .sort((a, b) => a._nextDate.getTime() - b._nextDate.getTime()) as (MemoryRecord & { _nextDate: Date })[];
   const nearbyYesterday = memories.filter((m) => isSameMonthDay(new Date(m.date), yesterday));
   const nearbyTomorrow = memories.filter((m) => isSameMonthDay(new Date(m.date), tomorrow));
-
-  useEffect(() => {
-    if (!showMenu) return;
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setShowMenu(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, [showMenu]);
 
   if (!user) return null;
 
@@ -86,43 +75,11 @@ export default function Home() {
         <ChevronLeft size={18} />
       </button>
       <div style={{ padding: '56px 24px 8px' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-          <div>
-            <p style={{ color: '#8C7B6B', fontSize: 13 }}>{greeting},</p>
-            <h1 className="nazara-serif" style={{ fontSize: 30, fontWeight: 700, color: '#3D2E1F', marginTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
-              {firstName} <span style={{ fontSize: 22 }}>🌿</span>
-            </h1>
-            <p style={{ color: '#8C7B6B', fontSize: 13, marginTop: 4 }}>Here&apos;s your day in memories 🤎</p>
-          </div>
-          <div ref={menuRef} style={{ position: 'relative' }}>
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              style={{
-                width: 44, height: 44, borderRadius: '50%', overflow: 'hidden',
-                border: '2px solid #F0E6D9', backgroundColor: '#F3EBE0',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#8C7B6B', fontSize: 18, fontWeight: 500, cursor: 'pointer',
-              }}
-            >
-              {firstName.charAt(0)}
-            </button>
-            {showMenu && (
-              <div
-                style={{
-                  position: 'absolute', top: 50, right: 0, minWidth: 160,
-                  backgroundColor: '#fff', border: '1px solid #F0E6D9',
-                  borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                  overflow: 'hidden', zIndex: 50,
-                }}
-              >
-                <div style={{ padding: '12px 16px', borderBottom: '1px solid #F0E6D9' }}>
-                  <p style={{ fontSize: 13, color: '#3D2E1F', fontWeight: 500 }}>{user.displayName}</p>
-                  <p style={{ fontSize: 11, color: '#8C7B6B', marginTop: 2 }}>{user.email}</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <p style={{ color: '#8C7B6B', fontSize: 13 }}>{greeting},</p>
+        <h1 className="nazara-serif" style={{ fontSize: 30, fontWeight: 700, color: '#3D2E1F', marginTop: 2, display: 'flex', alignItems: 'center', gap: 8 }}>
+          {firstName} <span style={{ fontSize: 22 }}>🌿</span>
+        </h1>
+        <p style={{ color: '#8C7B6B', fontSize: 13, marginTop: 4 }}>Here&apos;s your day in memories 🤎</p>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px 0' }}>
