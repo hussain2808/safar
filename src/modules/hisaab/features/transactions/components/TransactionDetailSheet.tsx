@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { format } from 'date-fns';
 import { ChevronLeft, Pencil, ArrowDownLeft, ArrowUpRight, MessageSquare, CalendarDays, Image as ImageIcon } from 'lucide-react';
@@ -26,7 +26,8 @@ function DetailRow({
 }
 
 export function TransactionDetailSheet() {
-  const { transactionDetailOpen, viewingTransaction, closeTransactionDetail, openEditTransaction } = useUIStore();
+  const { transactionDetailOpen, viewingTransaction, closeTransactionDetail, openEditTransaction, maskAmounts } = useUIStore();
+  const [revealed, setRevealed] = useState(false);
 
   const book = useLiveQuery(
     () => viewingTransaction ? db.books.get(viewingTransaction.bookId) : undefined,
@@ -35,11 +36,16 @@ export function TransactionDetailSheet() {
   const { categories } = useCategories(viewingTransaction?.bookId);
   const currencySymbol = getCurrency(book?.currency ?? DEFAULT_CURRENCY).symbol;
   const category = categories.find((c) => c.id === viewingTransaction?.category);
+  const masked = maskAmounts && !revealed;
 
   useEffect(() => {
     document.body.style.overflow = transactionDetailOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [transactionDetailOpen]);
+
+  useEffect(() => {
+    if (transactionDetailOpen) setRevealed(false);
+  }, [transactionDetailOpen, viewingTransaction?.id]);
 
   function handleEdit() {
     if (!viewingTransaction) return;
@@ -90,12 +96,15 @@ export function TransactionDetailSheet() {
               >
                 {isIn ? <ArrowDownLeft size={22} /> : <ArrowUpRight size={22} />}
               </span>
-              <div className="flex items-baseline gap-1.5">
+              <div
+                className="flex items-baseline gap-1.5"
+                onDoubleClick={maskAmounts ? () => setRevealed((r) => !r) : undefined}
+              >
                 <span className={cn('font-sans text-amount-lg', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
                   {currencySymbol}
                 </span>
                 <span className={cn('font-sans font-bold tabular-nums text-[48px] leading-none', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
-                  {(viewingTransaction.amount / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
+                  {masked ? '••••••' : (viewingTransaction.amount / 100).toLocaleString('en-IN', { maximumFractionDigits: 2 })}
                 </span>
               </div>
               <p className="text-body text-hisaabText-primary text-center px-8 truncate max-w-full">
