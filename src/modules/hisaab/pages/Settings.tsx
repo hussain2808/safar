@@ -2,12 +2,15 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/store/auth';
+import { useUIStore } from '@/modules/hisaab/store/ui';
 import { ConfirmSheet } from '@/modules/hisaab/shared/components/ConfirmSheet';
 
 export default function Settings() {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
+  const maskAmounts = useUIStore((s) => s.maskAmounts);
+  const toggleMaskAmounts = useUIStore((s) => s.toggleMaskAmounts);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   async function handleSignOut() {
@@ -45,6 +48,27 @@ export default function Settings() {
               <p className="text-body font-medium text-hisaabText-primary truncate">{user?.displayName ?? '—'}</p>
               <p className="text-caption text-hisaabText-secondary truncate">{user?.email ?? '—'}</p>
             </div>
+          </div>
+        </section>
+
+        {/* Privacy */}
+        <section>
+          <p className="text-caption text-hisaabText-secondary uppercase tracking-wide px-1 mb-2">Privacy</p>
+          <div className="bg-bg-card rounded-2xl shadow-card px-4 py-4 flex items-center justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-body text-hisaabText-primary">Mask amounts</p>
+              <p className="text-caption text-hisaabText-secondary mt-0.5">Hide book balances on Home. Double-tap to reveal.</p>
+            </div>
+            <button
+              role="switch"
+              aria-checked={maskAmounts}
+              onClick={toggleMaskAmounts}
+              className={`relative w-11 h-6 rounded-full flex-shrink-0 transition-colors ${maskAmounts ? 'bg-hisaabAccent-button' : 'bg-bg-hover'}`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${maskAmounts ? 'translate-x-5' : 'translate-x-0'}`}
+              />
+            </button>
           </div>
         </section>
 

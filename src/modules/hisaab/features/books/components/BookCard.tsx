@@ -1,9 +1,10 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { formatAmount } from '@/modules/hisaab/lib/format';
 import { cn } from '@/modules/hisaab/lib/utils';
 import { BookIcon, getBookColor } from '@/modules/hisaab/lib/bookIcons';
+import { useUIStore } from '@/modules/hisaab/store/ui';
 import type { BookWithStats } from '@/modules/hisaab/types';
 
 interface BookCardProps {
@@ -13,8 +14,11 @@ interface BookCardProps {
 
 export const BookCard = memo(function BookCard({ book, index }: BookCardProps) {
   const navigate = useNavigate();
+  const maskAmounts = useUIStore((s) => s.maskAmounts);
+  const [revealed, setRevealed] = useState(false);
   const isNegative = book.balance < 0;
   const color = getBookColor(index);
+  const masked = maskAmounts && !revealed;
 
   return (
     <button
@@ -36,8 +40,16 @@ export const BookCard = memo(function BookCard({ book, index }: BookCardProps) {
           Last entry on {format(book.lastEntryAt, 'd MMM yyyy')}
         </p>
       </div>
-      <p className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap flex-shrink-0 self-start', book.balance === 0 ? 'text-hisaabText-primary' : isNegative ? 'text-hisaabAccent-negative' : 'text-hisaabAccent-positive')}>
-        {isNegative ? '-' : ''}{formatAmount(Math.abs(book.balance), book.currency)}
+      <p
+        onClick={(e) => { if (maskAmounts) { e.stopPropagation(); } }}
+        onDoubleClick={(e) => {
+          if (!maskAmounts) return;
+          e.stopPropagation();
+          setRevealed((r) => !r);
+        }}
+        className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap flex-shrink-0 self-start', book.balance === 0 ? 'text-hisaabText-primary' : isNegative ? 'text-hisaabAccent-negative' : 'text-hisaabAccent-positive')}
+      >
+        {masked ? '••••••' : `${isNegative ? '-' : ''}${formatAmount(Math.abs(book.balance), book.currency)}`}
       </p>
     </button>
   );

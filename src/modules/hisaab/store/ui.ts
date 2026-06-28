@@ -4,12 +4,14 @@ import type { Transaction } from '@/modules/hisaab/types';
 
 interface UIStore {
   theme: 'light' | 'dark';
+  maskAmounts: boolean;
   addTransactionSheetOpen: boolean;
   addTransactionBookId: string | null;
   editingTransaction: Transaction | null;
   transactionDetailOpen: boolean;
   viewingTransaction: Transaction | null;
   toggleTheme: () => void;
+  toggleMaskAmounts: () => void;
   openAddTransaction: (bookId: string) => void;
   openEditTransaction: (tx: Transaction) => void;
   closeAddTransaction: () => void;
@@ -21,6 +23,7 @@ export const useUIStore = create<UIStore>()(
   persist(
     (set) => ({
       theme: 'light',
+      maskAmounts: false,
       addTransactionSheetOpen: false,
       addTransactionBookId: null,
       editingTransaction: null,
@@ -32,6 +35,7 @@ export const useUIStore = create<UIStore>()(
           document.documentElement.classList.toggle('dark', next === 'dark');
           return { theme: next };
         }),
+      toggleMaskAmounts: () => set((s) => ({ maskAmounts: !s.maskAmounts })),
       openAddTransaction: (bookId: string) =>
         set({ addTransactionSheetOpen: true, addTransactionBookId: bookId, editingTransaction: null }),
       openEditTransaction: (tx: Transaction) =>
@@ -46,7 +50,7 @@ export const useUIStore = create<UIStore>()(
     {
       name: 'hisaab-ui',
       storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({ theme: s.theme }),
+      partialize: (s) => ({ theme: s.theme, maskAmounts: s.maskAmounts }),
     },
   ),
 );

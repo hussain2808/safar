@@ -38,7 +38,8 @@ export default function BookDetail() {
   const { book, isLoading: bookLoading } = useBook(id);
   const { transactions, balance, isLoading: txLoading } = useTransactions(id ?? '');
   const { categories } = useCategories(id);
-  const { openAddTransaction, openTransactionDetail } = useUIStore();
+  const { openAddTransaction, openTransactionDetail, maskAmounts } = useUIStore();
+  const [statsRevealed, setStatsRevealed] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [renameDirect, setRenameDirect] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -211,18 +212,25 @@ export default function BookDetail() {
           <div className="bg-bg-card rounded-card shadow-card px-5 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="text-caption text-hisaabText-secondary uppercase tracking-wide">Current Balance</p>
-              <AmountDisplay paise={balance} currency={book.currency} size="lg" className="mt-1" />
+              <AmountDisplay paise={balance} currency={book.currency} size="lg" className="mt-1" maskable />
             </div>
-            <div className="flex flex-col gap-2 flex-shrink-0">
+            <div
+              className="flex flex-col gap-2 flex-shrink-0"
+              onDoubleClick={maskAmounts ? (e) => { e.stopPropagation(); setStatsRevealed((r) => !r); } : undefined}
+            >
               <div className="flex items-center gap-1.5 justify-end">
                 <span className="w-1.5 h-1.5 rounded-full bg-hisaabAccent-positive flex-shrink-0" />
                 <span className="text-caption text-hisaabText-secondary">Income</span>
-                <span className="font-sans tabular-nums text-caption-md text-hisaabAccent-positive whitespace-nowrap">{formatAmount(statIn, book.currency)}</span>
+                <span className="font-sans tabular-nums text-caption-md text-hisaabAccent-positive whitespace-nowrap">
+                  {maskAmounts && !statsRevealed ? '••••••' : formatAmount(statIn, book.currency)}
+                </span>
               </div>
               <div className="flex items-center gap-1.5 justify-end">
                 <span className="w-1.5 h-1.5 rounded-full bg-hisaabAccent-negative flex-shrink-0" />
                 <span className="text-caption text-hisaabText-secondary">Expense</span>
-                <span className="font-sans tabular-nums text-caption-md text-hisaabAccent-negative whitespace-nowrap">{formatAmount(statOut, book.currency)}</span>
+                <span className="font-sans tabular-nums text-caption-md text-hisaabAccent-negative whitespace-nowrap">
+                  {maskAmounts && !statsRevealed ? '••••••' : formatAmount(statOut, book.currency)}
+                </span>
               </div>
             </div>
           </div>

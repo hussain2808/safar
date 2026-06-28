@@ -22,7 +22,7 @@ export function ModuleGrid() {
               <div className={`w-10 h-10 rounded-xl ${m.iconBg} flex items-center justify-center`}>
                 <Icon size={18} className={m.iconFg} />
               </div>
-              <span className="font-sans text-book-title text-text-primary">{m.title}</span>
+              <span className="font-serif text-book-title text-text-primary">{m.title}</span>
               <span className={`text-xs font-medium -mt-1 ${m.subtitleColor}`}>{m.subtitle}</span>
               <p className="text-xs text-text-secondary leading-snug">{m.description}</p>
             </div>

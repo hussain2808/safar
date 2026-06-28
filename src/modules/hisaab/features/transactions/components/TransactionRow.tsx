@@ -1,8 +1,9 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { format } from 'date-fns';
 import { MoreVertical, Paperclip } from 'lucide-react';
 import { formatAmount } from '@/modules/hisaab/lib/format';
 import { cn } from '@/modules/hisaab/lib/utils';
+import { useUIStore } from '@/modules/hisaab/store/ui';
 import type { Transaction } from '@/modules/hisaab/types';
 
 interface TransactionRowProps {
@@ -14,6 +15,9 @@ interface TransactionRowProps {
 
 export const TransactionRow = memo(function TransactionRow({ transaction, categoryLabel, currency, onOpen }: TransactionRowProps) {
   const isIn = transaction.type === 'in';
+  const maskAmounts = useUIStore((s) => s.maskAmounts);
+  const [revealed, setRevealed] = useState(false);
+  const masked = maskAmounts && !revealed;
 
   return (
     <button
@@ -37,8 +41,12 @@ export const TransactionRow = memo(function TransactionRow({ transaction, catego
         </p>
       </div>
       <div className="flex items-center gap-1 flex-shrink-0">
-        <span className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}>
-          {isIn ? '+' : '-'} {formatAmount(transaction.amount, currency)}
+        <span
+          onClick={maskAmounts ? (e) => e.stopPropagation() : undefined}
+          onDoubleClick={maskAmounts ? (e) => { e.stopPropagation(); setRevealed((r) => !r); } : undefined}
+          className={cn('font-sans tabular-nums text-amount-sm whitespace-nowrap', isIn ? 'text-hisaabAccent-positive' : 'text-hisaabAccent-negative')}
+        >
+          {masked ? '••••••' : <>{isIn ? '+' : '-'} {formatAmount(transaction.amount, currency)}</>}
         </span>
         <MoreVertical size={16} className="text-hisaabText-secondary" />
       </div>
