@@ -8,7 +8,9 @@ import { syncOnLogin as syncAmaanatOnLogin } from '@/modules/amaanat/sync/firest
 import { retryPendingSync as retryAmaanatSync } from '@/modules/amaanat/sync/retryQueue';
 import { syncOnLogin as syncSanadOnLogin } from '@/modules/sanad/sync/firestore';
 import { retryPendingSync as retrySanadSync } from '@/modules/sanad/sync/retryQueue';
-import { ensureSelfSeeded } from '@/family/db';
+import { syncOnLogin as syncFamilyOnLogin } from '@/family/sync/firestore';
+import { retryPendingSync as retryFamilySync } from '@/family/sync/retryQueue';
+import { ensureSelfSeeded } from '@/family/db/people';
 
 interface AuthStore {
   user: User | null;
@@ -36,9 +38,13 @@ export function initAuth() {
   onAuthStateChanged(auth, (user) => {
     useAuthStore.setState({ user, authLoading: false });
     if (user) {
-      ensureSelfSeeded(user.displayName ?? 'Me').catch(console.error);
-      Promise.all([syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid)])
-        .then(() => Promise.all([retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid)]))
+      ensureSelfSeeded(user.displayName ?? 'Me')
+        .then(() => Promise.all([
+          syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid), syncFamilyOnLogin(user.uid),
+        ]))
+        .then(() => Promise.all([
+          retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid), retryFamilySync(user.uid),
+        ]))
         .catch(console.error);
     }
   });
@@ -49,6 +55,7 @@ export function initAuth() {
       retryHisaabSync(u.uid).catch(console.error);
       retryAmaanatSync(u.uid).catch(console.error);
       retrySanadSync(u.uid).catch(console.error);
+      retryFamilySync(u.uid).catch(console.error);
     }
   });
 }

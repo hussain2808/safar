@@ -15,6 +15,7 @@ import Settings from './pages/Settings';
 import SettingsFamily from './pages/SettingsFamily';
 import SettingsAbout from './pages/SettingsAbout';
 import { UpdateBanner } from '@/modules/hisaab/shared/components/UpdateBanner';
+import { SyncStatusBanner as FamilySyncStatusBanner } from '@/family/components/SyncStatusBanner';
 import { DebugErrorBanner } from '@/components/DebugErrorBanner';
 import { installDebugErrorCapture } from '@/lib/debugErrorLog';
 
@@ -51,6 +52,7 @@ function App() {
             <Route path="/settings/about" element={<SettingsAbout />} />
           </Routes>
           <UpdateBanner />
+          <FamilySyncStatusBanner />
         </BrowserRouter>
       </AuthGate>
     </>

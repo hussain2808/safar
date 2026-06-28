@@ -7,6 +7,14 @@ export interface Person {
   dob?: number;
   createdAt: number;
   updatedAt: number;
+  pendingSync?: boolean;
+}
+
+export interface PendingDelete {
+  id: string;
+  kind: 'person';
+  targetId: string;
+  createdAt: number;
 }
 
 export type Result<T> =
