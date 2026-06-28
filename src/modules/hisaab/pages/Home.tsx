@@ -96,7 +96,7 @@ export default function Home() {
           books.map((book, i) => <BookCard key={book.id} book={book} index={i} />)
         )}
       </main>
-      <div className="fixed bottom-8 inset-x-4">
+      <div className="fixed bottom-20 inset-x-4">
         <button onClick={() => setCreateOpen(true)} className="w-full bg-bg-card shadow-card rounded-card pl-3 pr-2 py-2 flex items-center gap-2 text-left active:scale-[0.98] transition-transform duration-100">
           <div className="w-10 h-10 rounded-icon bg-bg-icon flex items-center justify-center flex-shrink-0 text-hisaabText-secondary">
             <BookOpen size={18} strokeWidth={1.5} />

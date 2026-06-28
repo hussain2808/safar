@@ -147,10 +147,8 @@ export const recentActivity = [
 ] as const;
 
 export const bottomNavItems = [
-  { key: 'home', label: 'Home', enabled: true },
-  { key: 'nazara', label: 'Nazara', enabled: false },
-  { key: 'hisaab', label: 'Hisaab', enabled: true },
-  { key: 'amaanat', label: 'Amaanat', enabled: true },
-  { key: 'sanad', label: 'Sanad', enabled: true },
-  { key: 'journey', label: 'Journey', enabled: false },
+  { key: 'home', label: 'Home', path: '/' },
+  { key: 'hisaab', label: 'Hisaab', path: '/hisaab' },
+  { key: 'amaanat', label: 'Amaanat', path: '/amaanat' },
+  { key: 'sanad', label: 'Sanad', path: '/sanad' },
 ] as const;

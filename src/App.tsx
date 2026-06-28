@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthGate } from '@/components/AuthGate';
 import { Header } from './app/components/Header';
 import { Greeting } from './app/components/Greeting';
@@ -31,9 +31,16 @@ function HomeScreen() {
       <LifeSnapshot />
       <RecentActivity />
       <Fab />
-      <BottomNav />
     </div>
   );
+}
+
+const TAB_ROOT_PATHS = ['/', '/hisaab', '/amaanat', '/sanad'];
+
+function TabBottomNav() {
+  const { pathname } = useLocation();
+  if (!TAB_ROOT_PATHS.includes(pathname)) return null;
+  return <BottomNav />;
 }
 
 function App() {
@@ -51,6 +58,7 @@ function App() {
             <Route path="/settings/family" element={<SettingsFamily />} />
             <Route path="/settings/about" element={<SettingsAbout />} />
           </Routes>
+          <TabBottomNav />
           <UpdateBanner />
           <FamilySyncStatusBanner />
         </BrowserRouter>

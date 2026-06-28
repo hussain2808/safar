@@ -17,7 +17,7 @@ export function SyncStatusBanner() {
   const showBanner = useDelayedTrue(!!pendingCount, 3000);
   if (!showBanner) return null;
   return (
-    <div className="fixed bottom-4 inset-x-4 z-50 bg-card-bg shadow-button rounded-2xl px-4 py-3.5 flex items-center justify-between gap-4">
+    <div className="fixed bottom-20 inset-x-4 z-50 bg-card-bg shadow-button rounded-2xl px-4 py-3.5 flex items-center justify-between gap-4">
       <p className="text-caption text-text-primary">{pendingCount} change{pendingCount === 1 ? '' : 's'} not yet synced</p>
       <button onClick={() => uid && retryPendingSync(uid)} className="text-caption font-semibold text-indigo shrink-0">Retry now</button>
     </div>

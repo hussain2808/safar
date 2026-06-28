@@ -6,7 +6,7 @@ export function UpdateBanner() {
   if (!needRefresh) return null;
 
   return (
-    <div className="fixed bottom-4 inset-x-4 z-50 bg-bg-card shadow-button rounded-2xl px-4 py-3.5 flex items-center justify-between gap-4">
+    <div className="fixed bottom-20 inset-x-4 z-50 bg-bg-card shadow-button rounded-2xl px-4 py-3.5 flex items-center justify-between gap-4">
       <p className="text-caption text-hisaabText-primary">New version available</p>
       <button
         onClick={() => updateServiceWorker(true)}
