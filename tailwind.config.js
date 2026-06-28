@@ -46,7 +46,7 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['DM Serif Display', 'serif'],
+        serif: ['Playfair Display', 'serif'],
         sans: ['Inter', 'sans-serif'],
       },
       fontSize: {
