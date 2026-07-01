@@ -17,7 +17,7 @@ export function UpcomingReminders({ reminders }: UpcomingRemindersProps) {
   return (
     <section>
       <div className="flex items-center justify-between px-4 mb-3">
-        <h2 className="text-body text-text-primary">Upcoming Reminders</h2>
+        <h2 className="text-home-section-heading text-text-primary">Upcoming Reminders</h2>
         <button onClick={() => navigate('/amaanat/items?filter=attention')} className="text-caption-md text-brown font-semibold">
           View All
         </button>

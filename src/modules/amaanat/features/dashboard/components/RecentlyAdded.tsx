@@ -15,7 +15,7 @@ export function RecentlyAdded({ items }: RecentlyAddedProps) {
   return (
     <section>
       <div className="flex items-center justify-between px-4 mb-3">
-        <h2 className="text-body text-text-primary">Recently Added</h2>
+        <h2 className="text-home-section-heading text-text-primary">Recently Added</h2>
         <button onClick={() => navigate('/amaanat/items')} className="text-caption-md text-brown font-semibold">
           View All
         </button>
