@@ -41,8 +41,7 @@ export default function Home() {
   if (!user) return null;
 
   const greeting = getGreeting();
-  const nameParts = user.displayName?.split(' ') || [];
-  const firstName = nameParts.length > 1 ? nameParts[1] : nameParts[0] || 'there';
+  const firstName = user.displayName?.split(' ')[0] || 'there';
   const isToday = viewDate.toDateString() === new Date().toDateString();
 
   const goYesterday = () => {

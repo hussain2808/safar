@@ -3,8 +3,7 @@ import { getGreeting } from '@/lib/greeting';
 
 export function Greeting() {
   const user = useAuthStore((s) => s.user);
-  const nameParts = user?.displayName?.split(' ') ?? [];
-  const secondName = nameParts[1] ?? nameParts[0] ?? 'there';
+  const secondName = user?.displayName?.split(' ')[0] ?? 'there';
 
   return (
     <div className="px-5 pt-3 pb-1">

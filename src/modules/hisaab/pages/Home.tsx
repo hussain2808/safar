@@ -25,8 +25,7 @@ export default function Home() {
   const [importing, setImporting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const nameParts = user?.displayName?.split(' ') ?? [];
-  const firstName = (nameParts.length > 1 ? nameParts[1] : nameParts[0]) || 'there';
+  const firstName = user?.displayName?.split(' ')[0] || 'there';
 
   async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
