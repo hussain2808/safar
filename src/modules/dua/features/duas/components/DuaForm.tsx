@@ -50,14 +50,15 @@ export function DuaForm({ draft, onChange }: DuaFormProps) {
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ topic: draft.title }),
       });
-      let data: { arabic?: string; translation?: string; error?: string };
+      let data: { arabic?: string; transliteration?: string; translation?: string; error?: string };
       try { data = await res.json(); } catch { throw new Error('Failed to generate dua'); }
       if (!res.ok || !data.arabic || !data.translation) throw new Error(data.error ?? 'Failed to generate dua');
-      const otherBlocks = draft.contentBlocks.filter((b) => b.type !== 'arabic' && b.type !== 'translation');
+      const otherBlocks = draft.contentBlocks.filter((b) => b.type !== 'arabic' && b.type !== 'transliteration' && b.type !== 'translation');
       onChange({
         ...draft,
         contentBlocks: [
           { id: nanoid(), type: 'arabic', text: data.arabic },
+          ...(data.transliteration ? [{ id: nanoid(), type: 'transliteration' as const, text: data.transliteration }] : []),
           { id: nanoid(), type: 'translation', text: data.translation },
           ...otherBlocks,
         ],

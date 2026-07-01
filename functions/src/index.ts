@@ -97,11 +97,12 @@ export const generateDua = onRequest({ secrets: [GEMINI_API_KEY], cors: true }, 
   const prompt = `Generate an authentic Islamic supplication (dua) for the following topic: "${topic.trim()}".
 
 Reply with a JSON object in this exact format, with no markdown, no code fences, just raw JSON:
-{"arabic": "<the dua in Arabic script>", "translation": "<the English translation>"}
+{"arabic": "<the dua in Arabic script>", "transliteration": "<romanized pronunciation>", "translation": "<the English translation>"}
 
 Requirements:
 - If a dua from the Quran or an authentic hadith exists for this topic, use that
 - Otherwise compose a sincere, authentic supplication in classical Arabic style
+- Transliteration should use simple, readable romanization (e.g. Allahumma, dh, kh)
 - Translation must be clear, faithful, natural English
 - Return only the JSON object, nothing else`;
 
@@ -111,7 +112,7 @@ Requirements:
       res.status(502).json({ error: 'AI returned no result' });
       return;
     }
-    let parsed: { arabic: string; translation: string };
+    let parsed: { arabic: string; transliteration: string; translation: string };
     try {
       const clean = text.replace(/^```[\w]*\n?/, '').replace(/\n?```$/, '').trim();
       parsed = JSON.parse(clean);
@@ -119,11 +120,11 @@ Requirements:
       res.status(502).json({ error: 'AI returned malformed response' });
       return;
     }
-    if (!parsed.arabic || !parsed.translation) {
+    if (!parsed.arabic || !parsed.transliteration || !parsed.translation) {
       res.status(502).json({ error: 'AI response missing fields' });
       return;
     }
-    res.status(200).json({ arabic: parsed.arabic.trim(), translation: parsed.translation.trim() });
+    res.status(200).json({ arabic: parsed.arabic.trim(), transliteration: parsed.transliteration.trim(), translation: parsed.translation.trim() });
   } catch (err) {
     console.error('generateDua crashed:', err);
     res.status(500).json({ error: 'AI request failed' });
