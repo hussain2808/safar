@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, User, Users, Cloud, Moon, Bell, Upload, Download, Info, LogOut, type LucideIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, User, Users, Cloud, Moon, Bell, Upload, Download, Info, LogOut, Check, type LucideIcon } from 'lucide-react';
+import { updateProfile } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { useAuthStore } from '@/store/auth';
 
 interface SettingsRow {
@@ -11,7 +14,26 @@ interface SettingsRow {
 
 export default function Settings() {
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
   const signOut = useAuthStore((s) => s.signOut);
+  const [name, setName] = useState(user?.displayName ?? '');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const isDirty = name.trim() !== (user?.displayName ?? '');
+
+  async function saveName() {
+    if (!name.trim() || !auth.currentUser || saving) return;
+    setSaving(true);
+    try {
+      await updateProfile(auth.currentUser, { displayName: name.trim() });
+      useAuthStore.setState({ user: auth.currentUser });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   const accountRows: SettingsRow[] = [
     { icon: User, label: 'Profile', caption: 'Manage your personal information' },
@@ -44,6 +66,37 @@ export default function Settings() {
       </header>
 
       <main className="px-4 pt-4 space-y-6">
+        <section>
+          <h2 className="text-caption-md font-semibold text-text-secondary mb-2 px-1">Profile</h2>
+          <div className="bg-card-bg rounded-card shadow-card p-4 space-y-3">
+            <div>
+              <label className="text-caption text-text-secondary block mb-1.5">Display name</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => { setName(e.target.value); setSaved(false); }}
+                  onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }}
+                  placeholder="Your name"
+                  className="flex-1 bg-cream rounded-button px-3 py-2.5 text-body text-text-primary placeholder:text-text-muted outline-none border border-card-border focus:border-text-secondary transition-colors"
+                />
+                <button
+                  onClick={saveName}
+                  disabled={!isDirty || !name.trim() || saving}
+                  className="w-10 h-10 rounded-button flex items-center justify-center flex-shrink-0 bg-brown text-cream disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+                >
+                  {saved ? <Check size={16} /> : saving ? (
+                    <span className="w-4 h-4 border-2 border-cream/40 border-t-cream rounded-full animate-spin block" />
+                  ) : <Check size={16} />}
+                </button>
+              </div>
+            </div>
+            {user?.email && (
+              <p className="text-caption text-text-secondary">{user.email}</p>
+            )}
+          </div>
+        </section>
+
         <SettingsSection title="Account" rows={accountRows} />
         <SettingsSection title="Preferences" rows={preferenceRows} />
         <SettingsSection title="Data" rows={dataRows} />
