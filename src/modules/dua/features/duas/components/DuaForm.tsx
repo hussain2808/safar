@@ -1,6 +1,10 @@
+import { useState } from 'react';
+import { nanoid } from 'nanoid';
+import { auth } from '@/lib/firebase';
 import { cn } from '@/modules/dua/lib/utils';
 import { CATEGORIES } from '@/modules/dua/lib/categories';
 import { ContentBlockEditor } from '@/modules/dua/features/duas/components/ContentBlockEditor';
+import { functionsUrl } from '@/modules/dua/lib/functionsUrl';
 import type { Dua, DuaCategory, ContentBlock } from '@/modules/dua/types';
 
 export interface DuaDraft {
@@ -28,8 +32,41 @@ const inputClass = 'w-full bg-cream rounded-button px-4 py-3 text-body text-text
 const labelClass = 'text-caption text-text-secondary mb-2 uppercase tracking-wide block';
 
 export function DuaForm({ draft, onChange }: DuaFormProps) {
+  const [generating, setGenerating] = useState(false);
+  const [genError, setGenError] = useState<string | null>(null);
+
   function set<K extends keyof DuaDraft>(key: K, value: DuaDraft[K]) {
     onChange({ ...draft, [key]: value });
+  }
+
+  async function generateDua() {
+    if (!draft.title.trim() || generating || !auth.currentUser) return;
+    setGenerating(true);
+    setGenError(null);
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch(functionsUrl('generateDua'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ topic: draft.title }),
+      });
+      let data: { arabic?: string; translation?: string; error?: string };
+      try { data = await res.json(); } catch { throw new Error('Failed to generate dua'); }
+      if (!res.ok || !data.arabic || !data.translation) throw new Error(data.error ?? 'Failed to generate dua');
+      const otherBlocks = draft.contentBlocks.filter((b) => b.type !== 'arabic' && b.type !== 'translation');
+      onChange({
+        ...draft,
+        contentBlocks: [
+          { id: nanoid(), type: 'arabic', text: data.arabic },
+          { id: nanoid(), type: 'translation', text: data.translation },
+          ...otherBlocks,
+        ],
+      });
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : 'Failed to generate dua');
+    } finally {
+      setGenerating(false);
+    }
   }
 
   return (
@@ -65,7 +102,27 @@ export function DuaForm({ draft, onChange }: DuaFormProps) {
       </div>
 
       <div>
-        <label className={labelClass}>Content</label>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-caption text-text-secondary uppercase tracking-wide">Content</span>
+          <div className="flex items-center gap-2">
+            {genError && <span className="text-[11px] text-red-500">{genError}</span>}
+            <button
+              type="button"
+              onClick={generateDua}
+              disabled={!draft.title.trim() || generating}
+              className="flex items-center gap-1.5 text-[12.5px] font-medium text-brown disabled:text-brown/40 disabled:cursor-not-allowed"
+            >
+              {generating ? (
+                <>
+                  <span className="w-3 h-3 border-2 border-card-border border-t-brown rounded-full animate-spin inline-block" />
+                  Generating...
+                </>
+              ) : (
+                '✨ Generate Dua'
+              )}
+            </button>
+          </div>
+        </div>
         <ContentBlockEditor blocks={draft.contentBlocks} onChange={(contentBlocks) => set('contentBlocks', contentBlocks)} />
       </div>
 
