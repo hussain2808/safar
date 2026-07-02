@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Menu, Bell, Plus, Leaf } from 'lucide-react';
+import { ChevronLeft, Bell, Plus, Leaf } from 'lucide-react';
 import { useAuthStore } from '@/store/auth';
 import { useDuas } from '@/modules/dua/features/duas/hooks/useDuas';
 import { DuaCard } from '@/modules/dua/features/duas/components/DuaCard';
@@ -29,7 +29,7 @@ export default function Home() {
     <div className="min-h-screen bg-cream pb-40">
       <header className="px-4 pt-6 pb-1 flex items-center justify-between">
         <button onClick={() => navigate('/')} aria-label="Back to Safar" className="w-9 h-9 rounded-full flex items-center justify-center text-text-primary">
-          <Menu size={20} />
+          <ChevronLeft size={22} />
         </button>
         <h1 className="font-serif text-page-title text-brown">Dua</h1>
         <button onClick={() => navigate('/dua/more')} aria-label="Reminders" className="w-9 h-9 rounded-full flex items-center justify-center text-text-primary">
