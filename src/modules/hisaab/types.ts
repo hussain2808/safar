@@ -56,6 +56,7 @@ export interface BookWithStats extends Book {
   transactionCount: number;
   hasPendingSync: boolean;
   lastEntryAt: number;
+  lastActivityAt: number;
 }
 
 export type Result<T> =

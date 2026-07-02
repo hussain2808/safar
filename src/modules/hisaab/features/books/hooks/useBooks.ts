@@ -13,8 +13,6 @@ export function useBooks() {
       db.books.toArray(),
       db.transactions.toArray(),
     ]);
-    const books = allBooks.filter((b) => !b.archived).sort((a, b) => a.createdAt - b.createdAt);
-
     const txByBook = new Map<string, typeof allTransactions>();
     for (const tx of allTransactions) {
       const list = txByBook.get(tx.bookId) ?? [];
@@ -22,16 +20,21 @@ export function useBooks() {
       txByBook.set(tx.bookId, list);
     }
 
-    return books.map((book): BookWithStats => {
-      const txs = txByBook.get(book.id) ?? [];
-      return {
-        ...book,
-        balance: calculateBalance(txs),
-        transactionCount: txs.length,
-        hasPendingSync: !!book.pendingSync || txs.some((t) => t.pendingSync),
-        lastEntryAt: txs.length ? Math.max(...txs.map((t) => t.date)) : book.createdAt,
-      };
-    });
+    return allBooks
+      .filter((b) => !b.archived)
+      .map((book): BookWithStats => {
+        const txs = txByBook.get(book.id) ?? [];
+        const latestTx = txs.length ? Math.max(...txs.map((t) => t.updatedAt)) : 0;
+        return {
+          ...book,
+          balance: calculateBalance(txs),
+          transactionCount: txs.length,
+          hasPendingSync: !!book.pendingSync || txs.some((t) => t.pendingSync),
+          lastEntryAt: txs.length ? Math.max(...txs.map((t) => t.date)) : book.createdAt,
+          lastActivityAt: Math.max(book.updatedAt, latestTx),
+        };
+      })
+      .sort((a, b) => b.lastActivityAt - a.lastActivityAt);
   });
 
   const books = useMemo(() => result ?? [], [result]);
