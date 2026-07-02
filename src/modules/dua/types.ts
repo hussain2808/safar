@@ -9,6 +9,9 @@ export type DuaCategory =
   | 'quran'
   | 'ratib'
   | 'hizb'
+  | 'comprehensive'
+  | 'rizq'
+  | 'distress'
   | 'other';
 
 export type ContentBlockType = 'arabic' | 'transliteration' | 'translation' | 'reflection' | 'divider';

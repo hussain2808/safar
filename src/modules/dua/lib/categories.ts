@@ -1,6 +1,6 @@
 import {
   Sun, Users, Heart, Plane, HeartPulse, Wheat, HandHeart,
-  BookOpen, Layers, ScrollText, MoreHorizontal,
+  BookOpen, Layers, ScrollText, MoreHorizontal, Library, Sparkles, CloudRain,
 } from 'lucide-react';
 import type { DuaCategory } from '@/modules/dua/types';
 
@@ -14,8 +14,11 @@ export const CATEGORIES: { id: DuaCategory; label: string; icon: typeof Sun; bg:
   { id: 'forgiveness', label: 'Forgiveness', icon: HandHeart,     bg: 'bg-accent-purple-bg', fg: 'text-accent-purple-fg' },
   { id: 'quran',       label: 'Quran',       icon: BookOpen,      bg: 'bg-accent-green-bg',  fg: 'text-accent-green-fg' },
   { id: 'ratib',       label: 'Ratib',       icon: Layers,        bg: 'bg-accent-purple-bg', fg: 'text-accent-purple-fg' },
-  { id: 'hizb',        label: 'Hizb',        icon: ScrollText,    bg: 'bg-accent-blue-bg',   fg: 'text-accent-blue-fg' },
-  { id: 'other',       label: 'Other',       icon: MoreHorizontal, bg: 'bg-badge-bg',        fg: 'text-text-secondary' },
+  { id: 'hizb',          label: 'Hizb',                    icon: ScrollText,    bg: 'bg-accent-blue-bg',   fg: 'text-accent-blue-fg' },
+  { id: 'comprehensive', label: 'Comprehensive Duʿās',     icon: Library,       bg: 'bg-accent-green-bg',  fg: 'text-accent-green-fg' },
+  { id: 'rizq',          label: 'Rizq • Barakah • Blessings', icon: Sparkles,  bg: 'bg-accent-orange-bg', fg: 'text-accent-orange-fg' },
+  { id: 'distress',      label: 'Distress • Anxiety',      icon: CloudRain,     bg: 'bg-accent-blue-bg',   fg: 'text-accent-blue-fg' },
+  { id: 'other',         label: 'Other',                   icon: MoreHorizontal, bg: 'bg-badge-bg',        fg: 'text-text-secondary' },
 ];
 
 export function categoryLabel(category: DuaCategory): string {
