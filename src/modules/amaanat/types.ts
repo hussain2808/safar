@@ -1,4 +1,4 @@
-export type ItemCategory = 'electronics' | 'valuables' | 'vehicles' | 'property' | 'records';
+export type ItemCategory = 'electronics' | 'valuables' | 'vehicles' | 'property' | 'gold' | 'silver' | 'records';
 
 export interface Item {
   id: string;
