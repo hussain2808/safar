@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import { X } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { Camera, X } from 'lucide-react';
 import { cn } from '@/family/lib/utils';
 import { RELATIONSHIPS, relationshipLabel } from '@/family/lib/relationships';
-import { createPerson, updatePerson, deletePerson } from '@/family/db/people';
+import { createPerson, updatePerson, deletePerson, savePersonPhoto } from '@/family/db/people';
 import { SELF_PERSON_ID } from '@/family/db';
+import { initials, avatarColors } from '@/family/lib/avatar';
 import type { Person, Relationship } from '@/family/types';
 
 interface PersonSheetProps {
@@ -22,6 +23,18 @@ export function PersonSheet({ person, onClose, onSaved }: PersonSheetProps) {
   const [relationship, setRelationship] = useState<Relationship>(person?.relationship ?? 'spouse');
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(person?.thumbnailUrl ?? null);
+  const [pendingPhotoFile, setPendingPhotoFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingPhotoFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setPhotoPreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  }
 
   async function handleSave() {
     if (!name.trim()) return;
@@ -32,15 +45,24 @@ export function PersonSheet({ person, onClose, onSaved }: PersonSheetProps) {
       dob: dob ? new Date(dob).getTime() : undefined,
     };
 
+    let savedId: string | null = person?.id ?? null;
+
     if (person) {
       await updatePerson(person.id, payload);
-      setSaving(false);
       onSaved?.({ ...person, ...payload });
     } else {
       const result = await createPerson(payload);
-      setSaving(false);
-      if (result.ok) onSaved?.(result.data);
+      if (result.ok) {
+        savedId = result.data.id;
+        onSaved?.(result.data);
+      }
     }
+
+    if (pendingPhotoFile && savedId) {
+      savePersonPhoto(savedId, pendingPhotoFile).catch(console.error);
+    }
+
+    setSaving(false);
     onClose();
   }
 
@@ -49,6 +71,9 @@ export function PersonSheet({ person, onClose, onSaved }: PersonSheetProps) {
     await deletePerson(person.id);
     onClose();
   }
+
+  const colors = person ? avatarColors(person.id) : avatarColors('new');
+  const initial = name.trim() ? initials(name.trim()) : '?';
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-50" onClick={onClose}>
@@ -61,6 +86,37 @@ export function PersonSheet({ person, onClose, onSaved }: PersonSheetProps) {
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-icon-bg flex items-center justify-center text-text-secondary" aria-label="Close">
             <X size={16} />
           </button>
+        </div>
+
+        {/* Photo picker */}
+        <div className="flex justify-center mb-5">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="relative w-20 h-20 rounded-full overflow-hidden group"
+            aria-label="Change photo"
+          >
+            {photoPreview ? (
+              <img src={photoPreview} alt={name || 'Person'} className="w-full h-full object-cover" />
+            ) : (
+              <div className={`w-full h-full flex items-center justify-center ${colors.bg}`}>
+                <span className={`text-2xl font-bold ${colors.fg}`}>{initial}</span>
+              </div>
+            )}
+            <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity">
+              <Camera size={20} className="text-white" />
+            </div>
+            <div className="absolute bottom-0 right-0 w-6 h-6 bg-card-bg rounded-full flex items-center justify-center shadow-card">
+              <Camera size={12} className="text-text-secondary" />
+            </div>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handlePhotoChange}
+          />
         </div>
 
         <div className="space-y-5">

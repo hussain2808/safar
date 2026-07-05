@@ -2,7 +2,8 @@ import { nanoid } from 'nanoid';
 import { db, SELF_PERSON_ID } from '@/family/db';
 import type { Person, Result } from '@/family/types';
 import { auth } from '@/lib/firebase';
-import { pushPerson, deleteFirestorePerson } from '@/family/sync/firestore';
+import { pushPerson, deleteFirestorePerson, uploadPersonPhoto } from '@/family/sync/firestore';
+import { compressPersonPhoto } from '@/family/lib/compress';
 
 function uid() { return auth.currentUser?.uid ?? null; }
 
@@ -42,6 +43,19 @@ export async function updatePerson(
       const person = await db.people.get(id);
       if (person) pushPerson(u, person).then(() => db.people.update(id, { pendingSync: false })).catch(console.error);
     }
+    return { ok: true, data: undefined };
+  } catch (e) {
+    return { ok: false, error: String(e) };
+  }
+}
+
+export async function savePersonPhoto(personId: string, file: File): Promise<Result<void>> {
+  try {
+    const u = uid();
+    if (!u) return { ok: false, error: 'Not logged in' };
+    const { blob, thumbnail } = await compressPersonPhoto(file);
+    const { photoUrl, thumbnailUrl } = await uploadPersonPhoto(u, personId, blob, thumbnail);
+    await updatePerson(personId, { photoUrl, thumbnailUrl });
     return { ok: true, data: undefined };
   } catch (e) {
     return { ok: false, error: String(e) };

@@ -2,7 +2,8 @@ import {
   doc, setDoc, deleteDoc,
   collection, getDocs,
 } from 'firebase/firestore';
-import { fsdb } from '@/lib/firebase';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { fsdb, storage } from '@/lib/firebase';
 import { db } from '@/family/db';
 import type { Person } from '@/family/types';
 
@@ -21,7 +22,30 @@ export async function pushPerson(uid: string, person: Person) {
 }
 
 export async function deleteFirestorePerson(uid: string, personId: string) {
-  await deleteDoc(personRef(uid, personId));
+  await Promise.all([
+    deleteDoc(personRef(uid, personId)),
+    deleteObject(ref(storage, `users/${uid}/personPhotos/${personId}`)).catch(() => {}),
+    deleteObject(ref(storage, `users/${uid}/personPhotos/${personId}_thumb`)).catch(() => {}),
+  ]);
+}
+
+export async function uploadPersonPhoto(
+  uid: string,
+  personId: string,
+  blob: Blob,
+  thumbnail: Blob,
+): Promise<{ photoUrl: string; thumbnailUrl: string }> {
+  const fullRef = ref(storage, `users/${uid}/personPhotos/${personId}`);
+  const thumbRef = ref(storage, `users/${uid}/personPhotos/${personId}_thumb`);
+  const [fullSnap, thumbSnap] = await Promise.all([
+    uploadBytes(fullRef, blob, { contentType: 'image/jpeg' }),
+    uploadBytes(thumbRef, thumbnail, { contentType: 'image/jpeg' }),
+  ]);
+  const [photoUrl, thumbnailUrl] = await Promise.all([
+    getDownloadURL(fullSnap.ref),
+    getDownloadURL(thumbSnap.ref),
+  ]);
+  return { photoUrl, thumbnailUrl };
 }
 
 export async function syncOnLogin(uid: string) {

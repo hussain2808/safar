@@ -134,8 +134,12 @@ function PersonCard({ person, count, colorIdx, onClick }: {
 
   return (
     <button onClick={onClick} className="flex flex-col items-center gap-1.5 flex-shrink-0 w-20 active:scale-[0.97] transition-transform">
-      <div className={`w-14 h-14 rounded-full ${color.bg} flex items-center justify-center`}>
-        <span className={`text-xl font-bold ${color.fg}`}>{initial}</span>
+      <div className={`w-14 h-14 rounded-full overflow-hidden ${!person.thumbnailUrl ? color.bg : ''} flex items-center justify-center`}>
+        {person.thumbnailUrl ? (
+          <img src={person.thumbnailUrl} alt={person.name} className="w-full h-full object-cover" />
+        ) : (
+          <span className={`text-xl font-bold ${color.fg}`}>{initial}</span>
+        )}
       </div>
       <span className="text-xs font-medium text-text-primary text-center leading-tight">{person.name}</span>
       <span className={`text-xs font-semibold ${color.count}`}>{count} {count === 1 ? 'wish' : 'wishes'} ›</span>

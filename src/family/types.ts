@@ -5,6 +5,8 @@ export interface Person {
   name: string;
   relationship: Relationship;
   dob?: number;
+  photoUrl?: string;
+  thumbnailUrl?: string;
   createdAt: number;
   updatedAt: number;
   pendingSync?: boolean;
