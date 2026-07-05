@@ -3,7 +3,7 @@ import {
   pushBook, pushTransaction, pushCategory,
   deleteFirestoreBook, deleteFirestoreTransaction, deleteFirestoreCategory,
 } from './firestore';
-import { pushPhoto } from '@/modules/hisaab/db/photos';
+import { pushPhoto, deleteFirestorePhoto } from '@/modules/hisaab/db/photos';
 
 export async function retryPendingSync(uid: string): Promise<void> {
   const [books, transactions, categories, photos, pendingDeletes] = await Promise.all([
@@ -23,7 +23,8 @@ export async function retryPendingSync(uid: string): Promise<void> {
       try {
         if (pd.kind === 'book') await deleteFirestoreBook(uid, pd.targetId);
         else if (pd.kind === 'transaction') await deleteFirestoreTransaction(uid, pd.bookId!, pd.targetId);
-        else await deleteFirestoreCategory(uid, pd.bookId!, pd.targetId);
+        else if (pd.kind === 'category') await deleteFirestoreCategory(uid, pd.bookId!, pd.targetId);
+        else if (pd.kind === 'photo') await deleteFirestorePhoto(uid, pd.targetId);
         await db.pendingDeletes.delete(pd.id);
       } catch (e) {
         console.error(e);

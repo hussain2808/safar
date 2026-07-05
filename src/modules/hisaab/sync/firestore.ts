@@ -97,17 +97,18 @@ export async function syncOnLogin(uid: string) {
   if (transactions.length) await db.transactions.bulkPut(transactions);
   if (categories.length) await db.categories.bulkPut(categories);
 
-  await syncPhotosOnLogin(uid);
+  await syncPhotosOnLogin(uid, pendingDeletes);
 }
 
-async function syncPhotosOnLogin(uid: string) {
+async function syncPhotosOnLogin(uid: string, pendingDeletes: { kind: string; targetId: string }[]) {
+  const deletedPhotoIds = new Set(pendingDeletes.filter((pd) => pd.kind === 'photo').map((pd) => pd.targetId));
   const photosSnap = await getDocs(collection(fsdb, 'users', uid, 'photos'));
   if (photosSnap.empty) return;
 
   const existingIds = new Set(await db.photos.toCollection().primaryKeys() as string[]);
 
   await Promise.all(
-    photosSnap.docs.map(async (d) => {
+    photosSnap.docs.filter((d) => !deletedPhotoIds.has(d.id)).map(async (d) => {
       const { id, url, thumbUrl, createdAt } = d.data() as {
         id: string; url: string; thumbUrl: string; createdAt: number;
       };

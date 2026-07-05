@@ -44,18 +44,23 @@ export async function saveDocument(file: File): Promise<Result<Document>> {
   }
 }
 
+export async function deleteFirestoreDocument(userId: string, docId: string): Promise<void> {
+  await Promise.all([
+    deleteObject(storageRef(userId, docId)).catch(() => {}),
+    deleteDoc(docRef(userId, docId)),
+  ]);
+}
+
 export async function deleteDocument(id: string): Promise<Result<void>> {
   try {
-    await db.documents.delete(id);
-
     const u = uid();
+    if (u) await db.pendingDeletes.put({ id: nanoid(), kind: 'document', targetId: id, createdAt: Date.now() });
+    await db.documents.delete(id);
     if (u) {
-      Promise.all([
-        deleteObject(storageRef(u, id)).catch(() => {}),
-        deleteDoc(docRef(u, id)),
-      ]).catch(console.error);
+      deleteFirestoreDocument(u, id)
+        .then(() => db.pendingDeletes.where({ kind: 'document', targetId: id }).delete())
+        .catch(console.error);
     }
-
     return { ok: true, data: undefined };
   } catch (e) {
     return { ok: false, error: String(e) };

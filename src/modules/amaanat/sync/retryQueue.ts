@@ -1,7 +1,7 @@
 import { db } from '@/modules/amaanat/db';
 import { pushItem, deleteFirestoreItem } from './firestore';
-import { deletePhoto, pushPhoto } from '@/modules/amaanat/db/photos';
-import { deleteDocument, pushDocument } from '@/modules/amaanat/db/documents';
+import { pushPhoto, deleteFirestorePhoto } from '@/modules/amaanat/db/photos';
+import { pushDocument, deleteFirestoreDocument } from '@/modules/amaanat/db/documents';
 
 export async function retryPendingSync(uid: string): Promise<void> {
   const [items, photos, documents, pendingDeletes] = await Promise.all([
@@ -18,8 +18,8 @@ export async function retryPendingSync(uid: string): Promise<void> {
     ...pendingDeletes.map(async (pd) => {
       try {
         if (pd.kind === 'item') await deleteFirestoreItem(uid, pd.targetId);
-        else if (pd.kind === 'photo') await deletePhoto(pd.targetId);
-        else await deleteDocument(pd.targetId);
+        else if (pd.kind === 'photo') await deleteFirestorePhoto(uid, pd.targetId);
+        else if (pd.kind === 'document') await deleteFirestoreDocument(uid, pd.targetId);
         await db.pendingDeletes.delete(pd.id);
       } catch (e) {
         console.error(e);

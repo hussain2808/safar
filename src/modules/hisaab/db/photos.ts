@@ -49,19 +49,24 @@ export async function savePhoto(file: File): Promise<Result<Photo>> {
   }
 }
 
+export async function deleteFirestorePhoto(userId: string, photoId: string): Promise<void> {
+  await Promise.all([
+    deleteObject(storageRef(userId, photoId)).catch(() => {}),
+    deleteObject(thumbRef(userId, photoId)).catch(() => {}),
+    deleteDoc(photoDocRef(userId, photoId)),
+  ]);
+}
+
 export async function deletePhoto(id: string): Promise<Result<void>> {
   try {
-    await db.photos.delete(id);
-
     const u = uid();
+    if (u) await db.pendingDeletes.put({ id: nanoid(), kind: 'photo', targetId: id, createdAt: Date.now() });
+    await db.photos.delete(id);
     if (u) {
-      Promise.all([
-        deleteObject(storageRef(u, id)).catch(() => {}),
-        deleteObject(thumbRef(u, id)).catch(() => {}),
-        deleteDoc(photoDocRef(u, id)),
-      ]).catch(console.error);
+      deleteFirestorePhoto(u, id)
+        .then(() => db.pendingDeletes.where({ kind: 'photo', targetId: id }).delete())
+        .catch(console.error);
     }
-
     return { ok: true, data: undefined };
   } catch (e) {
     return { ok: false, error: String(e) };

@@ -43,7 +43,7 @@ export interface Category {
 
 export interface PendingDelete {
   id: string;
-  kind: 'book' | 'transaction' | 'category';
+  kind: 'book' | 'transaction' | 'category' | 'photo';
   targetId: string;
   bookId?: string;
   createdAt: number;
