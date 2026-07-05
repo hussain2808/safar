@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Search, MoreHorizontal, Bookmark, CalendarClock, Users, Heart,
+  Bookmark, CalendarClock, Users, Heart,
   Plus, Cloud, ChevronRight, User, Calendar, Tag, Star,
 } from 'lucide-react';
 import { useWishes } from '@/modules/wishbook/features/wishes/hooks/useWishes';
@@ -197,7 +197,7 @@ export default function Home() {
   const isEmpty = !isLoading && wishes.length === 0;
 
   return (
-    <div className="min-h-screen bg-cream pb-36">
+    <div className="min-h-screen bg-cream pb-44">
       {/* Header */}
       <header className="px-5 pt-12 pb-5">
         <div className="flex items-start justify-between">
@@ -209,22 +209,12 @@ export default function Home() {
               Things I hope to bring<br />into my life.
             </p>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            <div className="flex items-center gap-2">
-              <button className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors">
-                <Search size={16} />
-              </button>
-              <button className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors">
-                <MoreHorizontal size={16} />
-              </button>
-            </div>
-            <img
-              src="/wishbook-hero.svg"
-              alt=""
-              className="w-36 h-32 object-contain -mr-1"
-              aria-hidden="true"
-            />
-          </div>
+          <img
+            src="/wishbook-hero.svg"
+            alt=""
+            className="w-36 h-32 object-contain -mr-1 flex-shrink-0"
+            aria-hidden="true"
+          />
         </div>
       </header>
 
@@ -302,7 +292,7 @@ export default function Home() {
       {/* FAB */}
       <button
         onClick={() => navigate('/wishbook/add')}
-        className="fixed bottom-[72px] inset-x-4 h-14 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
+        className="fixed bottom-[84px] inset-x-4 h-14 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
       >
         <Plus size={20} />
         <span>Add New Wish</span>
