@@ -33,6 +33,7 @@ export interface Wish {
   assignedToId: string;
   targetDate?: number;
   estimatedCost?: number;
+  savedAmount?: number;
   currency: string;
   priority: WishPriority;
   status: WishStatus;
@@ -40,6 +41,7 @@ export interface Wish {
   whyIWantThis?: string;
   links?: WishLink[];
   purchasedAt?: number;
+  archived?: boolean;
   createdAt: number;
   updatedAt: number;
   pendingSync?: boolean;

@@ -1,13 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Wallet, Shield, FileCheck2, Heart } from 'lucide-react';
+import { Heart, Wallet, Shield, FileCheck2, Sparkles, Star } from 'lucide-react';
 import { bottomNavItems } from '../mockData';
 
 const icons = {
-  home: Home,
-  hisaab: Wallet,
-  amaanat: Shield,
-  sanad: FileCheck2,
-  nazara: Heart,
+  nazara:   Heart,
+  hisaab:   Wallet,
+  amaanat:  Shield,
+  sanad:    FileCheck2,
+  dua:      Sparkles,
+  wishbook: Star,
 } as const;
 
 export function BottomNav() {
@@ -15,18 +16,18 @@ export function BottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-card-bg border-t border-card-border">
-      <div className="flex items-center justify-between px-6 py-2">
+      <div className="flex items-center justify-between px-2 py-2">
         {bottomNavItems.map((item) => {
           const Icon = icons[item.key as keyof typeof icons];
-          const active = pathname === item.path;
+          const active = pathname === item.path || (item.key === 'wishbook' && pathname.startsWith('/wishbook'));
           return (
             <Link
               key={item.key}
               to={item.path}
-              className={`flex flex-col items-center gap-1 py-1 ${active ? 'text-brown' : 'text-text-muted'}`}
+              className={`flex flex-col items-center gap-0.5 py-1 px-2 ${active ? 'text-brown' : 'text-text-muted'}`}
             >
-              <Icon size={20} />
-              <span className="text-[10px]">{item.label}</span>
+              <Icon size={19} />
+              <span className="text-[9px]">{item.label}</span>
             </Link>
           );
         })}

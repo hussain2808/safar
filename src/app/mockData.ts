@@ -80,9 +80,10 @@ export const modules = [
 ] as const;
 
 export const bottomNavItems = [
-  { key: 'home', label: 'Home', path: '/' },
-  { key: 'hisaab', label: 'Hisaab', path: '/hisaab' },
-  { key: 'amaanat', label: 'Amaanat', path: '/amaanat' },
-  { key: 'sanad', label: 'Sanad', path: '/sanad' },
-  { key: 'nazara', label: 'Nazara', path: '/nazara' },
+  { key: 'nazara',   label: 'Nazara',   path: '/nazara' },
+  { key: 'hisaab',  label: 'Hisaab',   path: '/hisaab' },
+  { key: 'amaanat', label: 'Amaanat',  path: '/amaanat' },
+  { key: 'sanad',   label: 'Sanad',    path: '/sanad' },
+  { key: 'dua',     label: 'Dua',      path: '/dua' },
+  { key: 'wishbook',label: 'Wishbook', path: '/wishbook' },
 ] as const;
