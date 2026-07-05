@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Bookmark, CalendarClock, Users, Heart,
-  Plus, Cloud, ChevronRight, ChevronLeft, User, Calendar, Tag, Star,
+  Plus, Cloud, ChevronRight, ChevronLeft, Search, User, Calendar, Tag, Star,
 } from 'lucide-react';
 import { useWishes } from '@/modules/wishbook/features/wishes/hooks/useWishes';
 import { usePeople } from '@/family/hooks/usePeople';
@@ -200,13 +200,22 @@ export default function Home() {
     <div className="min-h-screen bg-cream pb-36">
       {/* Header */}
       <header className="px-5 pt-10 pb-5">
-        <button
-          onClick={() => navigate('/')}
-          aria-label="Back to Safar"
-          className="w-9 h-9 rounded-full flex items-center justify-center text-text-primary -ml-1 mb-2"
-        >
-          <ChevronLeft size={22} />
-        </button>
+        <div className="flex items-center justify-between mb-2">
+          <button
+            onClick={() => navigate('/')}
+            aria-label="Back to Safar"
+            className="w-9 h-9 rounded-full flex items-center justify-center text-text-primary -ml-1"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <button
+            onClick={() => navigate('/wishbook/search')}
+            aria-label="Search wishes"
+            className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors"
+          >
+            <Search size={16} />
+          </button>
+        </div>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="font-serif text-[40px] leading-none text-[#C8922E]">
