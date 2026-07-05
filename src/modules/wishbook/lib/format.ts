@@ -23,7 +23,7 @@ export function getTimeLeft(targetDate: number): { label: string; className: str
   if (days < 30) return { label: `${days}d left`, className: 'bg-red-50 text-red-500' };
   const months = Math.round(days / 30);
   if (months < 4) return { label: `${months} months left`, className: 'bg-accent-orange-bg text-accent-orange-fg' };
-  return { label: `${months} months left`, className: 'bg-accent-green-bg text-accent-green-fg' };
+  return { label: `${months} months left`, className: 'bg-[#FFF3DC] text-[#C8922E]' };
 }
 
 export const PRIORITY_STYLE: Record<WishPriority, { label: string; color: string }> = {
@@ -33,10 +33,10 @@ export const PRIORITY_STYLE: Record<WishPriority, { label: string; color: string
 };
 
 export const STATUS_STYLE: Record<WishStatus, { label: string; bg: string; fg: string }> = {
-  dreaming:  { label: 'Dreaming',  bg: 'bg-badge-bg',         fg: 'text-text-secondary' },
+  dreaming:  { label: 'Dreaming',  bg: 'bg-purple-50',        fg: 'text-purple-600' },
   planning:  { label: 'Planning',  bg: 'bg-accent-blue-bg',   fg: 'text-accent-blue-fg' },
-  saving:    { label: 'Saving',    bg: 'bg-accent-green-bg',  fg: 'text-accent-green-fg' },
+  saving:    { label: 'Saving',    bg: 'bg-[#FFF3DC]',        fg: 'text-[#C8922E]' },
   ready:     { label: 'Ready',     bg: 'bg-emerald-50',       fg: 'text-emerald-700' },
-  purchased: { label: 'Purchased', bg: 'bg-accent-green-bg',  fg: 'text-accent-green-fg' },
-  cancelled: { label: 'Cancelled', bg: 'bg-red-50',           fg: 'text-red-500' },
+  purchased: { label: 'Purchased', bg: 'bg-teal-50',          fg: 'text-teal-600' },
+  cancelled: { label: 'Cancelled', bg: 'bg-gray-100',         fg: 'text-gray-500' },
 };

@@ -134,7 +134,7 @@ export default function AddWish() {
       <header className="px-4 pt-12 pb-5">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center text-[#1B4332] font-medium"
+          className="mb-4 flex items-center text-[#C8922E] font-medium"
         >
           <ChevronLeft size={20} />
         </button>
@@ -150,7 +150,7 @@ export default function AddWish() {
         {/* Title */}
         <div className={rowCard}>
           <div className={fieldRow}>
-            <div className={iconBox('bg-accent-green-bg')}>📋</div>
+            <div className={iconBox('bg-[#FFF3DC]')}>📋</div>
             <div className="flex-1">
               <p className="text-xs font-semibold text-text-primary mb-1">Title <span className="text-red-400">*</span></p>
               <input
@@ -218,7 +218,7 @@ export default function AddWish() {
               </div>
             </div>
             <div className={`${fieldRow} col-span-1`}>
-              <div className={iconBox('bg-accent-green-bg')}>💵</div>
+              <div className={iconBox('bg-[#FFF3DC]')}>💵</div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-text-primary mb-1">Estimated Cost</p>
                 <div className="flex items-center gap-1">
@@ -310,8 +310,8 @@ export default function AddWish() {
         <div className={rowCard}>
           <div className="px-4 py-3.5">
             <div className="flex items-center gap-3 mb-3">
-              <div className={iconBox('bg-accent-green-bg')}>
-                <ListChecks size={16} className="text-accent-green-fg" />
+              <div className={iconBox('bg-[#FFF3DC]')}>
+                <ListChecks size={16} className="text-[#C8922E]" />
               </div>
               <div>
                 <p className="text-sm font-semibold text-text-primary">Items <span className="text-text-muted font-normal text-xs">(Optional)</span></p>
@@ -343,7 +343,7 @@ export default function AddWish() {
             ))}
             <button
               onClick={addItem}
-              className="flex items-center gap-1.5 text-sm text-accent-green-fg font-medium mt-1"
+              className="flex items-center gap-1.5 text-sm text-[#C8922E] font-medium mt-1"
             >
               <Plus size={15} /> Add Item
             </button>
@@ -399,7 +399,7 @@ export default function AddWish() {
           <button
             onClick={() => handleSave(false)}
             disabled={saving || !title.trim()}
-            className="w-full h-14 bg-[#1B4332] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100 disabled:opacity-50"
+            className="w-full h-14 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100 disabled:opacity-50"
           >
             <Save size={18} />
             {saving ? 'Saving…' : isEdit ? 'Update Wish' : 'Save Wish'}

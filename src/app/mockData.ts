@@ -71,10 +71,10 @@ export const modules = [
     description: 'Track the things you hope to bring into your life.',
     image: null,
     icon: 'star',
-    cardBg: 'bg-accent-green-bg',
+    cardBg: 'bg-[#FFF3DC]',
     iconBg: 'bg-card-bg',
-    iconFg: 'text-accent-green-fg',
-    subtitleColor: 'text-accent-green-fg',
+    iconFg: 'text-[#C8922E]',
+    subtitleColor: 'text-[#C8922E]',
     enabled: true,
   },
   {

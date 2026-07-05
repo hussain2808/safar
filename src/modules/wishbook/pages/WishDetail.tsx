@@ -155,7 +155,7 @@ export default function WishDetail() {
       <header className="flex items-center justify-between px-4 pt-12 pb-4">
         <button
           onClick={() => navigate('/wishbook')}
-          className="flex items-center gap-0.5 text-[#1B4332] font-medium text-sm"
+          className="flex items-center gap-0.5 text-[#C8922E] font-medium text-sm"
         >
           <ChevronLeft size={18} />
           <span>Wishbook</span>
@@ -203,7 +203,7 @@ export default function WishDetail() {
               <Calendar size={12} />
               <span>Estimated Cost</span>
             </div>
-            <p className="text-xl font-bold text-accent-green-fg">
+            <p className="text-xl font-bold text-[#C8922E]">
               {wish.estimatedCost ? formatCurrency(wish.estimatedCost, wish.currency) : '—'}
             </p>
           </div>
@@ -218,7 +218,7 @@ export default function WishDetail() {
               </div>
               <ChevronLeft size={14} className="text-text-muted rotate-180 mb-1.5" />
             </div>
-            <p className="text-xl font-bold text-accent-green-fg">
+            <p className="text-xl font-bold text-[#C8922E]">
               {wish.savedAmount ? formatCurrency(wish.savedAmount, wish.currency) : `${wish.currency} 0`}
             </p>
           </button>
@@ -239,7 +239,7 @@ export default function WishDetail() {
             </p>
             <div className="h-2 bg-card-border rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#1B4332] rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#C8922E] to-[#E0B25C] rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -260,7 +260,7 @@ export default function WishDetail() {
             </div>
             <div className="h-1.5 bg-card-border rounded-full overflow-hidden mb-3">
               <div
-                className="h-full bg-[#1B4332] rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#C8922E] to-[#E0B25C] rounded-full transition-all duration-300"
                 style={{ width: `${itemProgress}%` }}
               />
             </div>
@@ -272,7 +272,7 @@ export default function WishDetail() {
                   className="w-full flex items-center gap-3 py-2.5 px-1 active:bg-card-border rounded-xl transition-colors"
                 >
                   {item.checked
-                    ? <CheckSquare size={18} className="text-[#1B4332] flex-shrink-0" />
+                    ? <CheckSquare size={18} className="text-[#C8922E] flex-shrink-0" />
                     : <Square size={18} className="text-text-muted flex-shrink-0" />
                   }
                   <span className={`flex-1 text-left text-sm ${item.checked ? 'line-through text-text-muted' : 'text-text-primary'}`}>
@@ -352,7 +352,7 @@ export default function WishDetail() {
         {wish.status !== 'purchased' && wish.status !== 'cancelled' && !wish.archived && (
           <button
             onClick={handleMarkPurchased}
-            className="w-full h-14 bg-[#1B4332] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
+            className="w-full h-14 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
           >
             <CheckCircle2 size={20} />
             Mark as Purchased
@@ -424,7 +424,7 @@ export default function WishDetail() {
           </div>
           <button
             onClick={handleSaveSavedAmount}
-            className="w-full h-12 bg-[#1B4332] text-white rounded-xl font-semibold"
+            className="w-full h-12 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-xl font-semibold"
           >
             Save
           </button>

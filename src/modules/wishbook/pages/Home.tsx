@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, MoreHorizontal, Bookmark, CalendarClock, Users, Heart,
-  Plus, Cloud, ChevronRight, User, Calendar, Tag,
+  Plus, Cloud, ChevronRight, User, Calendar, Tag, Star,
 } from 'lucide-react';
 import { useWishes } from '@/modules/wishbook/features/wishes/hooks/useWishes';
 import { usePeople } from '@/family/hooks/usePeople';
@@ -13,9 +13,9 @@ import type { Wish } from '@/modules/wishbook/types';
 import type { Person } from '@/family/types';
 
 const PERSON_COLORS = [
-  { bg: 'bg-accent-green-bg',  fg: 'text-accent-green-fg',  count: 'text-accent-green-fg' },
-  { bg: 'bg-accent-pink-bg',   fg: 'text-accent-pink-fg',   count: 'text-accent-orange-fg' },
-  { bg: 'bg-accent-orange-bg', fg: 'text-accent-orange-fg', count: 'text-accent-green-fg' },
+  { bg: 'bg-[#FFF3DC]',        fg: 'text-[#C8922E]',        count: 'text-[#C8922E]' },
+  { bg: 'bg-accent-pink-bg',   fg: 'text-accent-pink-fg',   count: 'text-accent-pink-fg' },
+  { bg: 'bg-accent-orange-bg', fg: 'text-accent-orange-fg', count: 'text-accent-orange-fg' },
   { bg: 'bg-accent-purple-bg', fg: 'text-accent-purple-fg', count: 'text-accent-purple-fg' },
   { bg: 'bg-accent-blue-bg',   fg: 'text-accent-blue-fg',   count: 'text-accent-blue-fg' },
 ];
@@ -23,12 +23,12 @@ const PERSON_COLORS = [
 function SectionHeader({ icon: Icon, title, onViewAll }: { icon: typeof Cloud; title: string; onViewAll: () => void }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <div className="flex items-center gap-2">
-        <Icon size={16} className="text-text-secondary" />
-        <h2 className="text-home-section-heading font-semibold text-text-primary">{title}</h2>
+      <div className="flex items-center gap-1.5">
+        <Icon size={14} className="text-text-secondary" />
+        <h2 className="text-sm font-semibold text-text-primary">{title}</h2>
       </div>
-      <button onClick={onViewAll} className="flex items-center gap-0.5 text-accent-green-fg text-sm font-medium">
-        View All <ChevronRight size={14} />
+      <button onClick={onViewAll} className="flex items-center gap-0.5 text-[#C8922E] text-xs font-medium">
+        View All <ChevronRight size={13} />
       </button>
     </div>
   );
@@ -165,6 +165,11 @@ export default function Home() {
     [activeWishes, now, sixMonthsOut],
   );
 
+  const myselfWishes = useMemo(
+    () => activeWishes.filter((w) => w.assignedToId === SELF_PERSON_ID).slice(0, 3),
+    [activeWishes],
+  );
+
   const dreamingWishes = useMemo(
     () => activeWishes.filter((w) => w.status === 'dreaming').slice(0, 4),
     [activeWishes],
@@ -197,8 +202,8 @@ export default function Home() {
       <header className="px-5 pt-12 pb-5">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="font-serif text-[44px] leading-none text-[#1B4332]">
-              Wishbook<span className="text-gold text-3xl align-top mt-1 inline-block">✦</span>
+            <h1 className="font-serif text-[44px] leading-none text-[#C8922E]">
+              Wishbook<span className="text-[#E7C27D] text-3xl align-top mt-1 inline-block">✦</span>
             </h1>
             <p className="text-text-secondary text-sm mt-2 leading-snug">
               Things I hope to bring<br />into my life.
@@ -227,10 +232,10 @@ export default function Home() {
         {/* Stats */}
         <div className="bg-card-bg rounded-card shadow-card px-4 py-4">
           <div className="grid grid-cols-4 gap-2">
-            <StatItem icon={Bookmark} count={activeWishes.length} label="Total Wishes" iconBg="bg-accent-green-bg" iconFg="text-accent-green-fg" />
-            <StatItem icon={CalendarClock} count={dueSoonWishes.length} label="Due Soon" iconBg="bg-accent-orange-bg" iconFg="text-accent-orange-fg" />
-            <StatItem icon={Users} count={familyWishCount} label="For Family" iconBg="bg-accent-purple-bg" iconFg="text-accent-purple-fg" />
-            <StatItem icon={Heart} count={purchasedCount} label="Purchased" iconBg="bg-accent-pink-bg" iconFg="text-accent-pink-fg" />
+            <StatItem icon={Bookmark}     count={activeWishes.length}  label="Total Wishes" iconBg="bg-[#FFF3DC]"         iconFg="text-[#C8922E]" />
+            <StatItem icon={CalendarClock} count={dueSoonWishes.length} label="Due Soon"     iconBg="bg-accent-orange-bg" iconFg="text-accent-orange-fg" />
+            <StatItem icon={Users}         count={familyWishCount}      label="For Family"   iconBg="bg-accent-purple-bg" iconFg="text-accent-purple-fg" />
+            <StatItem icon={Heart}         count={purchasedCount}        label="Purchased"    iconBg="bg-accent-pink-bg"   iconFg="text-accent-pink-fg" />
           </div>
         </div>
 
@@ -240,6 +245,18 @@ export default function Home() {
             <SectionHeader icon={CalendarClock} title="Due Soon" onViewAll={() => {}} />
             <div className="space-y-3">
               {dueSoonWishes.map((w) => (
+                <WishCard key={w.id} wish={w} people={people} onClick={() => navigate(`/wishbook/wish/${w.id}`)} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* For Myself */}
+        {!isLoading && myselfWishes.length > 0 && (
+          <section>
+            <SectionHeader icon={Star} title="For Myself" onViewAll={() => {}} />
+            <div className="space-y-3">
+              {myselfWishes.map((w) => (
                 <WishCard key={w.id} wish={w} people={people} onClick={() => navigate(`/wishbook/wish/${w.id}`)} />
               ))}
             </div>
@@ -273,8 +290,8 @@ export default function Home() {
         {/* Empty state */}
         {isEmpty && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-accent-green-bg flex items-center justify-center mb-4">
-              <Bookmark size={28} className="text-accent-green-fg" strokeWidth={1.5} />
+            <div className="w-16 h-16 rounded-2xl bg-[#FFF3DC] flex items-center justify-center mb-4">
+              <Bookmark size={28} className="text-[#C8922E]" strokeWidth={1.5} />
             </div>
             <p className="text-lg font-semibold text-text-primary mb-1">No wishes yet</p>
             <p className="text-sm text-text-secondary">Start adding things you hope to bring into your life.</p>
@@ -285,11 +302,11 @@ export default function Home() {
       {/* FAB */}
       <button
         onClick={() => navigate('/wishbook/add')}
-        className="fixed bottom-[72px] inset-x-4 h-14 bg-[#1B4332] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
+        className="fixed bottom-[72px] inset-x-4 h-14 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
       >
         <Plus size={20} />
         <span>Add New Wish</span>
-        <span className="text-gold ml-0.5">✦</span>
+        <span className="text-[#F4E3C1] ml-0.5">✦</span>
       </button>
     </div>
   );
