@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Bookmark, CalendarClock, Users, Heart,
-  Plus, Cloud, ChevronRight, User, Calendar, Tag, Star,
+  Plus, Cloud, ChevronRight, ChevronLeft, User, Calendar, Tag, Star,
 } from 'lucide-react';
 import { useWishes } from '@/modules/wishbook/features/wishes/hooks/useWishes';
 import { usePeople } from '@/family/hooks/usePeople';
@@ -197,13 +197,20 @@ export default function Home() {
   const isEmpty = !isLoading && wishes.length === 0;
 
   return (
-    <div className="min-h-screen bg-cream pb-44">
+    <div className="min-h-screen bg-cream pb-36">
       {/* Header */}
-      <header className="px-5 pt-12 pb-5">
+      <header className="px-5 pt-10 pb-5">
+        <button
+          onClick={() => navigate('/')}
+          aria-label="Back to Safar"
+          className="w-9 h-9 rounded-full flex items-center justify-center text-text-primary -ml-1 mb-2"
+        >
+          <ChevronLeft size={22} />
+        </button>
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="font-serif text-[44px] leading-none text-[#C8922E]">
-              Wishbook<span className="text-[#E7C27D] text-3xl align-top mt-1 inline-block">✦</span>
+            <h1 className="font-serif text-[40px] leading-none text-[#C8922E]">
+              Wishbook<span className="text-[#E7C27D] text-2xl align-top mt-1 inline-block">✦</span>
             </h1>
             <p className="text-text-secondary text-sm mt-2 leading-snug">
               Things I hope to bring<br />into my life.
@@ -212,7 +219,7 @@ export default function Home() {
           <img
             src="/wishbook-hero.svg"
             alt=""
-            className="w-36 h-32 object-contain -mr-1 flex-shrink-0"
+            className="w-24 h-20 object-contain -mr-1 flex-shrink-0"
             aria-hidden="true"
           />
         </div>
@@ -292,11 +299,10 @@ export default function Home() {
       {/* FAB */}
       <button
         onClick={() => navigate('/wishbook/add')}
-        className="fixed bottom-[84px] inset-x-4 h-14 bg-gradient-to-r from-[#C8922E] to-[#E0B25C] text-white rounded-2xl flex items-center justify-center gap-2 font-semibold text-base shadow-button active:scale-[0.98] transition-transform duration-100"
+        aria-label="Add new wish"
+        className="fixed bottom-24 right-5 w-14 h-14 rounded-full bg-gradient-to-br from-[#C8922E] to-[#E0B25C] text-white flex items-center justify-center shadow-button active:scale-[0.96] transition-transform duration-100"
       >
-        <Plus size={20} />
-        <span>Add New Wish</span>
-        <span className="text-[#F4E3C1] ml-0.5">✦</span>
+        <Plus size={24} />
       </button>
     </div>
   );
