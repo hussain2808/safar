@@ -1,6 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { modules } from '../mockData';
+import { modules } from '../appConfig';
 import { iconMap } from '../iconMap';
 
 export function ModuleGrid() {

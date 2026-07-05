@@ -190,7 +190,12 @@ export default function WishDetail() {
 
         {/* Meta row */}
         <div className="bg-card-bg rounded-card shadow-card px-4 py-4 grid grid-cols-4 gap-2">
-          <MetaCell label="For" value={personName} icon={User} />
+          <button
+            onClick={() => navigate(`/wishbook/wishes?personId=${wish.assignedToId}`)}
+            className="active:opacity-70 transition-opacity"
+          >
+            <MetaCell label="For" value={personName} icon={User} valueClass="text-[#C8922E]" />
+          </button>
           <MetaCell label="Status" value={status.label} icon={Flag} valueClass={status.fg} />
           <MetaCell label="Priority" value={priority.label} icon={Flag} valueClass={priority.color} />
           <MetaCell label="Target Date" value={wish.targetDate ? formatDate(wish.targetDate) : '—'} icon={Calendar} />

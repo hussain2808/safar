@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Heart, Wallet, Shield, FileCheck2, Sparkles, Star } from 'lucide-react';
-import { bottomNavItems } from '../mockData';
+import { bottomNavItems } from '../appConfig';
 
 const icons = {
   nazara:   Heart,

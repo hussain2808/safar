@@ -35,16 +35,16 @@ function SectionHeader({ icon: Icon, title, onViewAll }: { icon: typeof Cloud; t
 }
 
 function StatItem({
-  icon: Icon, count, label, iconBg, iconFg,
-}: { icon: typeof Bookmark; count: number; label: string; iconBg: string; iconFg: string }) {
+  icon: Icon, count, label, iconBg, iconFg, onClick,
+}: { icon: typeof Bookmark; count: number; label: string; iconBg: string; iconFg: string; onClick?: () => void }) {
   return (
-    <div className="flex flex-col items-center gap-1 text-center">
+    <button onClick={onClick} className="flex flex-col items-center gap-1 text-center active:opacity-70 transition-opacity">
       <div className={`w-9 h-9 rounded-xl ${iconBg} flex items-center justify-center`}>
         <Icon size={16} className={iconFg} strokeWidth={1.5} />
       </div>
       <span className="text-[17px] font-bold text-text-primary leading-tight">{count}</span>
       <span className="text-[10px] text-text-secondary leading-tight">{label}</span>
-    </div>
+    </button>
   );
 }
 
@@ -229,17 +229,17 @@ export default function Home() {
         {/* Stats */}
         <div className="bg-card-bg rounded-card shadow-card px-4 py-4">
           <div className="grid grid-cols-4 gap-2">
-            <StatItem icon={Bookmark}     count={activeWishes.length}  label="Total Wishes" iconBg="bg-[#FFF3DC]"         iconFg="text-[#C8922E]" />
-            <StatItem icon={CalendarClock} count={dueSoonWishes.length} label="Due Soon"     iconBg="bg-accent-orange-bg" iconFg="text-accent-orange-fg" />
-            <StatItem icon={Users}         count={familyWishCount}      label="For Family"   iconBg="bg-accent-purple-bg" iconFg="text-accent-purple-fg" />
-            <StatItem icon={Heart}         count={purchasedCount}        label="Purchased"    iconBg="bg-accent-pink-bg"   iconFg="text-accent-pink-fg" />
+            <StatItem icon={Bookmark}      count={activeWishes.length}  label="Total Wishes" iconBg="bg-[#FFF3DC]"         iconFg="text-[#C8922E]"          onClick={() => navigate('/wishbook/wishes')} />
+            <StatItem icon={CalendarClock} count={dueSoonWishes.length} label="Due Soon"     iconBg="bg-accent-orange-bg" iconFg="text-accent-orange-fg"    onClick={() => navigate('/wishbook/wishes?dueSoon=true')} />
+            <StatItem icon={Users}         count={familyWishCount}      label="For Family"   iconBg="bg-accent-purple-bg" iconFg="text-accent-purple-fg"    onClick={() => navigate('/wishbook/wishes?status=all')} />
+            <StatItem icon={Heart}         count={purchasedCount}       label="Purchased"    iconBg="bg-accent-pink-bg"   iconFg="text-accent-pink-fg"      onClick={() => navigate('/wishbook/wishes?status=purchased')} />
           </div>
         </div>
 
         {/* Due Soon */}
         {!isLoading && dueSoonWishes.length > 0 && (
           <section>
-            <SectionHeader icon={CalendarClock} title="Due Soon" onViewAll={() => {}} />
+            <SectionHeader icon={CalendarClock} title="Due Soon" onViewAll={() => navigate('/wishbook/wishes?dueSoon=true')} />
             <div className="space-y-3">
               {dueSoonWishes.map((w) => (
                 <WishCard key={w.id} wish={w} people={people} onClick={() => navigate(`/wishbook/wish/${w.id}`)} />
@@ -251,7 +251,7 @@ export default function Home() {
         {/* For Myself */}
         {!isLoading && myselfWishes.length > 0 && (
           <section>
-            <SectionHeader icon={Star} title="For Myself" onViewAll={() => {}} />
+            <SectionHeader icon={Star} title="For Myself" onViewAll={() => navigate(`/wishbook/wishes?personId=${SELF_PERSON_ID}`)} />
             <div className="space-y-3">
               {myselfWishes.map((w) => (
                 <WishCard key={w.id} wish={w} people={people} onClick={() => navigate(`/wishbook/wish/${w.id}`)} />
@@ -263,10 +263,10 @@ export default function Home() {
         {/* For Family */}
         {!isLoading && familyStats.length > 0 && (
           <section>
-            <SectionHeader icon={Users} title="For Family" onViewAll={() => {}} />
+            <SectionHeader icon={Users} title="For Family" onViewAll={() => navigate('/wishbook/wishes?status=all')} />
             <div className="flex gap-4 overflow-x-auto pb-1 -mx-4 px-4">
               {familyStats.map(({ person, count }, i) => (
-                <PersonCard key={person.id} person={person} count={count} colorIdx={i} onClick={() => {}} />
+                <PersonCard key={person.id} person={person} count={count} colorIdx={i} onClick={() => navigate(`/wishbook/wishes?personId=${person.id}`)} />
               ))}
             </div>
           </section>
@@ -275,7 +275,7 @@ export default function Home() {
         {/* Dreaming */}
         {!isLoading && dreamingWishes.length > 0 && (
           <section>
-            <SectionHeader icon={Cloud} title="Dreaming" onViewAll={() => {}} />
+            <SectionHeader icon={Cloud} title="Dreaming" onViewAll={() => navigate('/wishbook/wishes?status=dreaming')} />
             <div className="bg-card-bg rounded-card shadow-card divide-y divide-card-border overflow-hidden">
               {dreamingWishes.map((w) => (
                 <DreamingRow key={w.id} wish={w} onClick={() => navigate(`/wishbook/wish/${w.id}`)} />
