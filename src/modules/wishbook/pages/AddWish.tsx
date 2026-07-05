@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, Save, Plus, Trash2, Link2 } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash2, Link2, ListChecks } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { db } from '@/modules/wishbook/db';
 import { pushWish } from '@/modules/wishbook/sync/firestore';
@@ -9,7 +9,7 @@ import { usePeople } from '@/family/hooks/usePeople';
 import { WISH_CATEGORIES } from '@/modules/wishbook/lib/categories';
 import { useAuthStore } from '@/store/auth';
 import { SELF_PERSON_ID } from '@/family/db';
-import type { Wish, WishCategoryId, WishPriority, WishStatus, WishLink } from '@/modules/wishbook/types';
+import type { Wish, WishCategoryId, WishPriority, WishStatus, WishLink, WishItem } from '@/modules/wishbook/types';
 
 const CURRENCIES = ['AED', 'USD', 'EUR', 'GBP', 'SAR', 'INR', 'PKR'];
 const PRIORITIES: { value: WishPriority; label: string }[] = [
@@ -50,6 +50,7 @@ export default function AddWish() {
   const [notes, setNotes] = useState('');
   const [whyIWantThis, setWhyIWantThis] = useState('');
   const [links, setLinks] = useState<WishLink[]>([]);
+  const [items, setItems] = useState<WishItem[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export default function AddWish() {
     setNotes(existingWish.notes ?? '');
     setWhyIWantThis(existingWish.whyIWantThis ?? '');
     setLinks(existingWish.links ?? []);
+    setItems(existingWish.items ?? []);
   }, [existingWish]);
 
   const handleSave = async (addAnother = false) => {
@@ -87,6 +89,7 @@ export default function AddWish() {
         notes: notes.trim() || undefined,
         whyIWantThis: whyIWantThis.trim() || undefined,
         links: links.length ? links : undefined,
+        items: items.length ? items : undefined,
         purchasedAt: existingWish?.purchasedAt,
         archived: existingWish?.archived,
         createdAt: existingWish?.createdAt ?? Date.now(),
@@ -101,7 +104,7 @@ export default function AddWish() {
           .catch(console.error);
       }
       if (addAnother) {
-        setTitle(''); setNotes(''); setWhyIWantThis(''); setLinks([]);
+        setTitle(''); setNotes(''); setWhyIWantThis(''); setLinks([]); setItems([]);
         setTargetDate(''); setEstimatedCost('');
         setCategoryId('other'); setAssignedToId(SELF_PERSON_ID);
         setPriority('medium'); setStatus('dreaming');
@@ -117,6 +120,13 @@ export default function AddWish() {
   const updateLink = (id: string, field: 'label' | 'url', value: string) =>
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
   const removeLink = (id: string) => setLinks((prev) => prev.filter((l) => l.id !== id));
+
+  const addItem = () => setItems((prev) => [...prev, { id: nanoid(), label: '', checked: false }]);
+  const updateItem = (id: string, field: 'label' | 'estimatedCost', value: string) =>
+    setItems((prev) => prev.map((it) =>
+      it.id === id ? { ...it, [field]: field === 'estimatedCost' ? (value ? parseFloat(value) : undefined) : value } : it,
+    ));
+  const removeItem = (id: string) => setItems((prev) => prev.filter((it) => it.id !== id));
 
   return (
     <div className="min-h-screen bg-cream pb-10">
@@ -293,6 +303,50 @@ export default function AddWish() {
                 className={`${fieldStyle} resize-none`}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Items / Checklist */}
+        <div className={rowCard}>
+          <div className="px-4 py-3.5">
+            <div className="flex items-center gap-3 mb-3">
+              <div className={iconBox('bg-accent-green-bg')}>
+                <ListChecks size={16} className="text-accent-green-fg" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-text-primary">Items <span className="text-text-muted font-normal text-xs">(Optional)</span></p>
+                <p className="text-xs text-text-secondary">Break this wish into a list of things to get.</p>
+              </div>
+            </div>
+            {items.map((item, idx) => (
+              <div key={item.id} className="mb-2 bg-icon-bg rounded-xl p-3 flex items-center gap-2">
+                <span className="text-text-muted text-xs font-medium w-5 flex-shrink-0">{idx + 1}.</span>
+                <input
+                  placeholder="Item name…"
+                  value={item.label}
+                  onChange={(e) => updateItem(item.id, 'label', e.target.value)}
+                  className="flex-1 text-sm text-text-primary bg-transparent outline-none placeholder:text-text-muted"
+                />
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="Cost"
+                  value={item.estimatedCost ?? ''}
+                  onChange={(e) => updateItem(item.id, 'estimatedCost', e.target.value)}
+                  className="w-16 text-xs text-text-secondary bg-transparent outline-none placeholder:text-text-muted text-right"
+                />
+                <button onClick={() => removeItem(item.id)} className="text-red-400 p-1 flex-shrink-0">
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={addItem}
+              className="flex items-center gap-1.5 text-sm text-accent-green-fg font-medium mt-1"
+            >
+              <Plus size={15} /> Add Item
+            </button>
           </div>
         </div>
 

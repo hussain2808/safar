@@ -87,11 +87,15 @@ function WishCard({ wish, people, onClick }: { wish: Wish; people: Person[]; onC
                 <Calendar size={10} /> {formatDate(wish.targetDate)}
               </span>
             )}
-            {wish.estimatedCost && (
+            {wish.items?.length ? (
+              <span className="flex items-center gap-0.5">
+                <Tag size={10} /> {wish.items.filter((i) => i.checked).length}/{wish.items.length} items
+              </span>
+            ) : wish.estimatedCost ? (
               <span className="flex items-center gap-0.5">
                 <Tag size={10} /> {formatCurrency(wish.estimatedCost, wish.currency)} (Est.)
               </span>
-            )}
+            ) : null}
           </div>
           <span className={`text-xs font-medium ${priority.color}`}>{priority.label}</span>
         </div>

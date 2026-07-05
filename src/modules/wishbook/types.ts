@@ -26,6 +26,13 @@ export interface WishLink {
   url: string;
 }
 
+export interface WishItem {
+  id: string;
+  label: string;
+  checked: boolean;
+  estimatedCost?: number;
+}
+
 export interface Wish {
   id: string;
   title: string;
@@ -40,6 +47,7 @@ export interface Wish {
   notes?: string;
   whyIWantThis?: string;
   links?: WishLink[];
+  items?: WishItem[];
   purchasedAt?: number;
   archived?: boolean;
   createdAt: number;

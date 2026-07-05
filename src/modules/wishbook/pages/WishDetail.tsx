@@ -4,7 +4,7 @@ import {
   ChevronLeft, MoreHorizontal, Pencil, CheckCircle2, Copy,
   Archive, Trash2, Tag, User, Flag, Calendar, PieChart,
   Star, Link2, FileText, ExternalLink, Hourglass, Target,
-  Banknote,
+  Banknote, ListChecks, CheckSquare, Square,
 } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { db } from '@/modules/wishbook/db';
@@ -72,6 +72,9 @@ export default function WishDetail() {
   const progress = (wish.estimatedCost && wish.savedAmount)
     ? Math.min(100, Math.round((wish.savedAmount / wish.estimatedCost) * 100))
     : 0;
+  const checkedCount = wish.items?.filter((it) => it.checked).length ?? 0;
+  const totalItems = wish.items?.length ?? 0;
+  const itemProgress = totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
 
   const syncWish = (updated: Partial<Wish>) => {
     const user = useAuthStore.getState().user;
@@ -126,6 +129,15 @@ export default function WishDetail() {
       deleteFirestoreWish(user.uid, wish.id).then(() => db.pendingDeletes.delete(pd.id)).catch(console.error);
     }
     navigate('/wishbook');
+  };
+
+  const handleToggleItem = async (itemId: string) => {
+    const updated = (wish.items ?? []).map((it) =>
+      it.id === itemId ? { ...it, checked: !it.checked } : it,
+    );
+    const updates = { items: updated, updatedAt: Date.now(), pendingSync: true };
+    await db.wishes.update(wish.id, updates);
+    syncWish(updates);
   };
 
   const handleSaveSavedAmount = async () => {
@@ -230,6 +242,49 @@ export default function WishDetail() {
                 className="h-full bg-[#1B4332] rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
+            </div>
+          </div>
+        )}
+
+        {/* Items checklist */}
+        {!!wish.items?.length && (
+          <div className="bg-card-bg rounded-card shadow-card px-4 py-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <ListChecks size={15} className="text-text-secondary" strokeWidth={1.5} />
+                <span className="font-semibold text-text-primary text-sm">Items</span>
+              </div>
+              <span className="text-xs text-text-secondary font-medium">
+                {checkedCount}/{totalItems} · {itemProgress}%
+              </span>
+            </div>
+            <div className="h-1.5 bg-card-border rounded-full overflow-hidden mb-3">
+              <div
+                className="h-full bg-[#1B4332] rounded-full transition-all duration-300"
+                style={{ width: `${itemProgress}%` }}
+              />
+            </div>
+            <div className="space-y-0.5">
+              {wish.items.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleToggleItem(item.id)}
+                  className="w-full flex items-center gap-3 py-2.5 px-1 active:bg-card-border rounded-xl transition-colors"
+                >
+                  {item.checked
+                    ? <CheckSquare size={18} className="text-[#1B4332] flex-shrink-0" />
+                    : <Square size={18} className="text-text-muted flex-shrink-0" />
+                  }
+                  <span className={`flex-1 text-left text-sm ${item.checked ? 'line-through text-text-muted' : 'text-text-primary'}`}>
+                    {item.label}
+                  </span>
+                  {!!item.estimatedCost && (
+                    <span className="text-xs text-text-secondary flex-shrink-0">
+                      {wish.currency} {item.estimatedCost.toLocaleString()}
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
           </div>
         )}
