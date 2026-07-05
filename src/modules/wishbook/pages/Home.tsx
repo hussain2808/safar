@@ -174,7 +174,7 @@ export default function Home() {
     const countMap = new Map<string, number>();
     activeWishes.forEach((w) => countMap.set(w.assignedToId, (countMap.get(w.assignedToId) ?? 0) + 1));
     return people
-      .filter((p) => countMap.has(p.id))
+      .filter((p) => p.id !== SELF_PERSON_ID && countMap.has(p.id))
       .map((p) => ({ person: p, count: countMap.get(p.id) ?? 0 }))
       .sort((a, b) => b.count - a.count);
   }, [activeWishes, people]);
