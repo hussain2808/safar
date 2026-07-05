@@ -182,7 +182,9 @@ export default function AddWish() {
                   className={selectStyle}
                 >
                   {people.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
+                    <option key={p.id} value={p.id}>
+                      {p.id === SELF_PERSON_ID ? 'Myself' : p.name}
+                    </option>
                   ))}
                 </select>
               </div>

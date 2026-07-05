@@ -18,6 +18,7 @@ import {
 } from '@/modules/wishbook/lib/format';
 import { useAuthStore } from '@/store/auth';
 import { BottomSheet } from '@/modules/wishbook/shared/components/BottomSheet';
+import { SELF_PERSON_ID } from '@/family/db';
 import type { PendingDelete, Wish } from '@/modules/wishbook/types';
 
 function MetaCell({ label, value, icon: Icon, valueClass = '' }: {
@@ -65,6 +66,7 @@ export default function WishDetail() {
   const category = getCategoryById(wish.categoryId);
   const CategoryIcon = category.icon;
   const person = people.find((p) => p.id === wish.assignedToId);
+  const personName = person?.id === SELF_PERSON_ID ? 'Myself' : (person?.name ?? 'Myself');
   const status = STATUS_STYLE[wish.status];
   const priority = PRIORITY_STYLE[wish.priority];
   const progress = (wish.estimatedCost && wish.savedAmount)
@@ -176,7 +178,7 @@ export default function WishDetail() {
 
         {/* Meta row */}
         <div className="bg-card-bg rounded-card shadow-card px-4 py-4 grid grid-cols-4 gap-2">
-          <MetaCell label="For" value={person?.name ?? 'Me'} icon={User} />
+          <MetaCell label="For" value={personName} icon={User} />
           <MetaCell label="Status" value={status.label} icon={Flag} valueClass={status.fg} />
           <MetaCell label="Priority" value={priority.label} icon={Flag} valueClass={priority.color} />
           <MetaCell label="Target Date" value={wish.targetDate ? formatDate(wish.targetDate) : '—'} icon={Calendar} />
@@ -288,7 +290,7 @@ export default function WishDetail() {
             icon={Hourglass}
             valueClass="text-accent-blue-fg"
           />
-          <InfoCell label="Belongs To" value={person?.name ?? 'Me'} icon={User} />
+          <InfoCell label="Belongs To" value={personName} icon={User} />
         </div>
 
         {/* Mark as Purchased */}

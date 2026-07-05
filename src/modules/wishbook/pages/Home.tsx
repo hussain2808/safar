@@ -7,6 +7,7 @@ import {
 import { useWishes } from '@/modules/wishbook/features/wishes/hooks/useWishes';
 import { usePeople } from '@/family/hooks/usePeople';
 import { getCategoryById } from '@/modules/wishbook/lib/categories';
+import { SELF_PERSON_ID } from '@/family/db';
 import { formatCurrency, formatDate, getTimeLeft, PRIORITY_STYLE, STATUS_STYLE } from '@/modules/wishbook/lib/format';
 import type { Wish } from '@/modules/wishbook/types';
 import type { Person } from '@/family/types';
@@ -51,6 +52,7 @@ function WishCard({ wish, people, onClick }: { wish: Wish; people: Person[]; onC
   const category = getCategoryById(wish.categoryId);
   const CategoryIcon = category.icon;
   const person = people.find((p) => p.id === wish.assignedToId);
+  const personName = person?.id === SELF_PERSON_ID ? 'Myself' : (person?.name ?? 'Myself');
   const priority = PRIORITY_STYLE[wish.priority];
   const timeLeft = wish.targetDate ? getTimeLeft(wish.targetDate) : null;
 
@@ -75,7 +77,7 @@ function WishCard({ wish, people, onClick }: { wish: Wish; people: Person[]; onC
           <span className={`font-medium ${category.fg}`}>{category.label}</span>
           <span className="text-text-muted">·</span>
           <span className="flex items-center gap-0.5 text-text-secondary">
-            <User size={10} /> For {person?.name ?? 'Me'}
+            <User size={10} /> For {personName}
           </span>
         </div>
         <div className="flex items-center justify-between mt-1.5">
