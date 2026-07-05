@@ -204,13 +204,21 @@ export default function Home() {
               Things I hope to bring<br />into my life.
             </p>
           </div>
-          <div className="flex items-center gap-2 mt-2">
-            <button className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors">
-              <Search size={16} />
-            </button>
-            <button className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors">
-              <MoreHorizontal size={16} />
-            </button>
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-2">
+              <button className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors">
+                <Search size={16} />
+              </button>
+              <button className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors">
+                <MoreHorizontal size={16} />
+              </button>
+            </div>
+            <img
+              src="/wishbook-hero.svg"
+              alt=""
+              className="w-36 h-32 object-contain -mr-1"
+              aria-hidden="true"
+            />
           </div>
         </div>
       </header>
