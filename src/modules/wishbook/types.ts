@@ -26,6 +26,11 @@ export interface WishLink {
   url: string;
 }
 
+export interface WishPlace {
+  name: string;
+  phone?: string;
+}
+
 export interface WishItem {
   id: string;
   label: string;
@@ -48,6 +53,7 @@ export interface Wish {
   whyIWantThis?: string;
   links?: WishLink[];
   items?: WishItem[];
+  place?: WishPlace;
   purchasedAt?: number;
   archived?: boolean;
   createdAt: number;

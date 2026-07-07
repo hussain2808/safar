@@ -4,7 +4,7 @@ import {
   ChevronLeft, MoreHorizontal, Pencil, CheckCircle2, Copy,
   Archive, Trash2, Tag, User, Flag, Calendar, PieChart,
   Star, Link2, FileText, ExternalLink, Hourglass, Target,
-  Banknote, ListChecks, CheckSquare, Square,
+  Banknote, ListChecks, CheckSquare, Square, MapPin, Phone,
 } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { db } from '@/modules/wishbook/db';
@@ -337,6 +337,26 @@ export default function WishDetail() {
               <span className="font-semibold text-text-primary text-sm">Notes</span>
             </div>
             <p className="text-sm text-text-secondary leading-relaxed">{wish.notes}</p>
+          </div>
+        )}
+
+        {/* Place */}
+        {!!wish.place?.name && (
+          <div className="bg-card-bg rounded-card shadow-card px-4 py-4">
+            <div className="flex items-center gap-2 mb-3">
+              <MapPin size={15} className="text-accent-green-fg" strokeWidth={1.5} />
+              <span className="font-semibold text-text-primary text-sm">Where to Get It</span>
+            </div>
+            <p className="text-sm text-text-primary font-medium">{wish.place.name}</p>
+            {!!wish.place.phone && (
+              <a
+                href={`tel:${wish.place.phone}`}
+                className="flex items-center gap-1.5 mt-1.5 text-accent-blue-fg text-sm"
+              >
+                <Phone size={13} />
+                {wish.place.phone}
+              </a>
+            )}
           </div>
         )}
 

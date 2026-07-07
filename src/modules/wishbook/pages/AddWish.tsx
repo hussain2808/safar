@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, Save, Plus, Trash2, Link2, ListChecks } from 'lucide-react';
+import { ChevronLeft, Save, Plus, Trash2, Link2, ListChecks, MapPin, Phone } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { db } from '@/modules/wishbook/db';
 import { pushWish } from '@/modules/wishbook/sync/firestore';
@@ -9,7 +9,7 @@ import { usePeople } from '@/family/hooks/usePeople';
 import { WISH_CATEGORIES } from '@/modules/wishbook/lib/categories';
 import { useAuthStore } from '@/store/auth';
 import { SELF_PERSON_ID } from '@/family/db';
-import type { Wish, WishCategoryId, WishPriority, WishStatus, WishLink, WishItem } from '@/modules/wishbook/types';
+import type { Wish, WishCategoryId, WishPriority, WishStatus, WishLink, WishItem, WishPlace } from '@/modules/wishbook/types';
 
 const CURRENCIES = ['AED', 'USD', 'EUR', 'GBP', 'SAR', 'INR', 'PKR'];
 const PRIORITIES: { value: WishPriority; label: string }[] = [
@@ -51,6 +51,7 @@ export default function AddWish() {
   const [whyIWantThis, setWhyIWantThis] = useState('');
   const [links, setLinks] = useState<WishLink[]>([]);
   const [items, setItems] = useState<WishItem[]>([]);
+  const [place, setPlace] = useState<WishPlace>({ name: '', phone: '' });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -69,6 +70,7 @@ export default function AddWish() {
     setWhyIWantThis(existingWish.whyIWantThis ?? '');
     setLinks(existingWish.links ?? []);
     setItems(existingWish.items ?? []);
+    setPlace(existingWish.place ?? { name: '', phone: '' });
   }, [existingWish]);
 
   const handleSave = async (addAnother = false) => {
@@ -90,6 +92,7 @@ export default function AddWish() {
         whyIWantThis: whyIWantThis.trim() || undefined,
         links: links.length ? links : undefined,
         items: items.length ? items : undefined,
+        place: place.name.trim() ? { name: place.name.trim(), phone: place.phone?.trim() || undefined } : undefined,
         purchasedAt: existingWish?.purchasedAt,
         archived: existingWish?.archived,
         createdAt: existingWish?.createdAt ?? Date.now(),
@@ -107,7 +110,7 @@ export default function AddWish() {
         setTitle(''); setNotes(''); setWhyIWantThis(''); setLinks([]); setItems([]);
         setTargetDate(''); setEstimatedCost('');
         setCategoryId('other'); setAssignedToId(SELF_PERSON_ID);
-        setPriority('medium'); setStatus('dreaming');
+        setPriority('medium'); setStatus('dreaming'); setPlace({ name: '', phone: '' });
       } else {
         navigate(isEdit ? `/wishbook/wish/${wish.id}` : '/wishbook');
       }
@@ -301,6 +304,40 @@ export default function AddWish() {
                 value={whyIWantThis}
                 onChange={(e) => setWhyIWantThis(e.target.value)}
                 className={`${fieldStyle} resize-none`}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Physical Place */}
+        <div className={rowCard}>
+          <div className={fieldRow}>
+            <div className={iconBox('bg-accent-green-bg')}>
+              <MapPin size={16} className="text-accent-green-fg" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold text-text-primary mb-1">Place <span className="text-text-muted font-normal">(Optional)</span></p>
+              <input
+                className={fieldStyle}
+                placeholder="Shop or location name"
+                value={place.name}
+                onChange={(e) => setPlace((p) => ({ ...p, name: e.target.value }))}
+              />
+            </div>
+          </div>
+          <div className={fieldRow}>
+            <div className={iconBox('bg-icon-bg')}>
+              <Phone size={16} className="text-text-secondary" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold text-text-primary mb-1">Phone Number <span className="text-text-muted font-normal">(Optional)</span></p>
+              <input
+                className={fieldStyle}
+                placeholder="+971 50 000 0000"
+                value={place.phone ?? ''}
+                onChange={(e) => setPlace((p) => ({ ...p, phone: e.target.value }))}
+                type="tel"
+                inputMode="tel"
               />
             </div>
           </div>
