@@ -144,7 +144,7 @@ export async function extractFromPdf(file: File): Promise<ExtractedMeta> {
   const pdf = await getDocument({ data: arrayBuffer, verbosity: 0 }).promise;
 
   // Extract PDF info dictionary
-  const { info } = await pdf.getMetadata() as { info: Record<string, string> };
+  const { info } = (await pdf.getMetadata()) as unknown as { info: Record<string, string> };
 
   // Extract all text from all pages (cap at 5 pages for performance)
   let fullText = '';
