@@ -309,19 +309,20 @@ export default function AddWish() {
           </div>
         </div>
 
-        {/* Physical Place */}
+        {/* Where to Get This */}
         <div className={rowCard}>
           <div className={fieldRow}>
             <div className={iconBox('bg-accent-green-bg')}>
               <MapPin size={16} className="text-accent-green-fg" />
             </div>
             <div className="flex-1">
-              <p className="text-xs font-semibold text-text-primary mb-1">Place <span className="text-text-muted font-normal">(Optional)</span></p>
+              <p className="text-xs font-semibold text-text-primary mb-1">Where to Get This <span className="text-text-muted font-normal">(Optional)</span></p>
               <input
                 className={fieldStyle}
                 placeholder="Shop or location name"
                 value={place.name}
                 onChange={(e) => setPlace((p) => ({ ...p, name: e.target.value }))}
+                maxLength={100}
               />
             </div>
           </div>
@@ -338,6 +339,7 @@ export default function AddWish() {
                 onChange={(e) => setPlace((p) => ({ ...p, phone: e.target.value }))}
                 type="tel"
                 inputMode="tel"
+                maxLength={20}
               />
             </div>
           </div>
