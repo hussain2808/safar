@@ -135,10 +135,8 @@ function extractDocumentNumber(text: string): string | undefined {
 
 export async function extractFromPdf(file: File): Promise<ExtractedMeta> {
   const { getDocument, GlobalWorkerOptions } = await import('pdfjs-dist');
-  GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).href;
+  // Worker is copied to public/ via the prepare script in package.json
+  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
   const arrayBuffer = await file.arrayBuffer();
   const pdf = await getDocument({ data: arrayBuffer, verbosity: 0 }).promise;
