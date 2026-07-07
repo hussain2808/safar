@@ -36,7 +36,7 @@ export function AttachmentList({ fileIds, onChange, readOnly = false, onExtracti
     e.target.value = '';
 
     let newIds = [...fileIds];
-    const pdfs = picked.filter((f) => f.type === 'application/pdf');
+    const pdfs = picked.filter((f) => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf'));
 
     // Start extraction early (in parallel with saving)
     let extractionPromise: Promise<void> | null = null;

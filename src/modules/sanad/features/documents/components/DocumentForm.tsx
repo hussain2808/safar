@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Plus, Sparkles } from 'lucide-react';
 import { cn } from '@/modules/sanad/lib/utils';
 import { CATEGORIES } from '@/modules/sanad/lib/categories';
@@ -71,24 +71,31 @@ export function DocumentForm({ draft, onChange }: DocumentFormProps) {
   const [extracting, setExtracting] = useState(false);
   const [extractedCount, setExtractedCount] = useState(0);
 
+  const draftRef = useRef(draft);
+  draftRef.current = draft;
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
   function set<K extends keyof DocumentDraft>(key: K, value: DocumentDraft[K]) {
     onChange({ ...draft, [key]: value });
   }
 
-  function applyMeta(meta: ExtractedMeta) {
+  const applyMeta = useCallback((meta: ExtractedMeta) => {
+    const cur = draftRef.current;
+    const cb = onChangeRef.current;
     let filled = 0;
-    const next = { ...draft };
+    const next = { ...cur };
     if (meta.name && !next.name) { next.name = meta.name; filled++; }
     if (meta.documentNumber && !next.documentNumber) { next.documentNumber = meta.documentNumber; filled++; }
     if (meta.issuingAuthority && !next.issuingAuthority) { next.issuingAuthority = meta.issuingAuthority; filled++; }
     if (meta.issueDate && !next.issueDate) { next.issueDate = meta.issueDate; filled++; }
     if (meta.expiryDate && !next.expiryDate) { next.expiryDate = meta.expiryDate; filled++; }
     if (filled > 0) {
-      onChange(next);
+      cb(next);
       setExtractedCount(filled);
       setTimeout(() => setExtractedCount(0), 4000);
     }
-  }
+  }, []);
 
   const inputClass = cn(
     'w-full bg-cream rounded-button px-4 py-3 text-body text-text-primary placeholder:text-text-muted outline-none border border-card-border focus:border-text-secondary transition-colors',

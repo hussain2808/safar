@@ -133,6 +133,10 @@ function extractDocumentNumber(text: string): string | undefined {
   return undefined;
 }
 
+function nameFromFilename(file: File): string {
+  return cleanTitle(file.name.replace(/\.pdf$/i, ''));
+}
+
 export async function extractFromPdf(file: File): Promise<ExtractedMeta> {
   const { getDocument, GlobalWorkerOptions } = await import('pdfjs-dist');
   // Worker is copied to public/ via the prepare script in package.json
@@ -155,10 +159,13 @@ export async function extractFromPdf(file: File): Promise<ExtractedMeta> {
 
   const result: ExtractedMeta = {};
 
-  // Document name from title or filename
+  // Document name: prefer PDF title, fall back to cleaned filename
   const title = info?.Title;
   if (title && title.length > 1 && !looksLikeSoftware(title)) {
     result.name = cleanTitle(title);
+  } else {
+    const fromFile = nameFromFilename(file);
+    if (fromFile.length > 1) result.name = fromFile;
   }
 
   // Issuing authority from PDF Author field or text
