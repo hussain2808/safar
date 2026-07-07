@@ -4,12 +4,15 @@ import { db } from '@/modules/sanad/db';
 import { saveFile, deleteFile } from '@/modules/sanad/db/files';
 import { downloadBlob } from '@/modules/sanad/lib/download';
 import { formatFileSize } from '@/modules/sanad/lib/utils';
+import { extractFromPdf, type ExtractedMeta } from '@/modules/sanad/lib/extractDocumentMeta';
 import type { DocumentFile } from '@/modules/sanad/types';
 
 interface AttachmentListProps {
   fileIds: string[];
   onChange: (fileIds: string[]) => void;
   readOnly?: boolean;
+  onExtracting?: (extracting: boolean) => void;
+  onMeta?: (meta: ExtractedMeta) => void;
 }
 
 function fileTypeLabel(file: DocumentFile): string {
@@ -18,7 +21,7 @@ function fileTypeLabel(file: DocumentFile): string {
   return ext ? ext.toUpperCase() : (file.mimeType.split('/')[1]?.toUpperCase() ?? 'FILE');
 }
 
-export function AttachmentList({ fileIds, onChange, readOnly = false }: AttachmentListProps) {
+export function AttachmentList({ fileIds, onChange, readOnly = false, onExtracting, onMeta }: AttachmentListProps) {
   const [files, setFiles] = useState<DocumentFile[]>([]);
 
   useEffect(() => {
@@ -29,12 +32,29 @@ export function AttachmentList({ fileIds, onChange, readOnly = false }: Attachme
   }, [fileIds]);
 
   async function handleAdd(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files ?? []);
+    const picked = Array.from(e.target.files ?? []);
     e.target.value = '';
-    for (const file of files) {
-      const result = await saveFile(file);
-      if (result.ok) onChange([...fileIds, result.data.id]);
+
+    let newIds = [...fileIds];
+    const pdfs = picked.filter((f) => f.type === 'application/pdf');
+
+    // Start extraction early (in parallel with saving)
+    let extractionPromise: Promise<void> | null = null;
+    if (pdfs.length > 0 && onMeta) {
+      onExtracting?.(true);
+      extractionPromise = extractFromPdf(pdfs[0])
+        .then((meta) => { onMeta(meta); })
+        .catch(console.error)
+        .finally(() => onExtracting?.(false));
     }
+
+    for (const file of picked) {
+      const result = await saveFile(file);
+      if (result.ok) newIds = [...newIds, result.data.id];
+    }
+    onChange(newIds);
+
+    await extractionPromise;
   }
 
   async function handleRemove(id: string) {
