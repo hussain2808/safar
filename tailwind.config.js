@@ -19,6 +19,7 @@ export default {
           purple: { bg: '#EAE6F5', fg: '#7B6FB0' },
           pink: { bg: '#FBE3E8', fg: '#C26B86' },
           blue: { bg: '#E3EAF7', fg: '#5C7BB0' },
+          doneGreen: { bg: '#E4EDE5', fg: '#2F5233' },
         },
         // Hisaab module tokens (CSS-variable based, see .hisaab-root / index.css)
         bg: {

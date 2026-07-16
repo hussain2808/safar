@@ -14,6 +14,8 @@ import { syncOnLogin as syncDuaOnLogin } from '@/modules/dua/sync/firestore';
 import { retryPendingSync as retryDuaSync } from '@/modules/dua/sync/retryQueue';
 import { syncOnLogin as syncWishbookOnLogin } from '@/modules/wishbook/sync/firestore';
 import { retryPendingSync as retryWishbookSync } from '@/modules/wishbook/sync/retryQueue';
+import { syncOnLogin as syncDoneOnLogin } from '@/modules/done/sync/firestore';
+import { retryPendingSync as retryDoneSync } from '@/modules/done/sync/retryQueue';
 import { syncOnLogin as syncFamilyOnLogin } from '@/family/sync/firestore';
 import { retryPendingSync as retryFamilySync } from '@/family/sync/retryQueue';
 import { ensureSelfSeeded } from '@/family/db/people';
@@ -46,10 +48,10 @@ export function initAuth() {
     if (user) {
       ensureSelfSeeded(user.displayName ?? 'Me')
         .then(() => Promise.all([
-          syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid), syncNazaraOnLogin(user.uid), syncDuaOnLogin(user.uid), syncWishbookOnLogin(user.uid), syncFamilyOnLogin(user.uid),
+          syncHisaabOnLogin(user.uid), syncAmaanatOnLogin(user.uid), syncSanadOnLogin(user.uid), syncNazaraOnLogin(user.uid), syncDuaOnLogin(user.uid), syncWishbookOnLogin(user.uid), syncDoneOnLogin(user.uid), syncFamilyOnLogin(user.uid),
         ]))
         .then(() => Promise.all([
-          retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid), retryNazaraSync(user.uid), retryDuaSync(user.uid), retryWishbookSync(user.uid), retryFamilySync(user.uid),
+          retryHisaabSync(user.uid), retryAmaanatSync(user.uid), retrySanadSync(user.uid), retryNazaraSync(user.uid), retryDuaSync(user.uid), retryWishbookSync(user.uid), retryDoneSync(user.uid), retryFamilySync(user.uid),
         ]))
         .catch(console.error);
     }
@@ -64,6 +66,7 @@ export function initAuth() {
       retryNazaraSync(u.uid).catch(console.error);
       retryDuaSync(u.uid).catch(console.error);
       retryWishbookSync(u.uid).catch(console.error);
+      retryDoneSync(u.uid).catch(console.error);
       retryFamilySync(u.uid).catch(console.error);
     }
   });
