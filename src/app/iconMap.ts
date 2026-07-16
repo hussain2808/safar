@@ -13,6 +13,7 @@ import {
   BookOpen,
   Star,
   Sprout,
+  TreePine,
 } from 'lucide-react';
 
 export const iconMap = {
@@ -30,6 +31,7 @@ export const iconMap = {
   bookOpen: BookOpen,
   star: Star,
   sprout: Sprout,
+  treePine: TreePine,
 } as const;
 
 export type IconKey = keyof typeof iconMap;

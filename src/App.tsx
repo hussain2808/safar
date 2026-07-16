@@ -14,6 +14,7 @@ import NazaraApp from '@/modules/nazara/NazaraApp';
 import DuaApp from '@/modules/dua/DuaApp';
 import WishbookApp from '@/modules/wishbook/WishbookApp';
 import DoneApp from '@/modules/done/DoneApp';
+import DarussalamApp from '@/modules/darussalam/DarussalamApp';
 import Settings from './pages/Settings';
 import SettingsFamily from './pages/SettingsFamily';
 import SettingsAbout from './pages/SettingsAbout';
@@ -61,6 +62,7 @@ function App() {
             <Route path="/dua/*"      element={<DuaApp />} />
             <Route path="/wishbook/*" element={<WishbookApp />} />
             <Route path="/done/*" element={<DoneApp />} />
+            <Route path="/darussalam/*" element={<DarussalamApp />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/family" element={<SettingsFamily />} />
             <Route path="/settings/about" element={<SettingsAbout />} />

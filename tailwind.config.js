@@ -21,6 +21,12 @@ export default {
           blue: { bg: '#E3EAF7', fg: '#5C7BB0' },
           doneGreen: { bg: '#E4EDE5', fg: '#2F5233' },
         },
+        // Darussalam module tokens — deep tropical green on cream
+        darussalam: {
+          green: { DEFAULT: '#2F4A32', dark: '#1F331F', light: '#4F7A52' },
+          bg: '#F7F2E9',
+          tile: '#EFEAE0',
+        },
         // Hisaab module tokens (CSS-variable based, see .hisaab-root / index.css)
         bg: {
           primary: 'var(--color-bg-primary)',
