@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search as SearchIcon, MoreHorizontal, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { ChevronLeft, Search as SearchIcon, MoreHorizontal, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { useHabits } from '@/modules/done/features/habits/hooks/useHabits';
 import { FrequencyGroupSection } from '@/modules/done/features/habits/components/FrequencyGroupSection';
 import { HabitListItem } from '@/modules/done/features/habits/components/HabitListItem';
@@ -32,12 +32,21 @@ export default function AllHabits() {
 
   return (
     <div className="min-h-screen bg-cream pb-28">
-      <header className="flex items-center justify-between px-5 pt-10 pb-4">
-        <div>
-          <h1 className="font-serif text-page-title text-accent-doneGreen-fg">All Habits</h1>
-          <p className="text-caption text-text-secondary mt-1">All your habits in one place.</p>
+      <header className="px-5 pt-10 pb-4 flex items-start justify-between">
+        <div className="flex items-start gap-2">
+          <button
+            onClick={() => navigate('/')}
+            aria-label="Back to Safar"
+            className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors flex-shrink-0"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <div>
+            <h1 className="font-serif text-page-title text-accent-doneGreen-fg">All Habits</h1>
+            <p className="text-caption text-text-secondary mt-1">All your habits in one place.</p>
+          </div>
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 pt-1 flex-shrink-0">
           <button
             onClick={() => navigate('/done/search')}
             aria-label="Search habits"

@@ -203,24 +203,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-cream pb-36">
       {/* Header */}
-      <header className="px-5 pt-10 pb-5">
-        <div className="flex items-center justify-between mb-2">
+      <header className="px-5 pt-10 pb-5 flex items-start justify-between">
+        <div className="flex items-start gap-2">
           <button
             onClick={() => navigate('/')}
             aria-label="Back to Safar"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-text-primary -ml-1"
+            className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors flex-shrink-0"
           >
-            <ChevronLeft size={22} />
+            <ChevronLeft size={18} />
           </button>
-          <button
-            onClick={() => navigate('/wishbook/search')}
-            aria-label="Search wishes"
-            className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors"
-          >
-            <Search size={16} />
-          </button>
-        </div>
-        <div className="flex items-start justify-between">
           <div>
             <h1 className="font-serif text-[40px] leading-none text-[#C8922E]">
               Wishbook<span className="text-[#E7C27D] text-2xl align-top mt-1 inline-block">✦</span>
@@ -229,10 +220,19 @@ export default function Home() {
               Things I hope to bring<br />into my life.
             </p>
           </div>
+        </div>
+        <div className="flex flex-col items-end gap-2 pt-1 flex-shrink-0">
+          <button
+            onClick={() => navigate('/wishbook/search')}
+            aria-label="Search wishes"
+            className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors"
+          >
+            <Search size={16} />
+          </button>
           <img
             src="/wishbook-hero.svg"
             alt=""
-            className="w-24 h-20 object-contain -mr-1 flex-shrink-0"
+            className="w-24 h-20 object-contain -mr-1"
             aria-hidden="true"
           />
         </div>

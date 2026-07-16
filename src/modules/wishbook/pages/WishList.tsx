@@ -143,10 +143,10 @@ export default function WishList() {
       <header className="px-4 pt-10 pb-4">
         <button
           onClick={() => navigate('/wishbook')}
-          className="flex items-center gap-0.5 text-[#C8922E] font-medium text-sm mb-3"
+          aria-label="Back to Wishbook"
+          className="w-10 h-10 -ml-2 mb-1 rounded-full flex items-center justify-center text-text-primary active:bg-card-border transition-colors"
         >
-          <ChevronLeft size={18} />
-          <span>Wishbook</span>
+          <ChevronLeft size={22} />
         </button>
         <h1 className="text-2xl font-bold text-text-primary">{pageTitle}</h1>
         <p className="text-xs text-text-secondary mt-0.5">{filtered.length} {filtered.length === 1 ? 'wish' : 'wishes'}</p>

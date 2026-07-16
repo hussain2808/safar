@@ -83,7 +83,7 @@ export const modules = [
     subtitle: 'Habits',
     description: 'Small actions. Big progress.',
     image: null,
-    icon: 'leaf',
+    icon: 'sprout',
     cardBg: 'bg-accent-doneGreen-bg',
     iconBg: 'bg-card-bg',
     iconFg: 'text-accent-doneGreen-fg',

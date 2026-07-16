@@ -95,7 +95,8 @@ export default function WishSearch() {
         <div className="flex items-center gap-2 mb-4">
           <button
             onClick={() => navigate('/wishbook')}
-            className="w-9 h-9 rounded-full flex items-center justify-center text-[#C8922E] flex-shrink-0"
+            aria-label="Back to Wishbook"
+            className="w-10 h-10 rounded-full flex items-center justify-center text-text-primary active:bg-card-border transition-colors flex-shrink-0"
           >
             <ChevronLeft size={22} />
           </button>

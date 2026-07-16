@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, BarChart3, MoreHorizontal, CalendarDays, Sparkles } from 'lucide-react';
+import { ChevronLeft, Sprout, Leaf, BarChart3, MoreHorizontal, CalendarDays, Sparkles } from 'lucide-react';
 import { useTodayHabits } from '@/modules/done/features/habits/hooks/useTodayHabits';
 import { TodayHabitRow } from '@/modules/done/features/habits/components/TodayHabitRow';
 import { CircularProgress } from '@/modules/done/features/progress/components/CircularProgress';
@@ -24,37 +24,37 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-cream pb-28">
-      <header className="px-5 pt-10 pb-4">
-        <div className="flex items-center justify-between mb-2">
+      <header className="px-5 pt-10 pb-4 flex items-start justify-between">
+        <div className="flex items-start gap-2">
           <button
             onClick={() => navigate('/')}
             aria-label="Back to Safar"
-            className="w-9 h-9 -ml-1.5 rounded-full flex items-center justify-center text-text-primary"
+            className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary active:bg-card-border transition-colors flex-shrink-0"
           >
-            <ChevronLeft size={22} />
+            <ChevronLeft size={18} />
           </button>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={() => navigate('/done/progress')}
-              aria-label="Progress"
-              className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary"
-            >
-              <BarChart3 size={16} />
-            </button>
-            <button
-              onClick={() => navigate('/done/archive')}
-              aria-label="More"
-              className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary"
-            >
-              <MoreHorizontal size={16} />
-            </button>
+          <div>
+            <h1 className="font-serif text-page-title text-accent-doneGreen-fg flex items-center gap-2">
+              Done <Sprout size={22} className="text-accent-doneGreen-fg" aria-hidden="true" />
+            </h1>
+            <p className="text-caption text-text-secondary mt-1">Small actions. Big progress.</p>
           </div>
         </div>
-        <div>
-          <h1 className="font-serif text-page-title text-accent-doneGreen-fg flex items-center gap-2">
-            Done <span aria-hidden="true">🌱</span>
-          </h1>
-          <p className="text-caption text-text-secondary mt-1">Small actions. Big progress.</p>
+        <div className="flex items-center gap-2 pt-1 flex-shrink-0">
+          <button
+            onClick={() => navigate('/done/progress')}
+            aria-label="Progress"
+            className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary"
+          >
+            <BarChart3 size={16} />
+          </button>
+          <button
+            onClick={() => navigate('/done/archive')}
+            aria-label="More"
+            className="w-9 h-9 rounded-full bg-card-bg shadow-card flex items-center justify-center text-text-secondary"
+          >
+            <MoreHorizontal size={16} />
+          </button>
         </div>
       </header>
 
@@ -69,7 +69,7 @@ export default function Home() {
             </div>
           </div>
           <CircularProgress percent={percent} size={72} strokeWidth={7}>
-            <span className="text-xl" aria-hidden="true">🌱</span>
+            <Leaf size={24} className="text-accent-doneGreen-fg rotate-12" aria-hidden="true" />
           </CircularProgress>
         </div>
       </div>

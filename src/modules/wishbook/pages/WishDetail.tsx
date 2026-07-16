@@ -155,10 +155,10 @@ export default function WishDetail() {
       <header className="flex items-center justify-between px-4 pt-12 pb-4">
         <button
           onClick={() => navigate('/wishbook')}
-          className="flex items-center gap-0.5 text-[#C8922E] font-medium text-sm"
+          aria-label="Back to Wishbook"
+          className="w-10 h-10 -ml-2 rounded-full flex items-center justify-center text-text-primary active:bg-card-border transition-colors flex-shrink-0"
         >
-          <ChevronLeft size={18} />
-          <span>Wishbook</span>
+          <ChevronLeft size={22} />
         </button>
         <div className="flex items-center gap-2">
           <button

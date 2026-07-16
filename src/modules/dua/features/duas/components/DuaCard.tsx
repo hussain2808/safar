@@ -17,9 +17,17 @@ export const DuaCard = memo(function DuaCard({ dua, meta }: DuaCardProps) {
   const colors = categoryColors(dua.category);
 
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => navigate(`/dua/dua/${dua.id}`)}
-      className="w-full flex items-center gap-3 px-4 py-3.5 bg-card-bg active:bg-icon-bg/60 transition-colors text-left"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          navigate(`/dua/dua/${dua.id}`);
+        }
+      }}
+      className="w-full flex items-center gap-3 px-4 py-3.5 bg-card-bg active:bg-icon-bg/60 transition-colors text-left cursor-pointer"
     >
       <div className={cn('w-9 h-9 rounded-icon flex items-center justify-center flex-shrink-0', colors.bg, colors.fg)}>
         <Icon size={16} strokeWidth={1.5} />
@@ -35,6 +43,6 @@ export const DuaCard = memo(function DuaCard({ dua, meta }: DuaCardProps) {
       >
         <Star size={18} className={dua.favorite ? 'fill-gold text-gold' : 'text-text-muted'} strokeWidth={1.5} />
       </button>
-    </button>
+    </div>
   );
 });

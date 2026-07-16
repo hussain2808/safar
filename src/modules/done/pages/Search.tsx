@@ -19,7 +19,7 @@ export default function Search() {
   return (
     <div className="min-h-screen bg-cream pb-10">
       <header className="flex items-center gap-3 px-5 pt-10 pb-4">
-        <button onClick={() => navigate(-1)} aria-label="Back" className="w-9 h-9 -ml-1.5 flex items-center justify-center text-text-primary flex-shrink-0">
+        <button onClick={() => navigate(-1)} aria-label="Back" className="w-10 h-10 -ml-1.5 rounded-full flex items-center justify-center text-text-primary active:bg-card-border transition-colors flex-shrink-0">
           <ChevronLeft size={22} />
         </button>
         <div className="flex-1 flex items-center gap-2 bg-card-bg border border-card-border rounded-button px-4 py-2.5">

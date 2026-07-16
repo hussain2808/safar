@@ -137,9 +137,10 @@ export default function AddWish() {
       <header className="px-4 pt-12 pb-5">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 flex items-center text-[#C8922E] font-medium"
+          aria-label="Back"
+          className="w-10 h-10 -ml-2 mb-2 rounded-full flex items-center justify-center text-text-primary active:bg-card-border transition-colors"
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={22} />
         </button>
         <h1 className="font-serif text-[34px] leading-tight text-text-primary">
           {isEdit ? 'Edit Wish' : 'Add New Wish'}
