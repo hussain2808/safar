@@ -9,6 +9,7 @@ import { DarussalamHeader } from '@/modules/darussalam/shared/components/Darussa
 import { IdeaThumb } from '@/modules/darussalam/shared/components/IdeaThumb';
 import { IdeaListRow } from '@/modules/darussalam/shared/components/IdeaListRow';
 import { TagEditor } from '@/modules/darussalam/shared/components/TagEditor';
+import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
 import {
   useRoom, useRoomTopIdeas, useRoomStats, updateRoom, deleteRoom,
   addRoomRequirement, toggleRoomRequirement, removeRoomRequirement,
@@ -146,7 +147,7 @@ export default function DarussalamRoomDetail() {
               />
             ) : (
               <p className="text-sm text-text-secondary leading-relaxed">
-                {room.description || 'No description yet. Tap edit to add one.'}
+                {room.description ? <Linkify text={room.description} /> : 'No description yet. Tap edit to add one.'}
               </p>
             )}
             <div className="mt-3">
@@ -253,7 +254,7 @@ export default function DarussalamRoomDetail() {
                     onChange={(e) => setRequirementText(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter' && requirementText.trim()) { addRoomRequirement(room, requirementText); setRequirementText(''); } }}
                     placeholder="Add a requirement"
-                    className="flex-1 bg-darussalam-tile rounded-full px-3 py-1.5 text-xs outline-none"
+                    className="flex-1 min-w-0 bg-darussalam-tile rounded-full px-3 py-1.5 text-xs outline-none"
                   />
                   <button
                     onClick={() => { if (requirementText.trim()) { addRoomRequirement(room, requirementText); setRequirementText(''); } }}
@@ -367,7 +368,7 @@ export default function DarussalamRoomDetail() {
                 value={measureValue}
                 onChange={(e) => setMeasureValue(e.target.value)}
                 placeholder="Value (e.g. 120)"
-                className="flex-1 bg-darussalam-tile rounded-full px-3 py-2 text-sm outline-none"
+                className="flex-1 min-w-0 bg-darussalam-tile rounded-full px-3 py-2 text-sm outline-none"
               />
               <input
                 value={measureUnit}
@@ -395,7 +396,7 @@ export default function DarussalamRoomDetail() {
           {notes.map((n) => (
             <div key={n.id} className="flex items-start gap-3 bg-card-bg rounded-card shadow-card p-3">
               <StickyNote size={16} className="text-darussalam-green flex-shrink-0 mt-0.5" />
-              <p className="flex-1 text-sm text-text-secondary">{n.text}</p>
+              <p className="flex-1 text-sm text-text-secondary"><Linkify text={n.text} /></p>
               <button onClick={() => deleteRoomNote(n.id)} className="text-text-muted"><Trash2 size={15} /></button>
             </div>
           ))}

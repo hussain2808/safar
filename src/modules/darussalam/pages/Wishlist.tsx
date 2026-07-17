@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Sparkles, Trash2, Plus, Check } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
+import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
 import { useWishlist, addWishlistItem, toggleWishlistResolved, deleteWishlistItem } from '@/modules/darussalam/features/wishlist/useWishlist';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
 import type { WishlistCategory } from '@/modules/darussalam/types';
@@ -46,7 +47,7 @@ export default function DarussalamWishlist() {
             </button>
             <div className="flex-1 min-w-0">
               <h3 className={`text-sm font-medium ${item.resolved ? 'text-text-muted line-through' : 'text-text-primary'}`}>{item.title}</h3>
-              {item.notes && <p className="text-xs text-text-muted mt-0.5">{item.notes}</p>}
+              {item.notes && <p className="text-xs text-text-muted mt-0.5"><Linkify text={item.notes} /></p>}
               <div className="flex items-center gap-2 mt-1">
                 {item.category && <span className="text-[10px] bg-darussalam-tile text-text-secondary px-2 py-0.5 rounded-full capitalize">{item.category}</span>}
                 {!roomId && roomName(item.roomId) && <span className="text-[10px] text-text-muted">{roomName(item.roomId)}</span>}

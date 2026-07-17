@@ -59,7 +59,7 @@ export default function DarussalamSearch() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search rooms, ideas, decisions, documents…"
-            className="flex-1 bg-transparent text-sm outline-none text-text-primary placeholder:text-text-muted"
+            className="flex-1 min-w-0 bg-transparent text-sm outline-none text-text-primary placeholder:text-text-muted"
           />
         </div>
       </div>

@@ -6,6 +6,7 @@ import {
   Share2, Plus, Trash2,
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
+import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
 import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement, deleteIdea } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getCategoryIcon } from '@/modules/darussalam/lib/categoryIcons';
 
@@ -109,7 +110,22 @@ export default function DarussalamIdeaDetail() {
             )}
           </div>
 
-          {idea.description && <p className="text-sm text-text-secondary leading-relaxed mt-3">{idea.description}</p>}
+          {idea.linkUrl && (
+            <a
+              href={idea.linkUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 mt-3 text-sm text-darussalam-green bg-darussalam-tile rounded-lg px-3 py-2 break-all"
+            >
+              <Link2 size={14} className="flex-shrink-0" /> {idea.linkUrl}
+            </a>
+          )}
+
+          {idea.description && (
+            <p className="text-sm text-text-secondary leading-relaxed mt-3">
+              <Linkify text={idea.description} />
+            </p>
+          )}
 
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-card-border text-xs text-text-muted">
             <span className="flex items-center gap-1.5"><Calendar size={13} /> {formatDate(idea.createdAt)}</span>
@@ -150,7 +166,7 @@ export default function DarussalamIdeaDetail() {
             <div className="flex items-center gap-1.5 mb-2 text-sm font-semibold text-darussalam-green">
               <Heart size={15} /> Why I love this
             </div>
-            <p className="text-sm text-text-secondary leading-relaxed">{idea.whyILoveThis}</p>
+            <p className="text-sm text-text-secondary leading-relaxed"><Linkify text={idea.whyILoveThis} /></p>
           </div>
         </div>
       )}
@@ -166,14 +182,14 @@ export default function DarussalamIdeaDetail() {
           {expanded === 'notes' && (
             <div className="pb-3 -mt-1 space-y-2">
               {(idea.notesList ?? []).map((n) => (
-                <p key={n.id} className="text-sm text-text-secondary bg-darussalam-tile rounded-lg px-3 py-2">{n.text}</p>
+                <p key={n.id} className="text-sm text-text-secondary bg-darussalam-tile rounded-lg px-3 py-2"><Linkify text={n.text} /></p>
               ))}
               <div className="flex gap-2">
                 <input
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                   placeholder="Add a note…"
-                  className="flex-1 bg-darussalam-tile rounded-full px-3 py-1.5 text-sm outline-none"
+                  className="flex-1 min-w-0 bg-darussalam-tile rounded-full px-3 py-1.5 text-sm outline-none"
                 />
                 <button
                   onClick={async () => { if (!noteText.trim()) return; await addIdeaNote(idea, noteText); setNoteText(''); }}

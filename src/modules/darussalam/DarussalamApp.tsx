@@ -28,24 +28,26 @@ export default function DarussalamApp() {
   }, []);
 
   return (
-    <Suspense fallback={<PageFallback />}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="rooms" element={<Rooms />} />
-        <Route path="room/new" element={<AddRoom />} />
-        <Route path="room/:roomId" element={<RoomDetail />} />
-        <Route path="capture" element={<Capture />} />
-        <Route path="idea/:ideaId" element={<IdeaDetail />} />
-        <Route path="inspiration" element={<InspirationBoard />} />
-        <Route path="vision" element={<VisionBoard />} />
-        <Route path="decisions" element={<Decisions />} />
-        <Route path="wishlist" element={<Wishlist />} />
-        <Route path="documents" element={<Documents />} />
-        <Route path="search" element={<Search />} />
-        <Route path="settings" element={<Settings />} />
-        <Route path="more" element={<More />} />
-      </Routes>
-      <DarussalamBottomNav />
-    </Suspense>
+    <div className="overflow-x-hidden">
+      <Suspense fallback={<PageFallback />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="rooms" element={<Rooms />} />
+          <Route path="room/new" element={<AddRoom />} />
+          <Route path="room/:roomId" element={<RoomDetail />} />
+          <Route path="capture" element={<Capture />} />
+          <Route path="idea/:ideaId" element={<IdeaDetail />} />
+          <Route path="inspiration" element={<InspirationBoard />} />
+          <Route path="vision" element={<VisionBoard />} />
+          <Route path="decisions" element={<Decisions />} />
+          <Route path="wishlist" element={<Wishlist />} />
+          <Route path="documents" element={<Documents />} />
+          <Route path="search" element={<Search />} />
+          <Route path="settings" element={<Settings />} />
+          <Route path="more" element={<More />} />
+        </Routes>
+        <DarussalamBottomNav />
+      </Suspense>
+    </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FileQuestion, Trash2, Plus } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
+import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
 import { useDecisions, addDecision, deleteDecision } from '@/modules/darussalam/features/decisions/useDecisions';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
 
@@ -47,8 +48,8 @@ export default function DarussalamDecisions() {
               </div>
               <button onClick={() => deleteDecision(d.id)} className="text-text-muted flex-shrink-0"><Trash2 size={15} /></button>
             </div>
-            {d.reason && <p className="text-xs text-text-secondary mt-1.5">Reason: {d.reason}</p>}
-            {d.alternatives && <p className="text-xs text-text-muted mt-1">Considered: {d.alternatives}</p>}
+            {d.reason && <p className="text-xs text-text-secondary mt-1.5">Reason: <Linkify text={d.reason} /></p>}
+            {d.alternatives && <p className="text-xs text-text-muted mt-1">Considered: <Linkify text={d.alternatives} /></p>}
             <div className="flex items-center gap-3 mt-2 text-[11px] text-text-muted">
               <span>{formatDate(d.date)}</span>
               {d.decisionMaker && <span>· {d.decisionMaker}</span>}

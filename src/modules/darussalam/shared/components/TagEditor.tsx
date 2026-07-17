@@ -21,7 +21,7 @@ export function TagEditor({
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter' && value.trim()) { onAdd(value); setValue(''); } }}
           placeholder={placeholder}
-          className="flex-1 bg-darussalam-tile rounded-full px-3 py-1.5 text-xs outline-none"
+          className="flex-1 min-w-0 bg-darussalam-tile rounded-full px-3 py-1.5 text-xs outline-none"
         />
         <button
           onClick={() => { if (value.trim()) { onAdd(value); setValue(''); } }}
