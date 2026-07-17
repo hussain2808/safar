@@ -24,6 +24,7 @@ export default function DarussalamRoomDetail() {
   const navigate = useNavigate();
   const { room } = useRoom(roomId);
   const topIdeas = useRoomTopIdeas(roomId, 3);
+  const allRoomIdeas = useRoomTopIdeas(roomId, 200);
   const [tab, setTab] = useState<Tab>('overview');
 
   if (!room) {
@@ -144,12 +145,16 @@ export default function DarussalamRoomDetail() {
             </div>
             <div className="flex gap-3 mb-3">
               {topIdeas.map((idea) => (
-                <div key={idea.id} className="relative w-1/3 aspect-square rounded-xl bg-darussalam-tile flex items-center justify-center">
+                <button
+                  key={idea.id}
+                  onClick={() => navigate(`/darussalam/idea/${idea.id}`)}
+                  className="relative w-1/3 aspect-square rounded-xl bg-darussalam-tile flex items-center justify-center"
+                >
                   <Lightbulb size={20} className="text-darussalam-green" />
                   <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/90 flex items-center justify-center">
                     <Bookmark size={10} className="text-darussalam-green" />
                   </span>
-                </div>
+                </button>
               ))}
               {topIdeas.length === 0 && <p className="text-xs text-text-muted">No ideas yet.</p>}
             </div>
@@ -204,9 +209,13 @@ export default function DarussalamRoomDetail() {
 
       {tab === 'ideas' && (
         <div className="px-5 mt-4 space-y-2.5">
-          {topIdeas.length === 0 && <p className="text-sm text-text-muted text-center py-8">No ideas captured for this room yet.</p>}
-          {topIdeas.map((idea) => (
-            <div key={idea.id} className="flex items-center gap-3 bg-card-bg rounded-card shadow-card p-3">
+          {allRoomIdeas.length === 0 && <p className="text-sm text-text-muted text-center py-8">No ideas captured for this room yet.</p>}
+          {allRoomIdeas.map((idea) => (
+            <button
+              key={idea.id}
+              onClick={() => navigate(`/darussalam/idea/${idea.id}`)}
+              className="w-full flex items-center gap-3 bg-card-bg rounded-card shadow-card p-3 text-left"
+            >
               <div className="w-11 h-11 rounded-xl bg-darussalam-tile flex items-center justify-center flex-shrink-0">
                 <Lightbulb size={16} className="text-darussalam-green" />
               </div>
@@ -214,7 +223,7 @@ export default function DarussalamRoomDetail() {
                 <h3 className="text-sm font-medium text-text-primary line-clamp-1">{idea.title}</h3>
                 {idea.description && <p className="text-xs text-text-muted line-clamp-1">{idea.description}</p>}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       )}

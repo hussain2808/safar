@@ -7,6 +7,7 @@ const Home       = lazy(() => import('@/modules/darussalam/pages/Home'));
 const Rooms      = lazy(() => import('@/modules/darussalam/pages/Rooms'));
 const RoomDetail = lazy(() => import('@/modules/darussalam/pages/RoomDetail'));
 const Capture    = lazy(() => import('@/modules/darussalam/pages/Capture'));
+const IdeaDetail = lazy(() => import('@/modules/darussalam/pages/IdeaDetail'));
 const ComingSoon = lazy(() => import('@/modules/darussalam/pages/ComingSoon'));
 
 function PageFallback() {
@@ -25,6 +26,7 @@ export default function DarussalamApp() {
         <Route path="rooms" element={<Rooms />} />
         <Route path="room/:roomId" element={<RoomDetail />} />
         <Route path="capture" element={<Capture />} />
+        <Route path="idea/:ideaId" element={<IdeaDetail />} />
         <Route path="inspiration" element={<ComingSoon title="Inspiration Board" />} />
         <Route path="more" element={<ComingSoon title="More" />} />
         <Route path="settings" element={<ComingSoon title="Settings" />} />

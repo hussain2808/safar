@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/modules/darussalam/db';
-import type { Idea, IdeaCaptureType } from '@/modules/darussalam/types';
+import type { Idea, IdeaCaptureType, IdeaFile, IdeaNote, IdeaLink } from '@/modules/darussalam/types';
 
 export interface IdeaWithRoom extends Idea {
   roomName: string | null;
@@ -11,6 +11,24 @@ async function attachRoomNames(ideas: Idea[]): Promise<IdeaWithRoom[]> {
   const rooms = await db.rooms.bulkGet(roomIds);
   const nameById = new Map(roomIds.map((id, i) => [id, rooms[i]?.name ?? null]));
   return ideas.map((idea) => ({ ...idea, roomName: idea.roomId ? nameById.get(idea.roomId) ?? null : null }));
+}
+
+export function useIdea(ideaId: string | undefined) {
+  const result = useLiveQuery(async () => {
+    if (!ideaId) return null;
+    const idea = await db.ideas.get(ideaId);
+    if (!idea) return null;
+    const room = idea.roomId ? await db.rooms.get(idea.roomId) : null;
+    const files = idea.fileIds?.length ? await db.files.bulkGet(idea.fileIds) : [];
+    return { idea, roomName: room?.name ?? null, files: (files.filter(Boolean) as IdeaFile[]) };
+  }, [ideaId]);
+
+  return {
+    idea: result?.idea ?? null,
+    roomName: result?.roomName ?? null,
+    files: result?.files ?? [],
+    isLoading: result === undefined,
+  };
 }
 
 export function useRecentIdeas(limit = 3) {
@@ -83,4 +101,29 @@ export async function captureMedia(input: { type: Extract<IdeaCaptureType, 'phot
   });
   await db.ideas.add(idea);
   return idea;
+}
+
+export async function toggleIdeaFavorite(idea: Idea) {
+  await db.ideas.update(idea.id, { favorite: !idea.favorite, updatedAt: Date.now() });
+}
+
+export async function toggleIdeaInspiration(idea: Idea) {
+  await db.ideas.update(idea.id, { inInspiration: !idea.inInspiration, updatedAt: Date.now() });
+}
+
+export async function addIdeaNote(idea: Idea, text: string) {
+  const note: IdeaNote = { id: `note_${Date.now().toString(36)}`, text: text.trim(), createdAt: Date.now() };
+  const notesList = [...(idea.notesList ?? []), note];
+  await db.ideas.update(idea.id, { notesList, updatedAt: Date.now() });
+}
+
+export async function addIdeaLink(idea: Idea, link: { label: string; url: string }) {
+  const entry: IdeaLink = { id: `link_${Date.now().toString(36)}`, label: link.label.trim() || link.url, url: link.url.trim() };
+  const links = [...(idea.links ?? []), entry];
+  await db.ideas.update(idea.id, { links, updatedAt: Date.now() });
+}
+
+export async function toggleIdeaRequirement(idea: Idea, requirementId: string) {
+  const requirements = (idea.requirements ?? []).map((r) => (r.id === requirementId ? { ...r, done: !r.done } : r));
+  await db.ideas.update(idea.id, { requirements, updatedAt: Date.now() });
 }

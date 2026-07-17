@@ -147,7 +147,11 @@ export default function DarussalamCapture() {
           </div>
           <div className="divide-y divide-card-border">
             {ideas.map((idea) => (
-              <div key={idea.id} className="flex items-center gap-3 py-3">
+              <button
+                key={idea.id}
+                onClick={() => navigate(`/darussalam/idea/${idea.id}`)}
+                className="w-full flex items-center gap-3 py-3 text-left"
+              >
                 <div className="w-11 h-11 rounded-xl bg-darussalam-tile flex items-center justify-center flex-shrink-0">
                   <Lightbulb size={16} className="text-darussalam-green" />
                 </div>
@@ -160,7 +164,7 @@ export default function DarussalamCapture() {
                   {idea.tag && <span className="text-[10px] bg-darussalam-tile text-text-secondary px-2 py-0.5 rounded-full">{idea.tag}</span>}
                 </div>
                 <MoreHorizontal size={16} className="text-text-muted" />
-              </div>
+              </button>
             ))}
             {ideas.length === 0 && <p className="text-sm text-text-muted py-4 text-center">Nothing captured yet.</p>}
           </div>

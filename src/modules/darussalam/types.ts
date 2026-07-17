@@ -38,16 +38,44 @@ export interface Room {
 
 export type IdeaCaptureType = 'note' | 'photo' | 'video' | 'voice' | 'link';
 
+export interface IdeaNote {
+  id: string;
+  text: string;
+  createdAt: number;
+}
+
+export interface IdeaLink {
+  id: string;
+  label: string;
+  url: string;
+}
+
+export interface IdeaRequirement {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
 export interface Idea {
   id: string;
   roomId: string | null;
   type: IdeaCaptureType;
   title: string;
   description?: string;
+  whyILoveThis?: string;
   linkUrl?: string;
   tag?: string;
+  category?: string;
+  createdBy?: string;
+  measurements?: string;
+  materials?: string[];
+  links?: IdeaLink[];
+  notesList?: IdeaNote[];
+  requirements?: IdeaRequirement[];
   fileIds?: string[];
+  mediaCount?: number;
   favorite?: boolean;
+  inInspiration?: boolean;
   archived?: boolean;
   createdAt: number;
   updatedAt: number;
