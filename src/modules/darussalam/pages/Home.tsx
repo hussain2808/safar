@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, Lightbulb, ChevronRight, ChevronLeft, Clock, Heart, MoreVertical, TreePine } from 'lucide-react';
+import { Bell, Lightbulb, ChevronRight, ChevronLeft, Clock, Heart, TreePine } from 'lucide-react';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
 import { useRecentIdeas, useInspirationIdeas } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
 import { useHouseSettings } from '@/modules/darussalam/features/settings/useHouseSettings';
 import { IdeaThumb } from '@/modules/darussalam/shared/components/IdeaThumb';
+import { IdeaListRow } from '@/modules/darussalam/shared/components/IdeaListRow';
 
 function timeAgo(ts: number) {
   const diff = Date.now() - ts;
@@ -153,23 +154,18 @@ export default function DarussalamHome() {
           </div>
           <div className="divide-y divide-card-border">
             {ideas.map((idea) => (
-              <button
+              <IdeaListRow
                 key={idea.id}
-                onClick={() => navigate(`/darussalam/idea/${idea.id}`)}
-                className="w-full flex items-center gap-3 py-3 text-left"
-              >
-                <div className="w-11 h-11 rounded-xl bg-darussalam-tile flex items-center justify-center flex-shrink-0">
-                  <Lightbulb size={16} className="text-darussalam-green" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-text-primary line-clamp-1">{idea.title}</h3>
+                ideaId={idea.id}
+                title={idea.title}
+                onOpen={() => navigate(`/darussalam/idea/${idea.id}`)}
+                subtitle={
                   <p className="text-xs text-text-muted line-clamp-1">
                     {idea.roomName ?? 'Unsorted'}{idea.tag ? ` · ${idea.tag}` : ''}
                   </p>
-                </div>
-                <span className="text-[11px] text-text-muted whitespace-nowrap">{timeAgo(idea.createdAt)}</span>
-                <MoreVertical size={16} className="text-text-muted" />
-              </button>
+                }
+                trailing={<span className="text-[11px] text-text-muted whitespace-nowrap">{timeAgo(idea.createdAt)}</span>}
+              />
             ))}
             {ideas.length === 0 && (
               <p className="text-sm text-text-muted py-4 text-center">No ideas captured yet.</p>

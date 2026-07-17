@@ -146,3 +146,11 @@ export async function toggleIdeaRequirement(idea: Idea, requirementId: string) {
   const requirements = (idea.requirements ?? []).map((r) => (r.id === requirementId ? { ...r, done: !r.done } : r));
   await db.ideas.update(idea.id, { requirements, updatedAt: Date.now() });
 }
+
+export async function deleteIdea(ideaId: string) {
+  const idea = await db.ideas.get(ideaId);
+  if (idea?.fileIds?.length) {
+    await db.files.bulkDelete(idea.fileIds);
+  }
+  await db.ideas.delete(ideaId);
+}

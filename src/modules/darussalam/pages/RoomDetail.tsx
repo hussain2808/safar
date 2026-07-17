@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { IdeaThumb } from '@/modules/darussalam/shared/components/IdeaThumb';
+import { IdeaListRow } from '@/modules/darussalam/shared/components/IdeaListRow';
 import { TagEditor } from '@/modules/darussalam/shared/components/TagEditor';
 import {
   useRoom, useRoomTopIdeas, useRoomStats, updateRoom, deleteRoom,
@@ -303,19 +304,14 @@ export default function DarussalamRoomDetail() {
         <div className="px-5 mt-4 space-y-2.5">
           {allRoomIdeas.length === 0 && <p className="text-sm text-text-muted text-center py-8">No ideas captured for this room yet.</p>}
           {allRoomIdeas.map((idea) => (
-            <button
-              key={idea.id}
-              onClick={() => navigate(`/darussalam/idea/${idea.id}`)}
-              className="w-full flex items-center gap-3 bg-card-bg rounded-card shadow-card p-3 text-left"
-            >
-              <div className="w-11 h-11 rounded-xl overflow-hidden bg-darussalam-tile flex items-center justify-center flex-shrink-0">
-                <IdeaThumb ideaId={idea.id} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-text-primary line-clamp-1">{idea.title}</h3>
-                {idea.description && <p className="text-xs text-text-muted line-clamp-1">{idea.description}</p>}
-              </div>
-            </button>
+            <div key={idea.id} className="bg-card-bg rounded-card shadow-card px-3">
+              <IdeaListRow
+                ideaId={idea.id}
+                title={idea.title}
+                onOpen={() => navigate(`/darussalam/idea/${idea.id}`)}
+                subtitle={idea.description ? <p className="text-xs text-text-muted line-clamp-1">{idea.description}</p> : undefined}
+              />
+            </div>
           ))}
         </div>
       )}

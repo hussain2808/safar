@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
-  Pencil, Bookmark, MoreVertical, Home as HomeIcon, Calendar, User, Heart,
+  Pencil, Bookmark, Home as HomeIcon, Calendar, User, Heart,
   Ruler, Tag, SquareCheckBig, Palette, Link2, Paperclip, ChevronRight, ChevronDown,
-  Share2, Plus,
+  Share2, Plus, Trash2,
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
-import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement, deleteIdea } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getCategoryIcon } from '@/modules/darussalam/lib/categoryIcons';
 
 function formatDate(ts: number) {
@@ -30,6 +30,7 @@ function Row({
 
 export default function DarussalamIdeaDetail() {
   const { ideaId } = useParams();
+  const navigate = useNavigate();
   const { idea, roomName, files } = useIdea(ideaId);
   const [expanded, setExpanded] = useState<SectionKey | null>(null);
   const [noteText, setNoteText] = useState('');
@@ -68,6 +69,14 @@ export default function DarussalamIdeaDetail() {
     setExpanded((prev) => (prev === key ? null : key));
   }
 
+  async function handleDelete() {
+    if (!ideaId) return;
+    if (window.confirm(`Delete "${idea!.title}"? This can't be undone.`)) {
+      await deleteIdea(ideaId);
+      navigate(-1);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-darussalam-bg pb-28">
       <DarussalamHeader
@@ -78,7 +87,7 @@ export default function DarussalamIdeaDetail() {
             <button onClick={() => toggleIdeaFavorite(idea)} className={idea.favorite ? 'text-darussalam-green' : 'text-text-muted'}>
               <Bookmark size={19} fill={idea.favorite ? 'currentColor' : 'none'} />
             </button>
-            <button className="text-darussalam-green"><MoreVertical size={20} /></button>
+            <button onClick={handleDelete} className="text-text-muted" aria-label="Delete idea"><Trash2 size={19} /></button>
           </>
         }
       />

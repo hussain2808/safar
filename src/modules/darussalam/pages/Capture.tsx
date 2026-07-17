@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Lightbulb, Lightbulb as TipsIcon, Settings, Mic, Camera, Video, Pencil, Link2, AudioWaveform,
-  Clock, MoreHorizontal, Sparkles,
+  Lightbulb as TipsIcon, Settings, Mic, Camera, Video, Pencil, Link2, AudioWaveform,
+  Clock, Sparkles,
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { useRecentIdeas, captureNote, captureLink, captureMedia } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { pickSupportedAudioMimeType, isVoiceRecordingSupported } from '@/modules/darussalam/lib/audioRecording';
+import { IdeaListRow } from '@/modules/darussalam/shared/components/IdeaListRow';
 
 function timeAgo(ts: number) {
   const diff = Date.now() - ts;
@@ -186,24 +187,19 @@ export default function DarussalamCapture() {
           </div>
           <div className="divide-y divide-card-border">
             {ideas.map((idea) => (
-              <button
+              <IdeaListRow
                 key={idea.id}
-                onClick={() => navigate(`/darussalam/idea/${idea.id}`)}
-                className="w-full flex items-center gap-3 py-3 text-left"
-              >
-                <div className="w-11 h-11 rounded-xl bg-darussalam-tile flex items-center justify-center flex-shrink-0">
-                  <Lightbulb size={16} className="text-darussalam-green" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-text-primary line-clamp-1">{idea.title}</h3>
-                  {idea.description && <p className="text-xs text-text-muted line-clamp-1">{idea.description}</p>}
-                </div>
-                <div className="flex flex-col items-end gap-1">
-                  <span className="text-[11px] text-text-muted whitespace-nowrap">{timeAgo(idea.createdAt)}</span>
-                  {idea.tag && <span className="text-[10px] bg-darussalam-tile text-text-secondary px-2 py-0.5 rounded-full">{idea.tag}</span>}
-                </div>
-                <MoreHorizontal size={16} className="text-text-muted" />
-              </button>
+                ideaId={idea.id}
+                title={idea.title}
+                onOpen={() => navigate(`/darussalam/idea/${idea.id}`)}
+                subtitle={idea.description ? <p className="text-xs text-text-muted line-clamp-1">{idea.description}</p> : undefined}
+                trailing={
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="text-[11px] text-text-muted whitespace-nowrap">{timeAgo(idea.createdAt)}</span>
+                    {idea.tag && <span className="text-[10px] bg-darussalam-tile text-text-secondary px-2 py-0.5 rounded-full">{idea.tag}</span>}
+                  </div>
+                }
+              />
             ))}
             {ideas.length === 0 && <p className="text-sm text-text-muted py-4 text-center">Nothing captured yet.</p>}
           </div>
