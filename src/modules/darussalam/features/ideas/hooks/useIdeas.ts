@@ -43,6 +43,25 @@ export function useRecentIdeas(limit = 3) {
   };
 }
 
+export function useInspirationIdeas(roomId?: string) {
+  const result = useLiveQuery(async () => {
+    const all = await db.ideas.toArray();
+    const filtered = all.filter((i) => i.inInspiration && (!roomId || i.roomId === roomId));
+    return attachRoomNames(filtered.sort((a, b) => b.createdAt - a.createdAt));
+  }, [roomId]);
+
+  return (result ?? []) as IdeaWithRoom[];
+}
+
+export function useIdeaFirstFile(ideaId: string) {
+  const result = useLiveQuery(async () => {
+    const idea = await db.ideas.get(ideaId);
+    if (!idea?.fileIds?.length) return null;
+    return (await db.files.get(idea.fileIds[0])) ?? null;
+  }, [ideaId]);
+  return result ?? null;
+}
+
 function makeId() {
   return `idea_${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`;
 }

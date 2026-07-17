@@ -80,9 +80,16 @@ export default function DarussalamRooms() {
           );
         })}
 
-        <button className="w-full border-2 border-dashed border-card-border rounded-card py-4 flex items-center justify-center gap-2 text-darussalam-green text-sm font-medium">
+        <button
+          onClick={() => navigate('/darussalam/room/new')}
+          className="w-full border-2 border-dashed border-card-border rounded-card py-4 flex items-center justify-center gap-2 text-darussalam-green text-sm font-medium"
+        >
           <Plus size={16} /> Add New Room or Space
         </button>
+
+        {visibleRooms.length === 0 && (
+          <p className="text-sm text-text-muted text-center py-6">No rooms yet. Add your first space above.</p>
+        )}
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { Bell, Lightbulb, ChevronRight, Clock, Heart, MoreVertical, TreePine } from 'lucide-react';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
-import { useRecentIdeas } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { useRecentIdeas, useInspirationIdeas } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
+import { useHouseSettings } from '@/modules/darussalam/features/settings/useHouseSettings';
+import { IdeaThumb } from '@/modules/darussalam/shared/components/IdeaThumb';
 
 function timeAgo(ts: number) {
   const diff = Date.now() - ts;
@@ -16,6 +18,9 @@ export default function DarussalamHome() {
   const navigate = useNavigate();
   const { rooms } = useRooms();
   const { ideas } = useRecentIdeas(3);
+  const settings = useHouseSettings();
+  const inspirationIdeas = useInspirationIdeas();
+  const todaysInspiration = inspirationIdeas[0];
 
   return (
     <div className="min-h-screen bg-darussalam-bg pb-28">
@@ -27,8 +32,10 @@ export default function DarussalamHome() {
               <TreePine size={18} />
             </div>
             <div>
-              <div className="font-serif text-2xl text-darussalam-green leading-tight">Darussalam</div>
-              <div className="text-[11px] text-text-muted tracking-wide leading-tight">»» Our Home, In Sha Allah ««</div>
+              <div className="font-serif text-2xl text-darussalam-green leading-tight">{settings.houseName}</div>
+              {settings.houseSubtitle && (
+                <div className="text-[11px] text-text-muted tracking-wide leading-tight">»» {settings.houseSubtitle} ««</div>
+              )}
             </div>
           </div>
           <button className="w-9 h-9 rounded-full bg-white/70 flex items-center justify-center text-darussalam-green relative">
@@ -80,6 +87,15 @@ export default function DarussalamHome() {
                 </button>
               );
             })}
+            {rooms.length === 0 && (
+              <button
+                onClick={() => navigate('/darussalam/room/new')}
+                className="flex-shrink-0 w-24 border-2 border-dashed border-card-border rounded-2xl p-3 flex flex-col items-center justify-center gap-1 text-center text-darussalam-green"
+              >
+                <span className="text-lg leading-none">+</span>
+                <span className="text-[10px] font-medium">Add Space</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -95,14 +111,25 @@ export default function DarussalamHome() {
               </div>
             </div>
           </div>
-          <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#D8CBA8] to-[#8FA37D] p-5 flex items-center justify-between gap-3 min-h-[110px]">
-            <p className="text-sm font-medium text-white/95 leading-snug max-w-[60%]">
-              Open spaces, natural light and greenery bring peace to the heart.
-            </p>
-            <button className="w-9 h-9 rounded-full bg-darussalam-green/80 flex items-center justify-center">
-              <Heart size={16} className="text-white" />
+          {todaysInspiration ? (
+            <button
+              onClick={() => navigate(`/darussalam/idea/${todaysInspiration.id}`)}
+              className="relative w-full rounded-2xl overflow-hidden flex items-center justify-between gap-3 min-h-[110px] text-left"
+            >
+              <div className="absolute inset-0"><IdeaThumb ideaId={todaysInspiration.id} /></div>
+              <div className="absolute inset-0 bg-black/25" />
+              <p className="relative z-10 p-5 text-sm font-medium text-white leading-snug max-w-[70%]">
+                {todaysInspiration.title}
+              </p>
+              <Heart size={16} className="relative z-10 mr-5 text-white flex-shrink-0" fill="currentColor" />
             </button>
-          </div>
+          ) : (
+            <div className="rounded-2xl bg-darussalam-tile p-5 min-h-[110px] flex items-center justify-center">
+              <p className="text-sm text-text-muted text-center">
+                Mark an idea as inspiration to see it here.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

@@ -6,17 +6,10 @@ export interface RoomRequirement {
   done: boolean;
 }
 
-export interface RoomProgress {
-  ideas: { current: number; target: number };
-  measurements: { current: number; target: number };
-  decisions: { current: number; target: number };
-  documents: { current: number; target: number };
-}
-
 export interface Room {
   id: string;
   name: string;
-  tagline: string;
+  tagline?: string;
   icon: string;
   category: RoomCategory;
   description?: string;
@@ -25,10 +18,6 @@ export interface Room {
   colorPalette?: string[];
   materials?: string[];
   requirements?: RoomRequirement[];
-  progress?: RoomProgress;
-  measurementsCount: number;
-  documentsCount: number;
-  notesCount: number;
   order: number;
   favorite?: boolean;
   createdAt: number;
@@ -92,9 +81,89 @@ export interface IdeaFile {
   createdAt: number;
 }
 
+export interface Measurement {
+  id: string;
+  roomId: string;
+  label: string;
+  value: string;
+  unit?: string;
+  createdAt: number;
+}
+
+export interface RoomNote {
+  id: string;
+  roomId: string;
+  text: string;
+  createdAt: number;
+}
+
+export interface Decision {
+  id: string;
+  title: string;
+  reason?: string;
+  alternatives?: string;
+  decisionMaker?: string;
+  roomId?: string | null;
+  date: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type WishlistCategory = 'fixtures' | 'materials' | 'furniture' | 'lighting' | 'other';
+
+export interface WishlistItem {
+  id: string;
+  title: string;
+  category?: WishlistCategory;
+  notes?: string;
+  roomId?: string | null;
+  resolved?: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type DocumentCategory = 'floorPlan' | 'elevation' | 'moodBoard' | 'sketch' | 'municipality' | 'other';
+
+export interface DocumentRecord {
+  id: string;
+  name: string;
+  category: DocumentCategory;
+  roomId?: string | null;
+  fileId?: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface DocumentFile {
+  id: string;
+  documentId: string;
+  blob: Blob;
+  mimeType: string;
+  fileName: string;
+  createdAt: number;
+}
+
+export interface VisionBoard {
+  id: 'house';
+  styleName?: string;
+  tags?: string[];
+  colorPalette?: string[];
+  materials?: string[];
+  updatedAt: number;
+}
+
+export interface HouseSettings {
+  id: 'house';
+  houseName: string;
+  houseSubtitle?: string;
+  currency: string;
+  units: 'metric' | 'imperial';
+  updatedAt: number;
+}
+
 export interface PendingDelete {
   id: string;
-  kind: 'room' | 'idea' | 'file';
+  kind: 'room' | 'idea' | 'file' | 'measurement' | 'note' | 'decision' | 'wishlistItem' | 'document';
   targetId: string;
   createdAt: number;
 }

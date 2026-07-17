@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Home as HomeIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useHouseSettings } from '@/modules/darussalam/features/settings/useHouseSettings';
 
 export function DarussalamHeader({ showBack = false, actions }: { showBack?: boolean; actions?: ReactNode }) {
   const navigate = useNavigate();
+  const settings = useHouseSettings();
   return (
     <div className="flex items-center justify-between px-5 py-4">
       <div className="flex items-center gap-2">
@@ -16,8 +18,10 @@ export function DarussalamHeader({ showBack = false, actions }: { showBack?: boo
           <HomeIcon size={18} />
         </div>
         <div>
-          <div className="font-serif text-lg text-darussalam-green leading-tight">Darussalam</div>
-          <div className="text-[10px] text-text-muted tracking-wide leading-tight">Our Home, In Sha Allah</div>
+          <div className="font-serif text-lg text-darussalam-green leading-tight">{settings.houseName}</div>
+          {settings.houseSubtitle && (
+            <div className="text-[10px] text-text-muted tracking-wide leading-tight">{settings.houseSubtitle}</div>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-2">{actions}</div>
