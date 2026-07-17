@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Lightbulb, Lightbulb as TipsIcon, Settings, Mic, Camera, Video, Pencil, Link2, AudioWaveform,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { useRecentIdeas, captureNote, captureLink, captureMedia } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { pickSupportedAudioMimeType, isVoiceRecordingSupported } from '@/modules/darussalam/lib/audioRecording';
 
 function timeAgo(ts: number) {
   const diff = Date.now() - ts;
@@ -21,10 +22,19 @@ export default function DarussalamCapture() {
   const { ideas } = useRecentIdeas(5);
   const [text, setText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [voiceError, setVoiceError] = useState('');
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const recordingStartRef = useRef(0);
+
+  useEffect(() => {
+    if (!isRecording) return;
+    const interval = setInterval(() => setRecordingSeconds(Math.round((Date.now() - recordingStartRef.current) / 1000)), 500);
+    return () => clearInterval(interval);
+  }, [isRecording]);
 
   async function handleSaveNote() {
     if (!text.trim()) return;
@@ -40,26 +50,54 @@ export default function DarussalamCapture() {
   }
 
   async function handleVoiceToggle() {
+    setVoiceError('');
+
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
       return;
     }
+
+    if (!isVoiceRecordingSupported()) {
+      setVoiceError('Voice recording is not supported in this browser.');
+      return;
+    }
+    if (!window.isSecureContext) {
+      setVoiceError('Voice recording needs a secure (https) connection.');
+      return;
+    }
+
+    const mimeType = pickSupportedAudioMimeType();
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
+      const recorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       audioChunksRef.current = [];
-      recorder.ondataavailable = (e) => audioChunksRef.current.push(e.data);
+      recorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
+      recorder.onerror = () => setVoiceError('Recording failed. Please try again.');
       recorder.onstop = async () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
         stream.getTracks().forEach((t) => t.stop());
-        await captureMedia({ type: 'voice', file: blob, mimeType: 'audio/webm' });
+        if (audioChunksRef.current.length === 0) {
+          setVoiceError('No audio was captured — try holding the mic closer and speaking right after tapping.');
+          return;
+        }
+        const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || mimeType || 'audio/webm' });
+        const durationSeconds = Math.round((Date.now() - recordingStartRef.current) / 1000);
+        await captureMedia({ type: 'voice', file: blob, mimeType: blob.type, durationSeconds });
       };
+      recordingStartRef.current = Date.now();
       recorder.start();
       mediaRecorderRef.current = recorder;
+      setRecordingSeconds(0);
       setIsRecording(true);
-    } catch {
-      // microphone unavailable or permission denied — silently no-op
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'NotAllowedError') {
+        setVoiceError('Microphone permission denied. Allow mic access in your browser settings and try again.');
+      } else if (err instanceof DOMException && err.name === 'NotFoundError') {
+        setVoiceError('No microphone found on this device.');
+      } else {
+        setVoiceError('Could not start recording. Please try again.');
+      }
     }
   }
 
@@ -99,8 +137,9 @@ export default function DarussalamCapture() {
             <Mic size={26} className={isRecording ? 'text-white' : 'text-darussalam-green'} />
           </button>
           <p className="text-sm font-medium text-text-primary text-center">
-            {isRecording ? 'Recording… tap to stop' : 'Tap to speak'}<br />or write your idea
+            {isRecording ? `Recording ${recordingSeconds}s… tap to stop` : 'Tap to speak'}<br />or write your idea
           </p>
+          {voiceError && <p className="text-xs text-red-600 text-center mt-2">{voiceError}</p>}
           <input
             id="darussalam-note-input"
             value={text}

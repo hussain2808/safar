@@ -220,9 +220,22 @@ export default function DarussalamIdeaDetail() {
 
           <Row icon={Paperclip} label="Files & Attachments" count={`${files.length} files`} expanded={expanded === 'files'} onToggle={() => toggle('files')} />
           {expanded === 'files' && (
-            <div className="pb-3 -mt-1 space-y-1.5">
-              {files.map((f) => (
-                <p key={f.id} className="text-sm text-text-secondary">{f.mimeType} attachment</p>
+            <div className="pb-3 -mt-1 space-y-2.5">
+              {files.map((f, i) => (
+                <div key={f.id}>
+                  {f.mimeType.startsWith('audio/') && mediaUrls[i] && (
+                    <audio controls src={mediaUrls[i]} className="w-full h-10" />
+                  )}
+                  {f.mimeType.startsWith('video/') && mediaUrls[i] && (
+                    <video controls src={mediaUrls[i]} className="w-full rounded-lg" />
+                  )}
+                  {!f.mimeType.startsWith('audio/') && !f.mimeType.startsWith('video/') && (
+                    <p className="text-sm text-text-secondary">{f.mimeType} attachment</p>
+                  )}
+                  {f.durationSeconds != null && (
+                    <p className="text-xs text-text-muted mt-1">{f.durationSeconds}s</p>
+                  )}
+                </div>
               ))}
               {files.length === 0 && <p className="text-sm text-text-muted">No files attached yet.</p>}
             </div>
