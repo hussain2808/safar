@@ -292,7 +292,7 @@ export default function DarussalamRoomDetail() {
               {topIdeas.length === 0 && <p className="text-xs text-text-muted">No ideas yet.</p>}
             </div>
             <button
-              onClick={() => navigate('/darussalam/capture')}
+              onClick={() => navigate(`/darussalam/capture?room=${room.id}`)}
               className="w-full border-2 border-dashed border-card-border rounded-xl py-2.5 flex items-center justify-center gap-2 text-darussalam-green text-sm font-medium"
             >
               <Plus size={15} /> Add Idea

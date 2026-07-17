@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Lightbulb as TipsIcon, Settings, Mic, Camera, Video, Pencil, Link2, AudioWaveform,
   Clock, Sparkles,
@@ -8,6 +8,8 @@ import { DarussalamHeader } from '@/modules/darussalam/shared/components/Darussa
 import { useRecentIdeas, captureNote, captureLink, captureMedia } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { pickSupportedAudioMimeType, isVoiceRecordingSupported } from '@/modules/darussalam/lib/audioRecording';
 import { IdeaListRow } from '@/modules/darussalam/shared/components/IdeaListRow';
+import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
+import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
 
 function timeAgo(ts: number) {
   const diff = Date.now() - ts;
@@ -20,7 +22,10 @@ function timeAgo(ts: number) {
 
 export default function DarussalamCapture() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const { ideas } = useRecentIdeas(5);
+  const { rooms } = useRooms();
+  const [roomId, setRoomId] = useState<string | null>(params.get('room'));
   const [text, setText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
@@ -39,14 +44,14 @@ export default function DarussalamCapture() {
 
   async function handleSaveNote() {
     if (!text.trim()) return;
-    await captureNote({ title: text });
+    await captureNote({ title: text, roomId });
     setText('');
   }
 
   async function handleFileSelected(e: React.ChangeEvent<HTMLInputElement>, type: 'photo' | 'video') {
     const file = e.target.files?.[0];
     if (!file) return;
-    await captureMedia({ type, file, mimeType: file.type });
+    await captureMedia({ type, file, mimeType: file.type, roomId });
     e.target.value = '';
   }
 
@@ -84,7 +89,7 @@ export default function DarussalamCapture() {
         }
         const blob = new Blob(audioChunksRef.current, { type: recorder.mimeType || mimeType || 'audio/webm' });
         const durationSeconds = Math.round((Date.now() - recordingStartRef.current) / 1000);
-        await captureMedia({ type: 'voice', file: blob, mimeType: blob.type, durationSeconds });
+        await captureMedia({ type: 'voice', file: blob, mimeType: blob.type, durationSeconds, roomId });
       };
       recordingStartRef.current = Date.now();
       recorder.start();
@@ -105,7 +110,7 @@ export default function DarussalamCapture() {
   async function handleLink() {
     const url = window.prompt('Paste a link (Instagram, Pinterest, YouTube, website)');
     if (!url) return;
-    await captureLink({ url });
+    await captureLink({ url, roomId });
   }
 
   return (
@@ -129,7 +134,36 @@ export default function DarussalamCapture() {
         <p className="text-sm text-text-secondary mt-1">Capture your ideas in seconds, never lose a thought. ♡</p>
       </div>
 
-      <div className="px-5 mt-5">
+      <div className="px-5 mt-4">
+        <p className="text-xs text-text-muted mb-1.5">Save to</p>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          <button
+            onClick={() => setRoomId(null)}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm whitespace-nowrap ${
+              roomId === null ? 'bg-accent-green-bg text-darussalam-green font-medium' : 'bg-card-bg text-text-secondary'
+            }`}
+          >
+            <Sparkles size={13} /> Unsorted
+          </button>
+          {rooms.map((room) => {
+            const Icon = getRoomIcon(room.icon);
+            const active = roomId === room.id;
+            return (
+              <button
+                key={room.id}
+                onClick={() => setRoomId(room.id)}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm whitespace-nowrap ${
+                  active ? 'bg-accent-green-bg text-darussalam-green font-medium' : 'bg-card-bg text-text-secondary'
+                }`}
+              >
+                <Icon size={13} /> {room.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="px-5 mt-4">
         <div className="bg-card-bg rounded-card shadow-card p-6 flex flex-col items-center">
           <button
             onClick={handleVoiceToggle}

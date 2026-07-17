@@ -7,8 +7,10 @@ import {
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
-import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement, deleteIdea } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement, deleteIdea, moveIdeaToRoom } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getCategoryIcon } from '@/modules/darussalam/lib/categoryIcons';
+import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
+import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
 
 function formatDate(ts: number) {
   return new Date(ts).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -33,9 +35,11 @@ export default function DarussalamIdeaDetail() {
   const { ideaId } = useParams();
   const navigate = useNavigate();
   const { idea, roomName, files } = useIdea(ideaId);
+  const { rooms } = useRooms();
   const [expanded, setExpanded] = useState<SectionKey | null>(null);
   const [noteText, setNoteText] = useState('');
   const [slide, setSlide] = useState(0);
+  const [showRoomPicker, setShowRoomPicker] = useState(false);
 
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
@@ -98,17 +102,42 @@ export default function DarussalamIdeaDetail() {
           <h1 className="font-serif text-[26px] leading-tight text-text-primary">{idea.title}</h1>
 
           <div className="flex flex-wrap gap-2 mt-3">
-            {roomName && (
-              <span className="flex items-center gap-1.5 text-xs font-medium text-text-secondary bg-darussalam-tile px-3 py-1.5 rounded-full">
-                <HomeIcon size={13} /> {roomName}
-              </span>
-            )}
+            <button
+              onClick={() => setShowRoomPicker((v) => !v)}
+              className="flex items-center gap-1.5 text-xs font-medium text-text-secondary bg-darussalam-tile px-3 py-1.5 rounded-full"
+            >
+              <HomeIcon size={13} /> {roomName ?? 'Unsorted'}
+            </button>
             {idea.category && (
               <span className="flex items-center gap-1.5 text-xs font-medium text-text-secondary bg-darussalam-tile px-3 py-1.5 rounded-full">
                 <CategoryIcon size={13} /> {idea.category}
               </span>
             )}
           </div>
+
+          {showRoomPicker && (
+            <div className="flex flex-wrap gap-2 mt-3 bg-darussalam-bg rounded-xl p-2.5">
+              <button
+                onClick={async () => { await moveIdeaToRoom(idea, null); setShowRoomPicker(false); }}
+                className={`px-3 py-1.5 rounded-full text-xs ${!idea.roomId ? 'bg-darussalam-green text-white' : 'bg-card-bg text-text-secondary'}`}
+              >
+                Unsorted
+              </button>
+              {rooms.map((room) => {
+                const RoomIcon = getRoomIcon(room.icon);
+                const active = idea.roomId === room.id;
+                return (
+                  <button
+                    key={room.id}
+                    onClick={async () => { await moveIdeaToRoom(idea, room.id); setShowRoomPicker(false); }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs ${active ? 'bg-darussalam-green text-white' : 'bg-card-bg text-text-secondary'}`}
+                  >
+                    <RoomIcon size={12} /> {room.name}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {idea.linkUrl && (
             <a
