@@ -1,6 +1,7 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { DarussalamBottomNav } from '@/modules/darussalam/shared/components/BottomNav';
+import { cleanupLegacySeedData } from '@/modules/darussalam/lib/cleanupLegacySeed';
 
 const Home             = lazy(() => import('@/modules/darussalam/pages/Home'));
 const Rooms            = lazy(() => import('@/modules/darussalam/pages/Rooms'));
@@ -22,6 +23,10 @@ function PageFallback() {
 }
 
 export default function DarussalamApp() {
+  useEffect(() => {
+    cleanupLegacySeedData();
+  }, []);
+
   return (
     <Suspense fallback={<PageFallback />}>
       <Routes>

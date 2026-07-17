@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Bell, Lightbulb, ChevronRight, Clock, Heart, MoreVertical, TreePine } from 'lucide-react';
+import { Bell, Lightbulb, ChevronRight, ChevronLeft, Clock, Heart, MoreVertical, TreePine } from 'lucide-react';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
 import { useRecentIdeas, useInspirationIdeas } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
@@ -27,7 +27,14 @@ export default function DarussalamHome() {
       <div className="relative overflow-hidden rounded-b-[32px] bg-gradient-to-b from-[#CFE0D6] via-[#E7DCC4] to-darussalam-bg px-5 pt-4 pb-8">
         <TreePine size={120} className="absolute -right-4 -top-2 text-darussalam-green/20" strokeWidth={1} />
         <div className="flex items-center justify-between relative z-10">
-          <div className="flex items-center gap-2">
+          <div className="flex items-start gap-2">
+            <button
+              onClick={() => navigate('/')}
+              aria-label="Back to Safar"
+              className="w-9 h-9 -ml-1.5 mt-0.5 rounded-full bg-white/70 shadow-card flex items-center justify-center text-darussalam-green active:bg-white/90 transition-colors flex-shrink-0"
+            >
+              <ChevronLeft size={18} />
+            </button>
             <div className="w-9 h-9 rounded-xl border-2 border-darussalam-green flex items-center justify-center text-darussalam-green">
               <TreePine size={18} />
             </div>
