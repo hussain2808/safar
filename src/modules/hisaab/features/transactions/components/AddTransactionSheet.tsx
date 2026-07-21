@@ -321,6 +321,25 @@ export function AddTransactionSheet() {
               </div>
             </div>
 
+            {/* Saved toast — centered in the visible viewport, independent of the keyboard/button bar */}
+            <AnimatePresence>
+              {savedToast && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.15 }}
+                  className="fixed inset-x-0 top-0 z-50 flex items-center justify-center pointer-events-none"
+                  style={{ height: `calc(100% - ${keyboardInset}px)` }}
+                >
+                  <span className="bg-hisaabAccent-positive text-white text-body px-5 py-3 rounded-full shadow-button flex items-center gap-2">
+                    <CheckCircle2 size={16} />
+                    {savedToast}
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Fixed save button — floats above the on-screen keyboard when one is open */}
             <div
               className={cn(
@@ -329,25 +348,10 @@ export function AddTransactionSheet() {
               )}
               style={{ bottom: keyboardInset }}
             >
-              <AnimatePresence>
-                {savedToast && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    transition={{ duration: 0.15 }}
-                    className="flex justify-center mb-2.5"
-                  >
-                    <span className="bg-hisaabAccent-positive text-white text-caption-md px-4 py-2 rounded-full shadow-button flex items-center gap-1.5">
-                      <CheckCircle2 size={14} />
-                      {savedToast}
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
               <div className="flex gap-3">
                 {!editingTransaction && (
                   <button
+                    onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleSave(true)}
                     disabled={amount <= 0 || saving}
                     className="flex-1 pointer-events-auto bg-transparent text-hisaabAccent-button border-2 border-hisaabAccent-button rounded-button py-4 text-body disabled:opacity-40 active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2"
