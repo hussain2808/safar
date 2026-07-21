@@ -18,10 +18,12 @@ import { parseAmountToPaise } from '@/modules/hisaab/lib/format';
 import { getCurrency, DEFAULT_CURRENCY } from '@/modules/hisaab/lib/currencies';
 import { cn } from '@/modules/hisaab/lib/utils';
 import { useUIStore } from '@/modules/hisaab/store/ui';
+import { useKeyboardInset } from '@/lib/useKeyboardInset';
 import type { TransactionType } from '@/modules/hisaab/types';
 
 export function AddTransactionSheet() {
   const { addTransactionSheetOpen, addTransactionBookId, editingTransaction, closeAddTransaction } = useUIStore();
+  const keyboardInset = useKeyboardInset();
 
   const book = useLiveQuery(
     () => addTransactionBookId ? db.books.get(addTransactionBookId) : undefined,
@@ -296,8 +298,14 @@ export function AddTransactionSheet() {
               </div>
             </div>
 
-            {/* Fixed save button */}
-            <div className="fixed bottom-0 inset-x-0 px-5 pb-10 pt-4 bg-gradient-to-t from-bg-primary via-bg-primary to-transparent pointer-events-none">
+            {/* Fixed save button — floats above the on-screen keyboard when one is open */}
+            <div
+              className={cn(
+                'fixed inset-x-0 px-5 pt-4 bg-gradient-to-t from-bg-primary via-bg-primary to-transparent pointer-events-none transition-[bottom] duration-150',
+                keyboardInset > 0 ? 'pb-3' : 'pb-10',
+              )}
+              style={{ bottom: keyboardInset }}
+            >
               <button
                 onClick={handleSave}
                 disabled={amount <= 0 || saving}
