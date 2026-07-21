@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronLeft, Pencil, MoreHorizontal, Trash2, FileText, Landmark, Calendar, User } from 'lucide-react';
+import { ChevronLeft, Pencil, MoreHorizontal, Trash2, FileText, Landmark, Calendar, User, Copy, Check } from 'lucide-react';
 import { DocumentForm, draftFromDocument, type DocumentDraft } from '@/modules/sanad/features/documents/components/DocumentForm';
 import { StatusBadge } from '@/modules/sanad/features/documents/components/StatusBadge';
 import { AttachmentList } from '@/modules/sanad/features/documents/components/AttachmentList';
@@ -195,7 +195,7 @@ export default function DocumentDetail() {
 
         <div className="bg-icon-bg/60 rounded-card divide-y divide-card-border/60 mb-6">
           <div className="grid grid-cols-2 gap-x-4 p-4">
-            <InfoField icon={FileText} label="Document Number" value={document.documentNumber} />
+            <InfoField icon={FileText} label="Document Number" value={document.documentNumber} copyable />
             <InfoField icon={Landmark} label="Issuing Authority" value={document.issuingAuthority} />
           </div>
           <div className="grid grid-cols-2 gap-x-4 p-4">
@@ -263,13 +263,35 @@ function ViewSection({ title, children }: { title: string; children: React.React
   );
 }
 
-function InfoField({ icon: Icon, label, value, valueClassName }: { icon: typeof FileText; label: string; value?: string; valueClassName?: string }) {
+function InfoField({
+  icon: Icon, label, value, valueClassName, copyable,
+}: { icon: typeof FileText; label: string; value?: string; valueClassName?: string; copyable?: boolean }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    if (!value) return;
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
+
   return (
     <div className="flex items-start gap-2.5">
       <Icon size={15} strokeWidth={1.5} className="text-text-secondary mt-0.5 flex-shrink-0" />
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <p className="text-caption text-text-secondary uppercase tracking-wide">{label}</p>
-        <p className={cn('text-caption-md text-text-primary mt-0.5', valueClassName)}>{value || '—'}</p>
+        <div className="flex items-center gap-1.5">
+          <p className={cn('text-caption-md text-text-primary mt-0.5 truncate', valueClassName)}>{value || '—'}</p>
+          {copyable && value && (
+            <button
+              onClick={handleCopy}
+              aria-label={`Copy ${label}`}
+              className="mt-0.5 text-text-secondary active:text-text-primary flex-shrink-0"
+            >
+              {copied ? <Check size={13} className="text-accent-doneGreen-fg" /> : <Copy size={13} />}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
