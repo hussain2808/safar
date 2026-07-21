@@ -153,8 +153,14 @@ export async function moveIdeaToRoom(idea: Idea, roomId: string | null) {
 
 export async function deleteIdea(ideaId: string) {
   const idea = await db.ideas.get(ideaId);
-  if (idea?.fileIds?.length) {
-    await db.files.bulkDelete(idea.fileIds);
-  }
+  if (!idea) return null;
+  const files = idea.fileIds?.length ? ((await db.files.bulkGet(idea.fileIds)).filter(Boolean) as IdeaFile[]) : [];
+  if (files.length) await db.files.bulkDelete(files.map((f) => f.id));
   await db.ideas.delete(ideaId);
+  return { idea, files };
+}
+
+export async function restoreIdea(snapshot: { idea: Idea; files: IdeaFile[] }) {
+  if (snapshot.files.length) await db.files.bulkAdd(snapshot.files);
+  await db.ideas.add(snapshot.idea);
 }

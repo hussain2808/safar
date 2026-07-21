@@ -34,5 +34,12 @@ export async function addDecision(input: { title: string; reason?: string; alter
 }
 
 export async function deleteDecision(id: string) {
+  const decision = await db.decisions.get(id);
+  if (!decision) return null;
   await db.decisions.delete(id);
+  return decision;
+}
+
+export async function restoreDecision(decision: Decision) {
+  await db.decisions.add(decision);
 }

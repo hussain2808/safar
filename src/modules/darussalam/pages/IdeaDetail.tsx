@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
-import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement, deleteIdea, moveIdeaToRoom } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { useIdea, toggleIdeaFavorite, toggleIdeaInspiration, addIdeaNote, toggleIdeaRequirement, deleteIdea, restoreIdea, moveIdeaToRoom } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { useUndoToast } from '@/modules/darussalam/shared/store/useUndoToast';
 import { getCategoryIcon } from '@/modules/darussalam/lib/categoryIcons';
 import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
@@ -36,6 +37,7 @@ export default function DarussalamIdeaDetail() {
   const navigate = useNavigate();
   const { idea, roomName, files } = useIdea(ideaId);
   const { rooms } = useRooms();
+  const showUndo = useUndoToast((s) => s.showUndo);
   const [expanded, setExpanded] = useState<SectionKey | null>(null);
   const [noteText, setNoteText] = useState('');
   const [slide, setSlide] = useState(0);
@@ -76,10 +78,9 @@ export default function DarussalamIdeaDetail() {
 
   async function handleDelete() {
     if (!ideaId) return;
-    if (window.confirm(`Delete "${idea!.title}"? This can't be undone.`)) {
-      await deleteIdea(ideaId);
-      navigate(-1);
-    }
+    const snapshot = await deleteIdea(ideaId);
+    if (snapshot) showUndo('Idea deleted', () => restoreIdea(snapshot));
+    navigate(-1);
   }
 
   return (

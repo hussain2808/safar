@@ -1,16 +1,18 @@
 import type { ReactNode } from 'react';
 import { Trash2 } from 'lucide-react';
 import { IdeaThumb } from '@/modules/darussalam/shared/components/IdeaThumb';
-import { deleteIdea } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { deleteIdea, restoreIdea } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
+import { useUndoToast } from '@/modules/darussalam/shared/store/useUndoToast';
 
 export function IdeaListRow({
   ideaId, title, subtitle, trailing, onOpen,
 }: { ideaId: string; title: string; subtitle?: ReactNode; trailing?: ReactNode; onOpen: () => void }) {
+  const showUndo = useUndoToast((s) => s.showUndo);
+
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
-    if (window.confirm('Delete this idea? This can\'t be undone.')) {
-      await deleteIdea(ideaId);
-    }
+    const snapshot = await deleteIdea(ideaId);
+    if (snapshot) showUndo('Idea deleted', () => restoreIdea(snapshot));
   }
 
   return (

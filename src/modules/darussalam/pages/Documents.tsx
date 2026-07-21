@@ -2,8 +2,9 @@ import { useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FileStack, Trash2, Upload, ExternalLink } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
-import { useDocuments, addDocument, deleteDocument, useDocumentFile } from '@/modules/darussalam/features/documents/useDocuments';
+import { useDocuments, addDocument, deleteDocument, restoreDocument, useDocumentFile } from '@/modules/darussalam/features/documents/useDocuments';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
+import { useUndoToast } from '@/modules/darussalam/shared/store/useUndoToast';
 import type { DocumentCategory, DocumentRecord } from '@/modules/darussalam/types';
 
 const categories: DocumentCategory[] = ['floorPlan', 'elevation', 'moodBoard', 'sketch', 'municipality', 'other'];
@@ -50,6 +51,7 @@ export default function DarussalamDocuments() {
   const documents = useDocuments(roomId);
   const { rooms } = useRooms();
   const roomName = (id?: string | null) => rooms.find((r) => r.id === id)?.name;
+  const showUndo = useUndoToast((s) => s.showUndo);
 
   const [name, setName] = useState('');
   const [category, setCategory] = useState<DocumentCategory>('floorPlan');
@@ -75,7 +77,15 @@ export default function DarussalamDocuments() {
 
       <div className="px-5 mt-5 space-y-2.5">
         {documents.map((doc) => (
-          <DocumentRow key={doc.id} doc={doc} roomName={!roomId ? roomName(doc.roomId) : undefined} onDelete={() => deleteDocument(doc.id)} />
+          <DocumentRow
+            key={doc.id}
+            doc={doc}
+            roomName={!roomId ? roomName(doc.roomId) : undefined}
+            onDelete={async () => {
+              const snapshot = await deleteDocument(doc.id);
+              if (snapshot) showUndo('Document deleted', () => restoreDocument(snapshot));
+            }}
+          />
         ))}
         {documents.length === 0 && <p className="text-sm text-text-muted text-center py-4">No documents saved yet.</p>}
 

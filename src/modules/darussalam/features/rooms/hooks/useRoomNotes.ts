@@ -23,5 +23,12 @@ export async function addRoomNote(roomId: string, text: string) {
 }
 
 export async function deleteRoomNote(id: string) {
+  const note = await db.notes.get(id);
+  if (!note) return null;
   await db.notes.delete(id);
+  return note;
+}
+
+export async function restoreRoomNote(note: RoomNote) {
+  await db.notes.add(note);
 }

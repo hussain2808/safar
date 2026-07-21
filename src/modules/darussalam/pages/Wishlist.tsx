@@ -3,8 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { Sparkles, Trash2, Plus, Check } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
-import { useWishlist, addWishlistItem, toggleWishlistResolved, deleteWishlistItem } from '@/modules/darussalam/features/wishlist/useWishlist';
+import { useWishlist, addWishlistItem, toggleWishlistResolved, deleteWishlistItem, restoreWishlistItem } from '@/modules/darussalam/features/wishlist/useWishlist';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
+import { useUndoToast } from '@/modules/darussalam/shared/store/useUndoToast';
 import type { WishlistCategory } from '@/modules/darussalam/types';
 
 const categories: WishlistCategory[] = ['fixtures', 'materials', 'furniture', 'lighting', 'other'];
@@ -15,6 +16,7 @@ export default function DarussalamWishlist() {
   const items = useWishlist(roomId);
   const { rooms } = useRooms();
   const roomName = (id?: string | null) => rooms.find((r) => r.id === id)?.name;
+  const showUndo = useUndoToast((s) => s.showUndo);
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<WishlistCategory>('other');
@@ -53,7 +55,12 @@ export default function DarussalamWishlist() {
                 {!roomId && roomName(item.roomId) && <span className="text-[10px] text-text-muted">{roomName(item.roomId)}</span>}
               </div>
             </div>
-            <button onClick={() => deleteWishlistItem(item.id)} className="text-text-muted flex-shrink-0"><Trash2 size={15} /></button>
+            <button
+              onClick={async () => { const deleted = await deleteWishlistItem(item.id); if (deleted) showUndo('Removed from wishlist', () => restoreWishlistItem(deleted)); }}
+              className="text-text-muted flex-shrink-0"
+            >
+              <Trash2 size={15} />
+            </button>
           </div>
         ))}
         {items.length === 0 && <p className="text-sm text-text-muted text-center py-4">Nothing on the wishlist yet.</p>}

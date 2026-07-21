@@ -36,5 +36,12 @@ export async function toggleWishlistResolved(item: WishlistItem) {
 }
 
 export async function deleteWishlistItem(id: string) {
+  const item = await db.wishlistItems.get(id);
+  if (!item) return null;
   await db.wishlistItems.delete(id);
+  return item;
+}
+
+export async function restoreWishlistItem(item: WishlistItem) {
+  await db.wishlistItems.add(item);
 }

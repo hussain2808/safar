@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/modules/darussalam/db';
-import type { DocumentRecord, DocumentCategory } from '@/modules/darussalam/types';
+import type { DocumentRecord, DocumentCategory, DocumentFile } from '@/modules/darussalam/types';
 
 function makeId(prefix: string) {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}${Date.now().toString(36)}`;
@@ -48,8 +48,16 @@ export async function addDocument(input: { name: string; category: DocumentCateg
 
 export async function deleteDocument(id: string) {
   const doc = await db.documents.get(id);
-  if (doc?.fileId) await db.documentFiles.delete(doc.fileId);
+  if (!doc) return null;
+  const file = doc.fileId ? await db.documentFiles.get(doc.fileId) : undefined;
+  if (doc.fileId) await db.documentFiles.delete(doc.fileId);
   await db.documents.delete(id);
+  return { doc, file };
+}
+
+export async function restoreDocument(snapshot: { doc: DocumentRecord; file?: DocumentFile }) {
+  if (snapshot.file) await db.documentFiles.add(snapshot.file);
+  await db.documents.add(snapshot.doc);
 }
 
 export function useDocumentFile(fileId: string | undefined) {

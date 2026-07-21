@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { DarussalamBottomNav } from '@/modules/darussalam/shared/components/BottomNav';
+import { UndoToast } from '@/modules/darussalam/shared/components/UndoToast';
 import { cleanupLegacySeedData } from '@/modules/darussalam/lib/cleanupLegacySeed';
 
 const Home             = lazy(() => import('@/modules/darussalam/pages/Home'));
@@ -47,6 +48,7 @@ export default function DarussalamApp() {
           <Route path="more" element={<More />} />
         </Routes>
         <DarussalamBottomNav />
+        <UndoToast />
       </Suspense>
     </div>
   );

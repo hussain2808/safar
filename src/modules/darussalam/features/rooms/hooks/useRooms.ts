@@ -101,7 +101,14 @@ export async function updateRoom(roomId: string, changes: Partial<Room>) {
 }
 
 export async function deleteRoom(roomId: string) {
+  const room = await db.rooms.get(roomId);
+  if (!room) return null;
   await db.rooms.delete(roomId);
+  return room;
+}
+
+export async function restoreRoom(room: Room) {
+  await db.rooms.add(room);
 }
 
 export async function addRoomRequirement(room: Room, label: string) {

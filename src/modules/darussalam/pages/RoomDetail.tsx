@@ -11,15 +11,16 @@ import { IdeaListRow } from '@/modules/darussalam/shared/components/IdeaListRow'
 import { TagEditor } from '@/modules/darussalam/shared/components/TagEditor';
 import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
 import {
-  useRoom, useRoomTopIdeas, useRoomStats, updateRoom, deleteRoom,
+  useRoom, useRoomTopIdeas, useRoomStats, updateRoom, deleteRoom, restoreRoom,
   addRoomRequirement, toggleRoomRequirement, removeRoomRequirement,
   addRoomMoodTag, removeRoomMoodTag, addRoomColor, removeRoomColor,
   addRoomMaterial, removeRoomMaterial,
 } from '@/modules/darussalam/features/rooms/hooks/useRooms';
-import { useRoomMeasurements, addMeasurement, deleteMeasurement } from '@/modules/darussalam/features/rooms/hooks/useRoomMeasurements';
-import { useRoomNotes, addRoomNote, deleteRoomNote } from '@/modules/darussalam/features/rooms/hooks/useRoomNotes';
+import { useRoomMeasurements, addMeasurement, deleteMeasurement, restoreMeasurement } from '@/modules/darussalam/features/rooms/hooks/useRoomMeasurements';
+import { useRoomNotes, addRoomNote, deleteRoomNote, restoreRoomNote } from '@/modules/darussalam/features/rooms/hooks/useRoomNotes';
 import { useInspirationIdeas } from '@/modules/darussalam/features/ideas/hooks/useIdeas';
 import { getRoomIcon } from '@/modules/darussalam/lib/roomIcons';
+import { useUndoToast } from '@/modules/darussalam/shared/store/useUndoToast';
 
 type Tab = 'overview' | 'ideas' | 'inspiration' | 'measurements' | 'notes' | 'more';
 
@@ -43,6 +44,7 @@ export default function DarussalamRoomDetail() {
   const notes = useRoomNotes(roomId);
   const inspirationIdeas = useInspirationIdeas(roomId);
   const [tab, setTab] = useState<Tab>('overview');
+  const showUndo = useUndoToast((s) => s.showUndo);
   const [editing, setEditing] = useState(false);
   const [measureLabel, setMeasureLabel] = useState('');
   const [measureValue, setMeasureValue] = useState('');
@@ -62,10 +64,9 @@ export default function DarussalamRoomDetail() {
 
   async function handleDeleteRoom() {
     if (!room) return;
-    if (window.confirm(`Delete "${room.name}"? Ideas already saved here will keep the room name but no longer link to it.`)) {
-      await deleteRoom(room.id);
-      navigate('/darussalam/rooms', { replace: true });
-    }
+    const deletedRoom = await deleteRoom(room.id);
+    navigate('/darussalam/rooms', { replace: true });
+    if (deletedRoom) showUndo(`"${deletedRoom.name}" deleted`, () => restoreRoom(deletedRoom));
   }
 
   return (
@@ -351,7 +352,12 @@ export default function DarussalamRoomDetail() {
                 <h3 className="text-sm font-medium text-text-primary">{m.label}</h3>
               </div>
               <span className="text-sm text-text-secondary">{m.value}{m.unit ? ` ${m.unit}` : ''}</span>
-              <button onClick={() => deleteMeasurement(m.id)} className="text-text-muted"><Trash2 size={15} /></button>
+              <button
+                onClick={async () => { const deleted = await deleteMeasurement(m.id); if (deleted) showUndo('Measurement deleted', () => restoreMeasurement(deleted)); }}
+                className="text-text-muted"
+              >
+                <Trash2 size={15} />
+              </button>
             </div>
           ))}
           {measurements.length === 0 && <p className="text-sm text-text-muted text-center py-4">No measurements saved yet.</p>}
@@ -397,7 +403,12 @@ export default function DarussalamRoomDetail() {
             <div key={n.id} className="flex items-start gap-3 bg-card-bg rounded-card shadow-card p-3">
               <StickyNote size={16} className="text-darussalam-green flex-shrink-0 mt-0.5" />
               <p className="flex-1 text-sm text-text-secondary"><Linkify text={n.text} /></p>
-              <button onClick={() => deleteRoomNote(n.id)} className="text-text-muted"><Trash2 size={15} /></button>
+              <button
+                onClick={async () => { const deleted = await deleteRoomNote(n.id); if (deleted) showUndo('Note deleted', () => restoreRoomNote(deleted)); }}
+                className="text-text-muted"
+              >
+                <Trash2 size={15} />
+              </button>
             </div>
           ))}
           {notes.length === 0 && <p className="text-sm text-text-muted text-center py-4">No notes yet.</p>}

@@ -3,8 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { FileQuestion, Trash2, Plus } from 'lucide-react';
 import { DarussalamHeader } from '@/modules/darussalam/shared/components/DarussalamHeader';
 import { Linkify } from '@/modules/darussalam/shared/components/Linkify';
-import { useDecisions, addDecision, deleteDecision } from '@/modules/darussalam/features/decisions/useDecisions';
+import { useDecisions, addDecision, deleteDecision, restoreDecision } from '@/modules/darussalam/features/decisions/useDecisions';
 import { useRooms } from '@/modules/darussalam/features/rooms/hooks/useRooms';
+import { useUndoToast } from '@/modules/darussalam/shared/store/useUndoToast';
 
 function formatDate(ts: number) {
   return new Date(ts).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -16,6 +17,7 @@ export default function DarussalamDecisions() {
   const decisions = useDecisions(roomId);
   const { rooms } = useRooms();
   const roomName = (id?: string | null) => rooms.find((r) => r.id === id)?.name;
+  const showUndo = useUndoToast((s) => s.showUndo);
 
   const [title, setTitle] = useState('');
   const [reason, setReason] = useState('');
@@ -46,7 +48,12 @@ export default function DarussalamDecisions() {
                 <FileQuestion size={16} className="text-darussalam-green flex-shrink-0" />
                 <h3 className="text-sm font-semibold text-text-primary">{d.title}</h3>
               </div>
-              <button onClick={() => deleteDecision(d.id)} className="text-text-muted flex-shrink-0"><Trash2 size={15} /></button>
+              <button
+                onClick={async () => { const deleted = await deleteDecision(d.id); if (deleted) showUndo('Decision deleted', () => restoreDecision(deleted)); }}
+                className="text-text-muted flex-shrink-0"
+              >
+                <Trash2 size={15} />
+              </button>
             </div>
             {d.reason && <p className="text-xs text-text-secondary mt-1.5">Reason: <Linkify text={d.reason} /></p>}
             {d.alternatives && <p className="text-xs text-text-muted mt-1">Considered: <Linkify text={d.alternatives} /></p>}

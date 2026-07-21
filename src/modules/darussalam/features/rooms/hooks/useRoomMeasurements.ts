@@ -30,5 +30,12 @@ export async function addMeasurement(roomId: string, input: { label: string; val
 }
 
 export async function deleteMeasurement(id: string) {
+  const measurement = await db.measurements.get(id);
+  if (!measurement) return null;
   await db.measurements.delete(id);
+  return measurement;
+}
+
+export async function restoreMeasurement(measurement: Measurement) {
+  await db.measurements.add(measurement);
 }
