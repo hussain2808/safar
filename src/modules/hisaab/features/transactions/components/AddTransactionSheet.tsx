@@ -95,7 +95,7 @@ export function AddTransactionSheet() {
     setPhotoId(undefined);
   }
 
-  async function handleSave() {
+  async function handleSave(andAddNew = false) {
     const amount = parseAmountToPaise(amountInput);
     if (amount <= 0 || !addTransactionBookId || saving) return;
     setSaving(true);
@@ -105,7 +105,18 @@ export function AddTransactionSheet() {
       ? await updateTransaction(editingTransaction.id, payload)
       : await createTransaction(payload);
     setSaving(false);
-    if (result.ok) closeAddTransaction();
+    if (!result.ok) return;
+
+    if (andAddNew && !editingTransaction) {
+      setAmountInput('');
+      setRemark('');
+      setCategory(undefined);
+      setPaymentMethod(undefined);
+      setPhotoId(undefined);
+      setTimeout(() => amountRef.current?.focus(), 50);
+    } else {
+      closeAddTransaction();
+    }
   }
 
   async function handleDelete() {
@@ -306,14 +317,25 @@ export function AddTransactionSheet() {
               )}
               style={{ bottom: keyboardInset }}
             >
-              <button
-                onClick={handleSave}
-                disabled={amount <= 0 || saving}
-                className="w-full pointer-events-auto bg-hisaabAccent-button text-hisaabAccent-buttonText rounded-button py-4 text-body shadow-button disabled:opacity-40 active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2"
-              >
-                <CheckCircle2 size={18} />
-                {saving ? 'Saving...' : 'Save Entry'}
-              </button>
+              <div className="flex gap-3">
+                {!editingTransaction && (
+                  <button
+                    onClick={() => handleSave(true)}
+                    disabled={amount <= 0 || saving}
+                    className="flex-1 pointer-events-auto bg-transparent text-hisaabAccent-button border-2 border-hisaabAccent-button rounded-button py-4 text-body disabled:opacity-40 active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2"
+                  >
+                    Save &amp; add new
+                  </button>
+                )}
+                <button
+                  onClick={() => handleSave(false)}
+                  disabled={amount <= 0 || saving}
+                  className="flex-1 pointer-events-auto bg-hisaabAccent-button text-hisaabAccent-buttonText rounded-button py-4 text-body shadow-button disabled:opacity-40 active:scale-[0.98] transition-transform duration-100 flex items-center justify-center gap-2"
+                >
+                  <CheckCircle2 size={18} />
+                  {saving ? 'Saving...' : 'Save'}
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
