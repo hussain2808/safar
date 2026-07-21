@@ -40,6 +40,8 @@ export function AddTransactionSheet() {
   const [dateStr, setDateStr] = useState(format(Date.now(), 'yyyy-MM-dd'));
   const [photoId, setPhotoId] = useState<string | undefined>(undefined);
   const [saving, setSaving] = useState(false);
+  const [savedToast, setSavedToast] = useState<string | null>(null);
+  const savedToastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
   const [categoryPickerOpen, setCategoryPickerOpen] = useState(false);
@@ -49,6 +51,8 @@ export function AddTransactionSheet() {
 
   useEffect(() => {
     if (!addTransactionSheetOpen) return;
+    setSavedToast(null);
+    if (savedToastTimeoutRef.current) clearTimeout(savedToastTimeoutRef.current);
     if (editingTransaction) {
       setType(editingTransaction.type);
       setAmountInput(String(editingTransaction.amount / 100));
@@ -73,6 +77,10 @@ export function AddTransactionSheet() {
     document.body.style.overflow = addTransactionSheetOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [addTransactionSheetOpen]);
+
+  useEffect(() => () => {
+    if (savedToastTimeoutRef.current) clearTimeout(savedToastTimeoutRef.current);
+  }, []);
 
   function handleTypeChange(next: TransactionType) {
     setType(next);
@@ -108,6 +116,10 @@ export function AddTransactionSheet() {
     if (!result.ok) return;
 
     if (andAddNew && !editingTransaction) {
+      if (savedToastTimeoutRef.current) clearTimeout(savedToastTimeoutRef.current);
+      setSavedToast(`Saved ${currencySymbol}${amountInput}`);
+      savedToastTimeoutRef.current = setTimeout(() => setSavedToast(null), 1400);
+
       setAmountInput('');
       setRemark('');
       setCategory(undefined);
@@ -317,6 +329,22 @@ export function AddTransactionSheet() {
               )}
               style={{ bottom: keyboardInset }}
             >
+              <AnimatePresence>
+                {savedToast && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex justify-center mb-2.5"
+                  >
+                    <span className="bg-hisaabAccent-positive text-white text-caption-md px-4 py-2 rounded-full shadow-button flex items-center gap-1.5">
+                      <CheckCircle2 size={14} />
+                      {savedToast}
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               <div className="flex gap-3">
                 {!editingTransaction && (
                   <button
